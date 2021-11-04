@@ -23,11 +23,11 @@ public class MedicalRecordTest {
         //Covered in BeforeEach
 
         //Method & Verification
-        assertEquals(medicalRecord.getFirstName(),"First");
-        assertEquals(medicalRecord.getLastName(),"Last");
-        assertEquals(medicalRecord.getBirthdate(),"01/02/1234");
-        assertArrayEquals(medicalRecord.getMedications(),new String[] {"one", "two"});
-        assertArrayEquals(medicalRecord.getAllergies(),new String[] {"three", "four"});
+        assertEquals("First", medicalRecord.getFirstName());
+        assertEquals("Last", medicalRecord.getLastName());
+        assertEquals("01/02/1234", medicalRecord.getBirthdate());
+        assertArrayEquals(new String[] {"one", "two"}, medicalRecord.getMedications());
+        assertArrayEquals(new String[] {"three", "four"}, medicalRecord.getAllergies());
     }
 
     @Test
@@ -44,11 +44,11 @@ public class MedicalRecordTest {
         medicalRecord.setAllergies(new String[]{"seven", "eight"});
 
         //Verification
-        assertEquals(medicalRecord.getFirstName(),"Newfirst");
-        assertEquals(medicalRecord.getLastName(),"Newlast");
-        assertEquals(medicalRecord.getBirthdate(),"02/03/5678");
-        assertArrayEquals(medicalRecord.getMedications(),new String[] {"five", "six"});
-        assertArrayEquals(medicalRecord.getAllergies(),new String[] {"seven", "eight"});
+        assertEquals("Newfirst", medicalRecord.getFirstName());
+        assertEquals("Newlast", medicalRecord.getLastName());
+        assertEquals("02/03/5678", medicalRecord.getBirthdate());
+        assertArrayEquals(new String[] {"five", "six"}, medicalRecord.getMedications());
+        assertArrayEquals(new String[] {"seven", "eight"}, medicalRecord.getAllergies());
     }
 
     @Test
@@ -60,7 +60,7 @@ public class MedicalRecordTest {
         medicalRecord.addMedication("new");
 
         //Verification
-        assertArrayEquals(medicalRecord.getMedications(), newMedications);
+        assertArrayEquals(newMedications, medicalRecord.getMedications());
     }
 
     @Test
@@ -72,7 +72,7 @@ public class MedicalRecordTest {
         medicalRecord.addAllergy("new");
 
         //Verification
-        assertArrayEquals(medicalRecord.getAllergies(), newSymptoms);
+        assertArrayEquals(newSymptoms, medicalRecord.getAllergies());
     }
 
     private String[] addElement(String[] array, String element) {

@@ -22,13 +22,13 @@ public class PersonTest {
         //Covered in BeforeEach
 
         //Method & Verification
-        assertEquals(person.getFirstName(),"First");
-        assertEquals(person.getLastName(),"Last");
-        assertEquals(person.getAddress(),"123 Street");
-        assertEquals(person.getCity(),"City");
-        assertEquals(person.getZip(),"123456");
-        assertEquals(person.getPhone(),"555-1234");
-        assertEquals(person.getEmail(),"name@home.com");
+        assertEquals("First", person.getFirstName());
+        assertEquals("Last", person.getLastName());
+        assertEquals("123 Street", person.getAddress());
+        assertEquals("City", person.getCity());
+        assertEquals("123456", person.getZip());
+        assertEquals("555-1234", person.getPhone());
+        assertEquals("name@home.com", person.getEmail());
 
     }
 
@@ -48,13 +48,13 @@ public class PersonTest {
         person.setEmail("new@home.com");
 
         //Verification
-        assertEquals(person.getFirstName(),"Newfirst");
-        assertEquals(person.getLastName(),"Newlast");
-        assertEquals(person.getAddress(),"123 Street Two");
-        assertEquals(person.getCity(),"New City");
-        assertEquals(person.getZip(),"567890");
-        assertEquals(person.getPhone(),"555-5678");
-        assertEquals(person.getEmail(),"new@home.com");
+        assertEquals("Newfirst", person.getFirstName());
+        assertEquals("Newlast", person.getLastName());
+        assertEquals("123 Street Two", person.getAddress());
+        assertEquals("New City", person.getCity());
+        assertEquals("567890", person.getZip());
+        assertEquals("555-5678", person.getPhone());
+        assertEquals("new@home.com", person.getEmail());
 
     }
 

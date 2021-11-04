@@ -21,8 +21,8 @@ public class FirestationTest {
         //Covered in BeforeEach
 
         //Method & Verification
-        assertEquals(firestation.getAddress(),"123 Address");
-        assertEquals(firestation.getStation(),1);
+        assertEquals("123 Address", firestation.getAddress());
+        assertEquals(1, firestation.getStation());
 
     }
 
@@ -37,8 +37,8 @@ public class FirestationTest {
         firestation.setStation(2);
 
         //Verification
-        assertEquals(firestation.getAddress(),"123 Street Two");
-        assertEquals(firestation.getStation(),2);
+        assertEquals("123 Street Two", firestation.getAddress());
+        assertEquals(2, firestation.getStation());
     }
 
 }
