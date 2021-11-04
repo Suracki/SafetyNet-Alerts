@@ -44,10 +44,10 @@ public class JsonHandlerTest {
                 "    ],\n" +
                 "}";
 
-        String jsonOutput = "";
+        String jsonOutput;
 
         //Method
-        jsonOutput = jsonHandler.saveData(persons, firestations, medicalRecords);
+        jsonOutput = jsonHandler.convertToJson(persons, firestations, medicalRecords);
 
         //Verification
         assertEquals(expectedJson, jsonOutput);

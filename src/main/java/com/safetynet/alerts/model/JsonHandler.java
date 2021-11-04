@@ -18,7 +18,7 @@ public class JsonHandler {
 
 	}
 
-	public String saveData(Person[] persons, Firestation[] firestations, MedicalRecord[] medicalRecords) {
+	public String convertToJson(Person[] persons, Firestation[] firestations, MedicalRecord[] medicalRecords) {
 
 		GsonBuilder builder = new GsonBuilder();
 		Gson gson = builder.create();
@@ -27,26 +27,27 @@ public class JsonHandler {
 
 		//Add persons
 		stringBuilder.append("{\n    \"persons\": [\n");
-		for (int i = 0; i < persons.length; i++){
-			stringBuilder.append("        " + gson.toJson(persons[i]) + ",\n");
+		for (Person person : persons){
+			stringBuilder.append("        ").append(gson.toJson(person)).append(",\n");
 		}
 		stringBuilder.append("    ],\n");
 
 		//Add firestations
 		stringBuilder.append("    \"firestations\": [\n");
-		for (int i = 0; i < firestations.length; i++){
-			stringBuilder.append("        " + gson.toJson(firestations[i]) + ",\n");
+		for (Firestation firestation : firestations){
+			stringBuilder.append("        ").append(gson.toJson(firestation)).append(",\n");
 		}
 		stringBuilder.append("    ],\n");
 
 		//Add medicalRecords
 		stringBuilder.append("    \"medicalrecords\": [\n");
-		for (int i = 0; i < medicalRecords.length; i++){
-			stringBuilder.append("        " + gson.toJson(medicalRecords[i]) + ",\n");
+		for (MedicalRecord medicalRecord : medicalRecords){
+			stringBuilder.append("        ").append(gson.toJson(medicalRecord)).append(",\n");
 		}
 		stringBuilder.append("    ],\n}");
 
 		jsonString = stringBuilder.toString();
+		//TODO remove testing comments
 		System.out.println("Json starts:");
 		System.out.println(jsonString);
 		System.out.println("Json ends.");
