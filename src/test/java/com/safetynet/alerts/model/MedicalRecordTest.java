@@ -17,7 +17,7 @@ public class MedicalRecordTest {
     }
 
     @Test
-    public void medicalRecordShouldHaveGettersForAllFields() {
+    public void medicalRecordShouldHaveGettersForAllVars() {
 
         //Preparation
         //Covered in BeforeEach
@@ -31,7 +31,7 @@ public class MedicalRecordTest {
     }
 
     @Test
-    public void medicalRecordShouldHaveSettersForAllFields() {
+    public void medicalRecordShouldHaveSettersForAllVars() {
 
         //Preparation
         //Covered in BeforeEach

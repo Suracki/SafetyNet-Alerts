@@ -15,7 +15,7 @@ public class FirestationTest {
     }
 
     @Test
-    public void personShouldHaveGettersForAllFields() {
+    public void personShouldHaveGettersForAllVars() {
 
         //Preparation
         //Covered in BeforeEach
@@ -27,7 +27,7 @@ public class FirestationTest {
     }
 
     @Test
-    public void personShouldHaveSettersForAllFields() {
+    public void personShouldHaveSettersForAllVars() {
 
         //Preparation
         //Covered in BeforeEach

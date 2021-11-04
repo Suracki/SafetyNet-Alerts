@@ -29,6 +29,8 @@ public class JsonHandlerTest {
                 new MedicalRecord("First", "Last", "01/02/1234", new String[]{"medication"}, new String[]{"allergy"})
         };
 
+        SafetyAlertsModel model = new SafetyAlertsModel(persons, firestations, medicalRecords);
+
         String expectedJson = "{\n" +
                 "    \"persons\": [\n" +
                 "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"},\n" +
@@ -47,7 +49,7 @@ public class JsonHandlerTest {
         String jsonOutput;
 
         //Method
-        jsonOutput = jsonHandler.convertToJson(persons, firestations, medicalRecords);
+        jsonOutput = jsonHandler.modelToJson(model);
 
         //Verification
         assertEquals(expectedJson, jsonOutput);
@@ -56,6 +58,33 @@ public class JsonHandlerTest {
 
     @Test
     public void JsonHandlerShouldCreateModelFromJson() {
+        //Preparation
+        String jsonString = "{\n" +
+                "    \"persons\": [\n" +
+                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"},\n" +
+                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"},\n" +
+                "    ],\n" +
+                "    \"firestations\": [\n" +
+                "        {\"address\":\"Address\",\"station\":1},\n" +
+                "        {\"address\":\"Address\",\"station\":2},\n" +
+                "        {\"address\":\"Address\",\"station\":3},\n" +
+                "    ],\n" +
+                "    \"medicalrecords\": [\n" +
+                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
+                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
+                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
+                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
+                "    ],\n" +
+                "}";
+        SafetyAlertsModel model;
+
+        //Method
+        model = jsonHandler.jsonToModel(jsonString);
+
+        //Verification
+        assertEquals(2, model.getPersons().length);
+        assertEquals(3, model.getFirestations().length);
+        assertEquals(4, model.getMedicalRecords().length);
 
     }
 
