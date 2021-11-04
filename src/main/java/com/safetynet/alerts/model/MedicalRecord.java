@@ -12,8 +12,8 @@ public class MedicalRecord {
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthdate = birthdate;
-        this.medications = medications;
-        this.allergies = allergies;
+        this.medications = medications.clone();
+        this.allergies = allergies.clone();
     }
 
     public String getFirstName() {
@@ -41,19 +41,19 @@ public class MedicalRecord {
     }
 
     public String[] getMedications() {
-        return medications;
+        return medications.clone();
     }
 
     public void setMedications(String[] medications) {
-        this.medications = medications;
+        this.medications = medications.clone();
     }
 
     public String[] getAllergies() {
-        return allergies;
+        return allergies.clone();
     }
 
     public void setAllergies(String[] allergies) {
-        this.allergies = allergies;
+        this.allergies = allergies.clone();
     }
 
     public void addAllergy(String newAllergy) {
@@ -66,9 +66,7 @@ public class MedicalRecord {
 
     private String[] addElement(String[] array, String element) {
         String[] updatedArray = new String[array.length + 1];
-        for (int i = 0; i < array.length; i++){
-            updatedArray[i] = array[i];
-        }
+        System.arraycopy(array, 0, updatedArray, 0,array.length);
         updatedArray[array.length] = element;
         return updatedArray;
     }

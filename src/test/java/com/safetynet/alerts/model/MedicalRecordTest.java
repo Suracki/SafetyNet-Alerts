@@ -77,9 +77,7 @@ public class MedicalRecordTest {
 
     private String[] addElement(String[] array, String element) {
         String[] updatedArray = new String[array.length + 1];
-        for (int i = 0; i < array.length; i++){
-            updatedArray[i] = array[i];
-        }
+        System.arraycopy(array, 0, updatedArray, 0,array.length);
         updatedArray[array.length] = element;
         return updatedArray;
     }
