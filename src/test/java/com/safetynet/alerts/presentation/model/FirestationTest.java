@@ -1,5 +1,6 @@
-package com.safetynet.alerts.model;
+package com.safetynet.alerts.presentation.model;
 
+import com.safetynet.alerts.presentation.model.Firestation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

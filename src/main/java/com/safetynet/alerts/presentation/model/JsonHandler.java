@@ -1,4 +1,4 @@
-package com.safetynet.alerts.model;
+package com.safetynet.alerts.presentation.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -48,16 +48,19 @@ public class JsonHandler {
 
 	public SafetyAlertsModel jsonToModel(String jsonString) {
 
+		//Create Gson & set up variables
+		GsonBuilder builder = new GsonBuilder();
+		Gson gson = builder.create();
+		SafetyAlertsModel model = new SafetyAlertsModel();
+
+		//Split up json string into arrays of each class type
 		String[][] jsonsByClass = splitJsonByClass(jsonString);
 		String[] personsString = jsonsByClass[0];
 		String[] firestationsString = jsonsByClass[1];
 		String[] medicalRecordsString = jsonsByClass[2];
 
-		SafetyAlertsModel model = new SafetyAlertsModel();
 
-		GsonBuilder builder = new GsonBuilder();
-		Gson gson = builder.create();
-
+		//Create objects for each line in json
 		for (String line : personsString) {
 			model.addPerson(gson.fromJson(removeLastChar(line), Person.class));
 		}
