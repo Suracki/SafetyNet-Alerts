@@ -6,10 +6,6 @@ import java.io.*;
 
 public class JsonDAO {
 
-    public JsonDAO() {
-
-    }
-
     public String readJsonFromFile(String filename) throws IOException {
 
         BufferedReader bufferedReader = new BufferedReader(new FileReader(filename));

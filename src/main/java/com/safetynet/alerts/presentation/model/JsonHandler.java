@@ -7,9 +7,6 @@ public class JsonHandler {
 
 	private Gson gson;
 	
-	public JsonHandler () {
-	}
-
 	public String modelToJson(SafetyAlertsModel model) {
 
 		//Create Gson & set up variables

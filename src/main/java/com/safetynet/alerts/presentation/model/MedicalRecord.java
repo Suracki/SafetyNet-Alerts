@@ -8,10 +8,6 @@ public class MedicalRecord {
     private String[] medications;
     private String[] allergies;
 
-    public MedicalRecord() {
-
-    }
-
     public MedicalRecord(String firstName, String lastName, String birthdate, String[] medications, String[] allergies) {
         this.firstName = firstName;
         this.lastName = lastName;

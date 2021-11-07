@@ -1,5 +1,8 @@
 package com.safetynet.alerts.presentation.model;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class SafetyAlertsModel {
 
     private Person[] persons;
@@ -42,12 +45,21 @@ public class SafetyAlertsModel {
     public Person[] getPersons() {
         return persons.clone();
     }
+    public void setPersons(Person[] persons) {
+        this.persons = persons;
+    }
 
     public Firestation[] getFirestations() {
         return firestations.clone();
     }
+    public void setFirestations(Firestation[] firestations) {
+        this.firestations = firestations;
+    }
 
     public MedicalRecord[] getMedicalRecords() {
         return medicalRecords.clone();
+    }
+    public void setMedicalRecords(MedicalRecord[] medicalRecords) {
+        this.medicalRecords = medicalRecords;
     }
 }
