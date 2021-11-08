@@ -35,16 +35,16 @@ public class JsonHandlerTest {
         String expectedJson = "{\n" +
                 "    \"persons\": [\n" +
                 "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"},\n" +
-                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"},\n" +
+                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"}\n" +
                 "    ],\n" +
                 "    \"firestations\": [\n" +
                 "        {\"address\":\"Address\",\"station\":1},\n" +
-                "        {\"address\":\"Address\",\"station\":2},\n" +
+                "        {\"address\":\"Address\",\"station\":2}\n" +
                 "    ],\n" +
                 "    \"medicalrecords\": [\n" +
                 "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
-                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
-                "    ],\n" +
+                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]}\n" +
+                "    ]\n" +
                 "}";
 
         String jsonOutput;

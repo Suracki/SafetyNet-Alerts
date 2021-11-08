@@ -20,21 +20,24 @@ public class JsonHandler {
 		for (Person person : model.getPersons()){
 			stringBuilder.append("        ").append(gson.toJson(person)).append(",\n");
 		}
-		stringBuilder.append("    ],\n");
+		stringBuilder.setLength(stringBuilder.length() - 2);
+		stringBuilder.append("\n    ],\n");
 
 		//Add firestations to stringbuilder as json
 		stringBuilder.append("    \"firestations\": [\n");
 		for (Firestation firestation : model.getFirestations()){
 			stringBuilder.append("        ").append(gson.toJson(firestation)).append(",\n");
 		}
-		stringBuilder.append("    ],\n");
+		stringBuilder.setLength(stringBuilder.length() - 2);
+		stringBuilder.append("\n    ],\n");
 
 		//Add medicalRecords to stringbuilder as json
 		stringBuilder.append("    \"medicalrecords\": [\n");
 		for (MedicalRecord medicalRecord : model.getMedicalRecords()){
 			stringBuilder.append("        ").append(gson.toJson(medicalRecord)).append(",\n");
 		}
-		stringBuilder.append("    ],\n}");
+		stringBuilder.setLength(stringBuilder.length() - 2);
+		stringBuilder.append("\n    ]\n}");
 
 		//Convert stringbuilder to json string
 		jsonString = stringBuilder.toString();
@@ -59,13 +62,29 @@ public class JsonHandler {
 
 		//Create objects for each line in json
 		for (String line : personsString) {
-			model.addPerson(gson.fromJson(removeLastChar(line), Person.class));
+			if (line.charAt(line.length() - 1) == ','){
+				model.addPerson(gson.fromJson(removeLastChar(line), Person.class));
+			}
+			else {
+				model.addPerson(gson.fromJson(line, Person.class));
+			}
+
 		}
 		for (String line : firestationsString) {
-			model.addFirestation(gson.fromJson(removeLastChar(line), Firestation.class));
+			if (line.charAt(line.length() - 1) == ','){
+				model.addFirestation(gson.fromJson(removeLastChar(line), Firestation.class));
+			}
+			else {
+				model.addFirestation(gson.fromJson(line, Firestation.class));
+			}
 		}
 		for (String line : medicalRecordsString) {
-			model.addMedicalRecord(gson.fromJson(removeLastChar(line), MedicalRecord.class));
+			if (line.charAt(line.length() - 1) == ','){
+				model.addMedicalRecord(gson.fromJson(removeLastChar(line), MedicalRecord.class));
+			}
+			else {
+				model.addMedicalRecord(gson.fromJson(line, MedicalRecord.class));
+			}
 		}
 
 		return model;
@@ -90,6 +109,7 @@ public class JsonHandler {
 		boolean medicalRecordBool = false;
 
 		for (String line : jsonArray) {
+
 			if (line.replaceAll("\\s","").equals("\"persons\":[")) {
 				personBool = true; firestationBool = false;	medicalRecordBool = false;
 			}
@@ -101,6 +121,7 @@ public class JsonHandler {
 			}
 			else if (!line.replaceAll("\\s","").equals("{") &&
 					!line.replaceAll("\\s","").equals("],") &&
+					!line.replaceAll("\\s","").equals("]") &&
 					!line.replaceAll("\\s","").equals("}")) {
 				if (personBool) {
 					persons = addElement(persons, line);

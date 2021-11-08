@@ -86,4 +86,17 @@ public class Person {
         this.phone = newPerson.getPhone();
         this.email = newPerson.getEmail();
     }
+
+    @Override
+    public String toString() {
+        String output = "{\"firstName\":\"" + firstName +
+                "\", \"lastName\":\"" + lastName +
+                "\", \"address\":\"" + address +
+                "\", \"city\":\"" + city +
+                "\", \"zip\":\"" + zip +
+                "\", \"phone\":\"" + phone +
+                "\", \"email\":\"" + email + "\" }";
+
+        return output;
+    }
 }

@@ -24,17 +24,17 @@ public class ModelAndJsonIT {
     private static File comparisonFile;
     private static String jsonString = "{\n" +
             "    \"persons\": [\n" +
-            "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"},\n" +
-            "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"},\n" +
+            "        {\"firstName\":\"FirstOne\",\"lastName\":\"LastOne\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"},\n" +
+            "        {\"firstName\":\"FirstTwo\",\"lastName\":\"LastTwo\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"}\n" +
             "    ],\n" +
             "    \"firestations\": [\n" +
             "        {\"address\":\"Address\",\"station\":1},\n" +
-            "        {\"address\":\"Address\",\"station\":2},\n" +
+            "        {\"address\":\"Address\",\"station\":2}\n" +
             "    ],\n" +
             "    \"medicalrecords\": [\n" +
-            "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
-            "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
-            "    ],\n" +
+            "        {\"firstName\":\"FirstOne\",\"lastName\":\"LastOne\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
+            "        {\"firstName\":\"FirstTwo\",\"lastName\":\"LastTwo\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]}\n" +
+            "    ]\n" +
             "}";
 
     @BeforeAll
@@ -84,16 +84,16 @@ public class ModelAndJsonIT {
     public void testCreatingJsonFileFromModel() throws IOException {
         //Preparation
         Person[] persons = new Person[]{
-                new Person("First", "Last", "Address", "City", "Zip", "555-1234", "name@mail.com"),
-                new Person("First", "Last", "Address", "City", "Zip", "555-1234", "name@mail.com")
+                new Person("FirstOne", "LastOne", "Address", "City", "Zip", "555-1234", "name@mail.com"),
+                new Person("FirstTwo", "LastTwo", "Address", "City", "Zip", "555-1234", "name@mail.com")
         };
         Firestation[] firestations = new Firestation[]{
                 new Firestation("Address", 1),
                 new Firestation("Address", 2)
         };
         MedicalRecord[] medicalRecords = new MedicalRecord[]{
-                new MedicalRecord("First", "Last", "01/02/1234", new String[]{"medication"}, new String[]{"allergy"}),
-                new MedicalRecord("First", "Last", "01/02/1234", new String[]{"medication"}, new String[]{"allergy"})
+                new MedicalRecord("FirstOne", "LastOne", "01/02/1234", new String[]{"medication"}, new String[]{"allergy"}),
+                new MedicalRecord("FirstTwo", "LastTwo", "01/02/1234", new String[]{"medication"}, new String[]{"allergy"})
         };
         safetyAlertsModel = new SafetyAlertsModel(persons, firestations, medicalRecords);
 
