@@ -69,7 +69,7 @@ public class PersonController {
         result.put(person,record);
 
         //save data
-        //saveModelToDisk(model); operation makes no changes; we don't save.
+        //operation makes no changes; we don't save.
         return result;
     }
 }
