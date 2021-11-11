@@ -19,7 +19,7 @@ public class ModelObjectFinder {
         return null;
     }
 
-    public MedicalRecord findRecord(String firstName, String lastName, SafetyAlertsModel model) {
+    public MedicalRecord findMedicalRecord(String firstName, String lastName, SafetyAlertsModel model) {
 
         for (MedicalRecord record : model.getMedicalRecords()){
             if (record.getFirstName().equals(firstName) && record.getLastName().equals(lastName)){

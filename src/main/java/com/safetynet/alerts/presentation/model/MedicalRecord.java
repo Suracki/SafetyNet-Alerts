@@ -71,5 +71,13 @@ public class MedicalRecord {
         return updatedArray;
     }
 
+    public void update(MedicalRecord medicalRecord) {
+        this.firstName = medicalRecord.getFirstName();
+        this.lastName = medicalRecord.getLastName();
+        this.birthdate = medicalRecord.getBirthdate();
+        this.medications = medicalRecord.getMedications();
+        this.allergies = medicalRecord.getAllergies();
+    }
+
 
 }
