@@ -25,4 +25,9 @@ public class Firestation {
     public void setStation(int station) {
         this.station = station;
     }
+
+    public void update(Firestation newFirestation) {
+        this.address = newFirestation.getAddress();
+        this.station = newFirestation.getStation();
+    }
 }

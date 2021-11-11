@@ -1,5 +1,6 @@
 package com.safetynet.alerts.logic;
 
+import com.safetynet.alerts.presentation.model.Firestation;
 import com.safetynet.alerts.presentation.model.MedicalRecord;
 import com.safetynet.alerts.presentation.model.Person;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
@@ -23,6 +24,15 @@ public class ModelObjectFinder {
         for (MedicalRecord record : model.getMedicalRecords()){
             if (record.getFirstName().equals(firstName) && record.getLastName().equals(lastName)){
                 return record;
+            }
+        }
+        return null;
+    }
+
+    public Firestation findFirestation(String address, SafetyAlertsModel model){
+        for (Firestation firestation : model.getFirestations()){
+            if (firestation.getAddress().equals(address)){
+                return firestation;
             }
         }
         return null;

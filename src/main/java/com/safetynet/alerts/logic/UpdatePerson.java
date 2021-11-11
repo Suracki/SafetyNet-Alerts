@@ -36,4 +36,29 @@ public class UpdatePerson {
         }
     }
 
+    public ResultModel deletePerson(ModelObjectFinder finder, SafetyAlertsModel model, Person removePerson) {
+        //Confirm person exists
+        if (finder.findPerson(removePerson.getFirstName(), removePerson.getLastName(), model) == null) {
+            //No Person found with matching firstname/lastname
+            return new ResultModel(model, false);
+        }
+        //Update persons in model
+        Person[] persons = model.getPersons();
+        Person[] updatedPersons = new Person[persons.length - 1];
+        int index = 0;
+        for (Person person : persons){
+            if (person.getFirstName().equals(removePerson.getFirstName()) &&
+                    person.getLastName().equals(removePerson.getLastName())) {
+                //Do not copy, remove this person
+            }
+            else {
+                updatedPersons[index] = person;
+                index++;
+            }
+        }
+        model.setPersons(updatedPersons);
+        //Return updated model
+        return new ResultModel(model, true);
+    }
+
 }

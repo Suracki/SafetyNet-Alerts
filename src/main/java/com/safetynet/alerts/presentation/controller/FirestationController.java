@@ -3,7 +3,9 @@ package com.safetynet.alerts.presentation.controller;
 import com.safetynet.alerts.data.io.JsonDAO;
 import com.safetynet.alerts.logic.ModelObjectFinder;
 import com.safetynet.alerts.logic.ResultModel;
+import com.safetynet.alerts.logic.UpdateFirestation;
 import com.safetynet.alerts.logic.UpdatePerson;
+import com.safetynet.alerts.presentation.model.Firestation;
 import com.safetynet.alerts.presentation.model.JsonHandler;
 import com.safetynet.alerts.presentation.model.Person;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
@@ -12,9 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
-public class PersonController {
+public class FirestationController {
 
     private SafetyAlertsModel loadModelFromDisk() {
         JsonHandler jsonHandler = new JsonHandler();
@@ -43,23 +44,20 @@ public class PersonController {
         }
     }
 
-    @PostMapping("/person")
-    public ResponseEntity<String> addEntity(@RequestParam("FirstName") String firstName, @RequestParam("LastName") String lastName,
-                                            @RequestParam("Address") String address, @RequestParam("City") String city,
-                                            @RequestParam("Zip") String zip, @RequestParam("Phone") String phone,
-                                            @RequestParam("EMail") String email) {
+    @PostMapping("/firestation")
+    public ResponseEntity<String> addEntity(@RequestParam("Address") String address, @RequestParam("Station") int station){
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
         ModelObjectFinder finder = new ModelObjectFinder();
-        Person newPerson;
-        if (finder.findPerson(firstName, lastName, model) == null){
-            //Person is not already in model, we can add them
-            newPerson = new Person(firstName,lastName,address,city,zip,phone,email);
-            model.addPerson(newPerson);
+        Firestation newFireStation;
+        if (finder.findFirestation(address, model) == null){
+            //Address does not already have a firestation mapped, we can add this mapping
+            newFireStation = new Firestation(address,station);
+            model.addFirestation(newFireStation);
         }
         else {
-            //Person already exists with this firstName/lastName combination, call fails
+            //Address already has a firestation mapped, cannot add
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
@@ -67,29 +65,26 @@ public class PersonController {
         saveModelToDisk(model);
         //respond
         HttpHeaders responseHeaders = new HttpHeaders();
-        ResponseEntity<String> response = new ResponseEntity<String>(newPerson.toString(), responseHeaders, HttpStatus.CREATED);
+        ResponseEntity<String> response = new ResponseEntity<String>(newFireStation.toString(), responseHeaders, HttpStatus.CREATED);
         return response;
     }
 
-    @PutMapping("/person")
-    public ResponseEntity<String> updateEntity(@RequestParam("FirstName") String firstName, @RequestParam("LastName") String lastName,
-                                               @RequestParam("Address") String address, @RequestParam("City") String city,
-                                               @RequestParam("Zip") String zip, @RequestParam("Phone") String phone,
-                                               @RequestParam("EMail") String email) {
+    @PutMapping("/firestation")
+    public ResponseEntity<String> updateEntity(@RequestParam("Address") String address, @RequestParam("Station") int station){
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
         ModelObjectFinder finder = new ModelObjectFinder();
-        Person newPerson;
-        UpdatePerson updatePerson = new UpdatePerson();
-        if (finder.findPerson(firstName, lastName, model) == null){
-            //Person is not already in model, we cannot update them
+        UpdateFirestation updateFirestation = new UpdateFirestation();
+        Firestation newFireStation;
+        if (finder.findFirestation(address, model) == null){
+            //Address does not already have a firestation mapped, we cannot update this mapping
             return ResponseEntity.notFound().build();
         }
         else {
-            //Person already exists with this firstName/lastName combination, call fails
-            newPerson = new Person(firstName,lastName,address,city,zip,phone,email);
-            ResultModel result = updatePerson.updatePerson(finder, model, newPerson);
+            //Address already has a firestation mapped, we can update
+            newFireStation = new Firestation(address,station);
+            ResultModel result = updateFirestation.updateFirestation(finder, model, newFireStation);
             if (result.getBool()) {
                 //Person was added successfully
                 model = result.getModel();
@@ -107,23 +102,23 @@ public class PersonController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/person")
-    public ResponseEntity<String> deleteEntity(@RequestParam("FirstName") String firstName, @RequestParam("LastName") String lastName) {
+    @DeleteMapping("/firestation")
+    public ResponseEntity<String> deleteEntity(@RequestParam("Address") String address, @RequestParam("Station") int station){
 
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
         ModelObjectFinder finder = new ModelObjectFinder();
-        Person newPerson;
-        UpdatePerson updatePerson = new UpdatePerson();
-        if (finder.findPerson(firstName, lastName, model) == null){
-            //Person is not already in model, we cannot delete them
+        Firestation newFirestation;
+        UpdateFirestation updateFirestation = new UpdateFirestation();
+        if (finder.findFirestation(address, model) == null){
+            //Firestation mapping is not already in model, we cannot delete them
             return ResponseEntity.notFound().build();
         }
         else {
-            //Person does exist, we can delete them
-            newPerson = new Person(firstName,lastName,"","","","","");
-            ResultModel result = updatePerson.deletePerson(finder, model, newPerson);
+            //Firestation mapping does exist for this address, we can delete them
+            newFirestation = new Firestation(address,station);
+            ResultModel result = updateFirestation.deleteFirestation(finder, model, newFirestation);
             if (result.getBool()) {
                 //Person was deleted successfully
                 model = result.getModel();
