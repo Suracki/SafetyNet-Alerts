@@ -28,4 +28,14 @@ public class PersonAndRecordParser {
         return false;
     }
 
+    public int getAge(MedicalRecord record) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        LocalDate dob = LocalDate.parse(record.getBirthdate(), formatter);
+        LocalDate currentDate = LocalDate.now();
+
+
+        return Period.between(dob, currentDate).getYears();
+    }
+
 }

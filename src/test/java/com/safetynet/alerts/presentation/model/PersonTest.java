@@ -59,4 +59,18 @@ public class PersonTest {
 
     }
 
+    @Test
+    public void personShouldCreateCustomToStringResponse() {
+        //Preparation
+        String expectedOutput = "{\"firstName\":\"First\", \"lastName\":\"Last\", \"address\":\"123 Street\", \"city\":" +
+                "\"City\", \"zip\":\"123456\", \"phone\":\"555-1234\", \"email\":\"name@home.com\"}";
+
+        //Method
+        String toString = person.toString();
+
+        //Verification
+        assertEquals(expectedOutput, toString);
+
+    }
+
 }

@@ -4,14 +4,13 @@ import com.safetynet.alerts.presentation.model.Firestation;
 import com.safetynet.alerts.presentation.model.MedicalRecord;
 import com.safetynet.alerts.presentation.model.Person;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UpdatePersonTest {
+public class UpdateFirestationTest {
     private static SafetyAlertsModel model;
 
     @BeforeEach
@@ -36,59 +35,55 @@ public class UpdatePersonTest {
     }
 
     @Test
-    public void UpdatePersonCanAddNewPerson() {
+    public void UpdateFirestationCanAddNewFirestationMapping() {
         //Preparation
-        UpdatePerson updatePerson = new UpdatePerson();
-        Person newPerson = new Person("FirstThree", "LastThree", "Address", "City", "Zip",
-                "555-1234", "name@mail.com");
+        UpdateFirestation updateFirestation = new UpdateFirestation();
+        Firestation newFirestation = new Firestation("AddressThree", 2);
 
         //Method
 
-        ResultModel result = updatePerson.addPerson(new ModelObjectFinder(), model, newPerson);
+        ResultModel result = updateFirestation.addFirestation(new ModelObjectFinder(), model, newFirestation);
 
         //Verification
-        Person[] updatedPersons = result.getModel().getPersons();
+        Firestation[] updatedFirestations = result.getModel().getFirestations();
         assertTrue(result.getBool());
-        assertEquals(3, updatedPersons.length);
+        assertEquals(3, updatedFirestations.length);
     }
 
     @Test
-    public void UpdatePersonCanAddUpdateExistingPerson() {
+    public void UpdateFirestationCanAddUpdateExistingFirestationMapping() {
         //Preparation
-        UpdatePerson updatePerson = new UpdatePerson();
-        Person newPerson = new Person("FirstOne", "LastOne", "NewAddress", "City", "NewZip",
-                "555-1234", "name@mail.com");
+        UpdateFirestation updateFirestation = new UpdateFirestation();
+        Firestation newFirestation = new Firestation("AddressTwo", 3);
 
         //Method
 
-        ResultModel result = updatePerson.updatePerson(new ModelObjectFinder(), model, newPerson);
+        ResultModel result = updateFirestation.updateFirestation(new ModelObjectFinder(), model, newFirestation);
 
         //Verification
-        Person[] updatedPersons = result.getModel().getPersons();
+        Firestation[] updatedFirestations = result.getModel().getFirestations();
 
         assertTrue(result.getBool());
-        assertEquals(2, updatedPersons.length);
-        assertEquals("NewAddress", updatedPersons[0].getAddress());
-        assertEquals("City", updatedPersons[0].getCity());
+        assertEquals(2, updatedFirestations.length);
+        assertEquals("AddressTwo", updatedFirestations[1].getAddress());
+        assertEquals(3, updatedFirestations[1].getStation());
     }
 
     @Test
-    public void UpdatePersonCanDeleteExistingPerson() {
+    public void UpdateFirestationCanDeleteExistingFirestationMapping() {
         //Preparation
-        UpdatePerson updatePerson = new UpdatePerson();
-        Person removePerson = new Person("FirstTwo", "LastTwo", "Address", "City", "Zip",
-                "555-1234", "name@mail.com");
+        UpdateFirestation updateFirestation = new UpdateFirestation();
+        Firestation deleteFirestation = new Firestation("Address", 1);
 
         //Method
 
-        ResultModel result = updatePerson.deletePerson(new ModelObjectFinder(), model, removePerson);
+        ResultModel result = updateFirestation.deleteFirestation(new ModelObjectFinder(), model, deleteFirestation);
 
         //Verification
-        Person[] updatedPersons = result.getModel().getPersons();
+        Firestation[] updatedFirestations = result.getModel().getFirestations();
         assertTrue(result.getBool());
-        assertEquals(1, updatedPersons.length);
+        assertEquals(1, updatedFirestations.length);
+        assertEquals("AddressTwo", updatedFirestations[0].getAddress());
     }
-
-
 
 }

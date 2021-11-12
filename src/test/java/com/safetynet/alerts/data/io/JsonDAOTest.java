@@ -1,4 +1,4 @@
-package com.safetynet.alerts.presentation.data.io;
+package com.safetynet.alerts.data.io;
 
 import com.safetynet.alerts.data.io.JsonDAO;
 

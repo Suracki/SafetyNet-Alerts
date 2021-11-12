@@ -47,6 +47,7 @@ public class GetMappingController {
     public ResponseEntity<String> getPeopleServicedByStation(@RequestParam("stationNumber") int stationNumber) {
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
+
         //Perform Request
         ModelObjectFinder finder = new ModelObjectFinder();
         Firestation[] firestations = finder.findFirestationByNumber(stationNumber, model);
@@ -68,7 +69,6 @@ public class GetMappingController {
                 builder.addAdult();
             }
         }
-
         String responseString = builder.getPeopleServicedByStationResult();
         //respond
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -77,31 +77,30 @@ public class GetMappingController {
 
     }
 
-    @GetMapping("/person")
-    public ResponseEntity<String> getEntity(@RequestParam("FirstName") String firstName, @RequestParam("LastName") String lastName,
-                                            @RequestParam("Address") String address, @RequestParam("City") String city,
-                                            @RequestParam("Zip") String zip, @RequestParam("Phone") String phone,
-                                            @RequestParam("EMail") String email) {
+    @GetMapping("/childAlert")
+    public ResponseEntity<String> getChildrenAtAddress(@RequestParam("Address") String address) {
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
+
         //Perform Request
         ModelObjectFinder finder = new ModelObjectFinder();
-        Person newPerson;
-        if (finder.findPerson(firstName, lastName, model) == null){
-            //Person is not already in model, we can add them
-            newPerson = new Person(firstName,lastName,address,city,zip,phone,email);
-            model.addPerson(newPerson);
+        Person[] peopleAtAddress = finder.findPersonByAddress(new String[] {address},model);
+        PersonAndRecordParser recordParser = new PersonAndRecordParser();
+        OutputBuilder builder = new OutputBuilder();
+        for (Person person : peopleAtAddress) {
+            if (recordParser.isAChild(person, model.getMedicalRecords())) {
+                builder.addChildPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
+            }
+            else {
+                builder.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
+            }
         }
-        else {
-            //Person already exists with this firstName/lastName combination, call fails
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        String responseString = builder.getChildrenAtAddressResult(recordParser);
 
-        //save data
-        saveModelToDisk(model);
+
         //respond
         HttpHeaders responseHeaders = new HttpHeaders();
-        ResponseEntity<String> response = new ResponseEntity<String>(newPerson.toString(), responseHeaders, HttpStatus.CREATED);
+        ResponseEntity<String> response = new ResponseEntity<String>(responseString, responseHeaders, HttpStatus.OK);
         return response;
     }
 

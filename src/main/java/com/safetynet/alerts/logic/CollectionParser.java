@@ -11,7 +11,6 @@ public class CollectionParser {
         for (Firestation firestation : firestations){
             if (!addressesList.contains(firestation.getAddress())) {
                 addressesList.add(firestation.getAddress());
-                System.out.println("Added: " + firestation.getAddress());
             }
         }
         String[] addresses = new String[addressesList.size()];
