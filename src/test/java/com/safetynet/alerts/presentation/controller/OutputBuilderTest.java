@@ -56,12 +56,14 @@ public class OutputBuilderTest {
         outputBuilder.addPerson(model.getPersons()[0], model.getMedicalRecords()[0]);
         outputBuilder.addAdult();
 
-        String expectedString = "{\"persons\": [\n" +
-                "    (\"firstName\":\"FirstOne\",\"lastName\":\"LastOne\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\"),\n" +
-                "    (\"firstName\":\"FirstThree\",\"lastName\":\"LastThree\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\"),\n" +
-                "    (\"firstName\":\"FirstTwo\",\"lastName\":\"LastTwo\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\")\n" +
-                "],\n" +
-                "\"adults\":[2],\"children\":[1]}";
+        String expectedString = "{\n" +
+                "\"persons\": [\n" +
+                "        {\"firstName\":\"FirstOne\",\"lastName\":\"LastOne\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\"},\n" +
+                "        {\"firstName\":\"FirstThree\",\"lastName\":\"LastThree\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\"},\n" +
+                "        {\"firstName\":\"FirstTwo\",\"lastName\":\"LastTwo\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\"}\n" +
+                "    ],\n" +
+                "    \"adults\":[2],\"children\":[1]\n" +
+                "}";
 
         //Method
         String responseString = outputBuilder.getPeopleServicedByStationResult();
@@ -77,13 +79,15 @@ public class OutputBuilderTest {
         outputBuilder.addPerson(model.getPersons()[1], model.getMedicalRecords()[1]);
         outputBuilder.addPerson(model.getPersons()[0], model.getMedicalRecords()[0]);
 
-        String expectedString = "{\"children\": [\n" +
-                "    (\"firstName\":\"FirstThree\",\"lastName\":\"LastThree\",\"age\":\"6\")\n" +
-                "]\n" +
-                "{\"adults\": [\n" +
-                "    (\"firstName\":\"FirstOne\",\"lastName\":\"LastOne\"),\n" +
-                "    (\"firstName\":\"FirstTwo\",\"lastName\":\"LastTwo\")\n" +
-                "]}";
+        String expectedString = "{\n" +
+                "    \"children\": [\n" +
+                "        {\"firstName\":\"FirstThree\",\"lastName\":\"LastThree\",\"age\":\"6\"}\n" +
+                "    ],\n" +
+                "    \"adults\": [\n" +
+                "        {\"firstName\":\"FirstOne\",\"lastName\":\"LastOne\"},\n" +
+                "        {\"firstName\":\"FirstTwo\",\"lastName\":\"LastTwo\"}\n" +
+                "    ]\n" +
+                "}";
 
         //Method
         String responseString = outputBuilder.getChildrenAtAddressResult(new PersonAndRecordParser());
@@ -98,11 +102,13 @@ public class OutputBuilderTest {
         outputBuilder.addPhone("555-1111");
         outputBuilder.addPhone("555-2222");
         outputBuilder.addPhone("555-3333");
-        String expectedString = "{\"phoneNumbers\": [\n" +
-                "    (\"phone\":\"555-1111\"),\n" +
-                "    (\"phone\":\"555-2222\"),\n" +
-                "    (\"phone\":\"555-3333\")\n" +
-                "]}";
+        String expectedString = "{\n" +
+                "    \"phoneNumbers\": [\n" +
+                "        {\"phone\":\"555-1111\"},\n" +
+                "        {\"phone\":\"555-2222\"},\n" +
+                "        {\"phone\":\"555-3333\"}\n" +
+                "    ]\n" +
+                "}";
 
         //Method
         String responseString = outputBuilder.getPhoneNumbersForStationResult();
@@ -122,11 +128,10 @@ public class OutputBuilderTest {
                 "    \"firestations\": [\n" +
                 "        {\"address\":\"Address\",\"station\":1}\n" +
                 "    ],\n" +
-                "{\n" +
                 "    \"persons\": [\n" +
-                "        (\"firstName\":\"FirstOne\",\"lastName\":\"LastOne\",\"phone\":\"555-1234\",\"Age\":\"26\",\"medications\":\"[\"medicationOne\",medicationTwo\"]\",\"allergies\":\"[\"allergy\"]\"),\n" +
-                "        (\"firstName\":\"FirstThree\",\"lastName\":\"LastThree\",\"phone\":\"555-1234\",\"Age\":\"6\",\"medications\":\"[\"medicationThree\"]\",\"allergies\":\"[\"allergyOne\",allergyTwo\"]\"),\n" +
-                "        (\"firstName\":\"FirstTwo\",\"lastName\":\"LastTwo\",\"phone\":\"555-1234\",\"Age\":\"23\",\"medications\":\"[\"medicationThree\"]\",\"allergies\":\"[\"allergyOne\",allergyTwo\"]\")\n" +
+                "        {\"firstName\":\"FirstOne\",\"lastName\":\"LastOne\",\"phone\":\"555-1234\",\"Age\":\"26\",\"medications\":[\"medicationOne\",\"medicationTwo\"],\"allergies\":[\"allergy\"]},\n" +
+                "        {\"firstName\":\"FirstThree\",\"lastName\":\"LastThree\",\"phone\":\"555-1234\",\"Age\":\"6\",\"medications\":[\"medicationThree\"],\"allergies\":[\"allergyOne\",\"allergyTwo\"]},\n" +
+                "        {\"firstName\":\"FirstTwo\",\"lastName\":\"LastTwo\",\"phone\":\"555-1234\",\"Age\":\"23\",\"medications\":[\"medicationThree\"],\"allergies\":[\"allergyOne\",\"allergyTwo\"]}\n" +
                 "    ]\n" +
                 "}";
 
