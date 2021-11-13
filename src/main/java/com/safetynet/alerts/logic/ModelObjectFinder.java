@@ -21,6 +21,23 @@ public class ModelObjectFinder {
         return null;
     }
 
+    public Person[] findPersons(String firstName, String lastName, SafetyAlertsModel model) {
+        ArrayList<Person> persons = new ArrayList<Person>();
+        for (Person person : model.getPersons()){
+            if (person.getFirstName().equals(firstName) && person.getLastName().equals(lastName)){
+                persons.add(person);
+            }
+        }
+
+        Person[] personsWithName = new Person[persons.size()];
+        int index = 0;
+        for (Person person : persons) {
+            personsWithName[index] = person;
+            index++;
+        }
+        return personsWithName;
+    }
+
     public Person[] findPersonByAddress(String[] addresses, SafetyAlertsModel model){
         ArrayList<Person> persons = new ArrayList<Person>();
         for (String address : addresses) {
@@ -38,6 +55,22 @@ public class ModelObjectFinder {
             index++;
         }
         return personsAtAddress;
+    }
+
+    public Person[] findPersonByCity(String city, SafetyAlertsModel model){
+        ArrayList<Person> persons = new ArrayList<Person>();
+        for (Person person : model.getPersons()){
+            if (person.getCity().equals(city)) {
+                persons.add(person);
+            }
+        }
+        Person[] personsAtCity = new Person[persons.size()];
+        int index = 0;
+        for (Person person : persons) {
+            personsAtCity[index] = person;
+            index++;
+        }
+        return personsAtCity;
     }
 
     public MedicalRecord findMedicalRecord(String firstName, String lastName, SafetyAlertsModel model) {
@@ -64,7 +97,6 @@ public class ModelObjectFinder {
         for (Firestation firestation : model.getFirestations()){
             if (firestation.getStation() == stationNumber) {
                 stationMappings.add(firestation);
-                System.out.println("Adding station: " + stationNumber);
             }
         }
         Firestation[] firestations = new Firestation[stationMappings.size()];

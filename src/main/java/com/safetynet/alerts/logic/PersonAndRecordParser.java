@@ -19,7 +19,6 @@ public class PersonAndRecordParser {
                 LocalDate currentDate = LocalDate.now();
                 if (Period.between(dob, currentDate).getYears() < 18){
                     //Person is a child, return true
-                    System.out.println("Dob: " + dob + ", Now: " + currentDate + " = Child");
                     return true;
                 }
             }

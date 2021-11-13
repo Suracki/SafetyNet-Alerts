@@ -47,7 +47,7 @@ public class OutputBuilderTest {
     }
 
     @Test
-    public void outputBuilderGeneratesStringForPeopleServicedByStationResult() {
+    public void outputBuilderGeneratesStringForGetPeopleServicedByStationResult() {
         //Preparation
         outputBuilder.addPerson(model.getPersons()[2], model.getMedicalRecords()[2]);
         outputBuilder.addChild();
@@ -71,7 +71,7 @@ public class OutputBuilderTest {
     }
 
     @Test
-    public void outputBuilderGeneratesStringForChildrenAtAddressResult() {
+    public void outputBuilderGeneratesStringForGetChildrenAtAddressResult() {
         //Preparation
         outputBuilder.addChildPerson(model.getPersons()[2], model.getMedicalRecords()[2]);
         outputBuilder.addPerson(model.getPersons()[1], model.getMedicalRecords()[1]);
@@ -87,6 +87,51 @@ public class OutputBuilderTest {
 
         //Method
         String responseString = outputBuilder.getChildrenAtAddressResult(new PersonAndRecordParser());
+
+        //Result
+        assertEquals(expectedString, responseString);
+    }
+
+    @Test
+    public void outputBuilderGeneratesStringForGetPhoneNumbersForStationResult() {
+        //Preparation
+        outputBuilder.addPhone("555-1111");
+        outputBuilder.addPhone("555-2222");
+        outputBuilder.addPhone("555-3333");
+        String expectedString = "{\"phoneNumbers\": [\n" +
+                "    (\"phone\":\"555-1111\"),\n" +
+                "    (\"phone\":\"555-2222\"),\n" +
+                "    (\"phone\":\"555-3333\")\n" +
+                "]}";
+
+        //Method
+        String responseString = outputBuilder.getPhoneNumbersForStationResult();
+
+        //Result
+        assertEquals(expectedString, responseString);
+    }
+
+    @Test
+    public void outputBuilderGeneratesStringForGetFirestationNumberAndResidentsForAddressResult() {
+        //Preparation
+        outputBuilder.addFirestation(model.getFirestations()[0]);
+        outputBuilder.addPerson(model.getPersons()[0], model.getMedicalRecords()[0]);
+        outputBuilder.addPerson(model.getPersons()[1], model.getMedicalRecords()[1]);
+        outputBuilder.addPerson(model.getPersons()[2], model.getMedicalRecords()[2]);
+        String expectedString = "{\n" +
+                "    \"firestations\": [\n" +
+                "        {\"address\":\"Address\",\"station\":1}\n" +
+                "    ],\n" +
+                "{\n" +
+                "    \"persons\": [\n" +
+                "        (\"firstName\":\"FirstOne\",\"lastName\":\"LastOne\",\"phone\":\"555-1234\",\"Age\":\"26\",\"medications\":\"[\"medicationOne\",medicationTwo\"]\",\"allergies\":\"[\"allergy\"]\"),\n" +
+                "        (\"firstName\":\"FirstThree\",\"lastName\":\"LastThree\",\"phone\":\"555-1234\",\"Age\":\"6\",\"medications\":\"[\"medicationThree\"]\",\"allergies\":\"[\"allergyOne\",allergyTwo\"]\"),\n" +
+                "        (\"firstName\":\"FirstTwo\",\"lastName\":\"LastTwo\",\"phone\":\"555-1234\",\"Age\":\"23\",\"medications\":\"[\"medicationThree\"]\",\"allergies\":\"[\"allergyOne\",allergyTwo\"]\")\n" +
+                "    ]\n" +
+                "}";
+
+        //Method
+        String responseString = outputBuilder.getFirestationNumberAndResidentsForAddressResult(new PersonAndRecordParser());
 
         //Result
         assertEquals(expectedString, responseString);
