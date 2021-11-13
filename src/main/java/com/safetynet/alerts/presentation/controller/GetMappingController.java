@@ -5,6 +5,7 @@ import com.safetynet.alerts.logic.CollectionParser;
 import com.safetynet.alerts.logic.ModelObjectFinder;
 import com.safetynet.alerts.logic.PersonAndRecordParser;
 import com.safetynet.alerts.presentation.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,25 @@ import java.util.ArrayList;
 @RestController
 public class GetMappingController {
 
+    JsonHandler jsonHandler;
+    JsonDAO jsonDAO;
+    ModelObjectFinder finder;
+    CollectionParser parser;
+    PersonAndRecordParser recordParser;
+    OutputBuilder builder;
+
+    @Autowired
+    public GetMappingController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder, CollectionParser parser,
+                                PersonAndRecordParser recordParser, OutputBuilder builder) {
+        this.jsonHandler = jsonHandler;
+        this.jsonDAO = jsonDAO;
+        this.finder = finder;
+        this.parser = parser;
+        this.recordParser = recordParser;
+        this.builder = builder;
+    }
+
     private SafetyAlertsModel loadModelFromDisk() {
-        JsonHandler jsonHandler = new JsonHandler();
-        JsonDAO jsonDAO = new JsonDAO();
         try {
             //TODO
             //Add config file to change prod/dev file names
@@ -30,8 +47,6 @@ public class GetMappingController {
     }
 
     private void saveModelToDisk(SafetyAlertsModel model) {
-        JsonHandler jsonHandler = new JsonHandler();
-        JsonDAO jsonDAO = new JsonDAO();
         try {
             //TODO
             //Add config file to change prod/dev file names
@@ -48,17 +63,16 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
         Firestation[] firestations = finder.findFirestationByNumber(stationNumber, model);
         if (firestations.length == 0) {
             //No mappings found for this Firestation number. Return 'not found'.
             return ResponseEntity.notFound().build();
         }
-        CollectionParser parser = new CollectionParser();
         String[] addresses = parser.getAddressesFromFirestationMappings(firestations);
         Person[] peopleAtAddress = finder.findPersonByAddress(addresses, model);
-        PersonAndRecordParser recordParser = new PersonAndRecordParser();
-        OutputBuilder builder = new OutputBuilder();
+
+        builder.reset();
+
         for (Person person : peopleAtAddress) {
             builder.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
             if (recordParser.isAChild(person, model.getMedicalRecords())) {
@@ -82,10 +96,8 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
         Person[] peopleAtAddress = finder.findPersonByAddress(new String[] {address},model);
-        PersonAndRecordParser recordParser = new PersonAndRecordParser();
-        OutputBuilder builder = new OutputBuilder();
+        builder.reset();
         for (Person person : peopleAtAddress) {
             if (recordParser.isAChild(person, model.getMedicalRecords())) {
                 builder.addChildPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
@@ -109,16 +121,14 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
         Firestation[] firestations = finder.findFirestationByNumber(stationNumber, model);
         if (firestations.length == 0) {
             //No mappings found for this Firestation number. Return 'not found'.
             return ResponseEntity.notFound().build();
         }
-        CollectionParser parser = new CollectionParser();
         String[] addresses = parser.getAddressesFromFirestationMappings(firestations);
         Person[] peopleAtAddress = finder.findPersonByAddress(addresses, model);
-        OutputBuilder builder = new OutputBuilder();
+        builder.reset();
         for (Person person : peopleAtAddress) {
             builder.addPhone(person.getPhone());
         }
@@ -136,7 +146,6 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
 
         Firestation firestation = finder.findFirestation(address, model);
         if (firestation == null) {
@@ -144,12 +153,10 @@ public class GetMappingController {
             return ResponseEntity.notFound().build();
         }
 
-        CollectionParser parser = new CollectionParser();
         String[] addresses = parser.getAddressesFromFirestationMappings(new Firestation[] {firestation});
         Person[] peopleAtAddress = finder.findPersonByAddress(addresses, model);
 
-        PersonAndRecordParser recordParser = new PersonAndRecordParser();
-        OutputBuilder builder = new OutputBuilder();
+        builder.reset();
         builder.addFirestation(firestation);
 
         for (Person person : peopleAtAddress) {
@@ -169,10 +176,8 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
-
         //Get firestation map objects for all provided station numbers
-        OutputBuilder builder = new OutputBuilder();
+        builder.reset();
 
         ArrayList<Firestation> firestationsMappings = new ArrayList<Firestation>();
         for (int stationNumber : stationNumbers) {
@@ -187,8 +192,6 @@ public class GetMappingController {
         }
 
         //Loop through firestation mappings and get people, create households and add them to builder
-        CollectionParser parser = new CollectionParser();
-        PersonAndRecordParser recordParser = new PersonAndRecordParser();
         builder.setStationNumbers(stationNumbers);
         for (Firestation firestation : firestationsMappings) {
             String[] addresses = parser.getAddressesFromFirestationMappings(new Firestation[] {firestation});
@@ -220,9 +223,8 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
         Person[] persons = finder.findPersons(firstName, lastName, model);
-        OutputBuilder builder = new OutputBuilder();
+        builder.reset();
 
         for (Person person : persons) {
             builder.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
@@ -242,9 +244,8 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
         Person[] persons = finder.findPersonByCity(city, model);
-        OutputBuilder builder = new OutputBuilder();
+        builder.reset();
 
         for (Person person : persons) {
             builder.addPerson(person, new MedicalRecord());

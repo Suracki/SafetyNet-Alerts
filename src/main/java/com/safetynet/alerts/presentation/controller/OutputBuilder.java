@@ -2,12 +2,13 @@ package com.safetynet.alerts.presentation.controller;
 
 import com.safetynet.alerts.logic.PersonAndRecordParser;
 import com.safetynet.alerts.presentation.model.*;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+@Service
 public class OutputBuilder {
 
     TreeMap<Person, MedicalRecord> persons;
@@ -22,6 +23,18 @@ public class OutputBuilder {
 
 
     public OutputBuilder() {
+        persons = new TreeMap<Person, MedicalRecord>(new PersonComparator());
+        childPersons = new TreeMap<Person, MedicalRecord>(new PersonComparator());
+        phoneNumbers = new ArrayList<String>();
+        households = new ArrayList<Household>();
+        firestation = null;
+        children = 0;
+        adults = 0;
+        stations = 0;
+        stationNumbers = new int[0];
+    }
+
+    public void reset() {
         persons = new TreeMap<Person, MedicalRecord>(new PersonComparator());
         childPersons = new TreeMap<Person, MedicalRecord>(new PersonComparator());
         phoneNumbers = new ArrayList<String>();

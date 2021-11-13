@@ -1,9 +1,11 @@
 package com.safetynet.alerts.data.io;
 
 import org.assertj.core.util.VisibleForTesting;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 
+@Service
 public class JsonDAO {
 
     public String readJsonFromFile(String filename) throws IOException {

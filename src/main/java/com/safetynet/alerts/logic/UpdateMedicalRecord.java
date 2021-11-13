@@ -1,9 +1,10 @@
 package com.safetynet.alerts.logic;
 
-import com.safetynet.alerts.presentation.model.Firestation;
 import com.safetynet.alerts.presentation.model.MedicalRecord;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UpdateMedicalRecord {
 
     public ResultModel addMedicalRecord(ModelObjectFinder finder, SafetyAlertsModel model, MedicalRecord medicalRecord) {

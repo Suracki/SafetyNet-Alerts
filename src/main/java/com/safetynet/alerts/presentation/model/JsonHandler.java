@@ -2,7 +2,9 @@ package com.safetynet.alerts.presentation.model;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.springframework.stereotype.Service;
 
+@Service
 public class JsonHandler {
 
 	private Gson gson;

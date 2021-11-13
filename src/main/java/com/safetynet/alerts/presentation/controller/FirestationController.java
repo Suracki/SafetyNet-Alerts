@@ -9,6 +9,7 @@ import com.safetynet.alerts.presentation.model.Firestation;
 import com.safetynet.alerts.presentation.model.JsonHandler;
 import com.safetynet.alerts.presentation.model.Person;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,21 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class FirestationController {
+    JsonHandler jsonHandler;
+    JsonDAO jsonDAO;
+    ModelObjectFinder finder;
+    UpdateFirestation updateFirestation;
+
+    @Autowired
+    public FirestationController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder, UpdateFirestation updateFirestation) {
+        this.jsonHandler = jsonHandler;
+        this.jsonDAO = jsonDAO;
+        this.finder = finder;
+        this.updateFirestation = updateFirestation;
+    }
 
     private SafetyAlertsModel loadModelFromDisk() {
-        JsonHandler jsonHandler = new JsonHandler();
-        JsonDAO jsonDAO = new JsonDAO();
+
         try {
             //TODO
             //Add config file to change prod/dev file names
@@ -32,8 +44,7 @@ public class FirestationController {
     }
 
     private void saveModelToDisk(SafetyAlertsModel model) {
-        JsonHandler jsonHandler = new JsonHandler();
-        JsonDAO jsonDAO = new JsonDAO();
+
         try {
             //TODO
             //Add config file to change prod/dev file names
@@ -49,7 +60,6 @@ public class FirestationController {
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
         Firestation newFireStation;
         if (finder.findFirestation(address, model) == null){
             //Address does not already have a firestation mapped, we can add this mapping
@@ -74,8 +84,6 @@ public class FirestationController {
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
-        UpdateFirestation updateFirestation = new UpdateFirestation();
         Firestation newFireStation;
         if (finder.findFirestation(address, model) == null){
             //Address does not already have a firestation mapped, we cannot update this mapping
@@ -108,9 +116,7 @@ public class FirestationController {
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
         Firestation newFirestation;
-        UpdateFirestation updateFirestation = new UpdateFirestation();
         if (finder.findFirestation(address, model) == null){
             //Firestation mapping is not already in model, we cannot delete them
             return ResponseEntity.notFound().build();

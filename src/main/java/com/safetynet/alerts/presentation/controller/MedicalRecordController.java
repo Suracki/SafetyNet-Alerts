@@ -7,6 +7,7 @@ import com.safetynet.alerts.logic.UpdateMedicalRecord;
 import com.safetynet.alerts.presentation.model.JsonHandler;
 import com.safetynet.alerts.presentation.model.MedicalRecord;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,20 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class MedicalRecordController {
 
+    JsonHandler jsonHandler;
+    JsonDAO jsonDAO;
+    ModelObjectFinder finder;
+    UpdateMedicalRecord updateMedicalRecord;
+
+    @Autowired
+    public MedicalRecordController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder, UpdateMedicalRecord updateMedicalRecord) {
+        this.jsonHandler = jsonHandler;
+        this.jsonDAO = jsonDAO;
+        this.finder = finder;
+        this.updateMedicalRecord = updateMedicalRecord;
+    }
+
     private SafetyAlertsModel loadModelFromDisk() {
-        JsonHandler jsonHandler = new JsonHandler();
-        JsonDAO jsonDAO = new JsonDAO();
         try {
             //TODO
             //Add config file to change prod/dev file names
@@ -30,8 +42,6 @@ public class MedicalRecordController {
     }
 
     private void saveModelToDisk(SafetyAlertsModel model) {
-        JsonHandler jsonHandler = new JsonHandler();
-        JsonDAO jsonDAO = new JsonDAO();
         try {
             //TODO
             //Add config file to change prod/dev file names
@@ -49,7 +59,6 @@ public class MedicalRecordController {
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
         MedicalRecord newMedicalRecord;
         if (finder.findMedicalRecord(firstName, lastName, model) == null){
             //Medical Record is not already in model, we can add them
@@ -76,9 +85,7 @@ public class MedicalRecordController {
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
         MedicalRecord newMedicalRecord;
-        UpdateMedicalRecord updateMedicalRecord = new UpdateMedicalRecord();
         if (finder.findMedicalRecord(firstName, lastName, model) == null){
             //Medical record is not already in model, we cannot update them
             return ResponseEntity.notFound().build();
@@ -110,9 +117,7 @@ public class MedicalRecordController {
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
         MedicalRecord newMedicalRecord;
-        UpdateMedicalRecord updateMedicalRecord = new UpdateMedicalRecord();
         if (finder.findMedicalRecord(firstName, lastName, model) == null){
             //Medical Record is not already in model, we cannot delete them
             return ResponseEntity.notFound().build();

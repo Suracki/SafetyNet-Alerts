@@ -2,11 +2,13 @@ package com.safetynet.alerts.logic;
 
 import com.safetynet.alerts.presentation.model.MedicalRecord;
 import com.safetynet.alerts.presentation.model.Person;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
+@Service
 public class PersonAndRecordParser {
 
     public boolean isAChild(Person person, MedicalRecord[] records) {

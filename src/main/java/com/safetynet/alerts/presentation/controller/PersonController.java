@@ -7,6 +7,7 @@ import com.safetynet.alerts.logic.UpdatePerson;
 import com.safetynet.alerts.presentation.model.JsonHandler;
 import com.safetynet.alerts.presentation.model.Person;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,19 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class PersonController {
+
+    JsonHandler jsonHandler;
+    JsonDAO jsonDAO;
+    ModelObjectFinder finder;
+    UpdatePerson updatePerson;
+
+    @Autowired
+    public PersonController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder, UpdatePerson updatePerson) {
+        this.jsonHandler = jsonHandler;
+        this.jsonDAO = jsonDAO;
+        this.finder = finder;
+        this.updatePerson = updatePerson;
+    }
 
     private SafetyAlertsModel loadModelFromDisk() {
         JsonHandler jsonHandler = new JsonHandler();
@@ -51,7 +65,6 @@ public class PersonController {
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
         Person newPerson;
         if (finder.findPerson(firstName, lastName, model) == null){
             //Person is not already in model, we can add them
@@ -79,9 +92,7 @@ public class PersonController {
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
         Person newPerson;
-        UpdatePerson updatePerson = new UpdatePerson();
         if (finder.findPerson(firstName, lastName, model) == null){
             //Person is not already in model, we cannot update them
             return ResponseEntity.notFound().build();
@@ -113,9 +124,7 @@ public class PersonController {
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
-        ModelObjectFinder finder = new ModelObjectFinder();
         Person newPerson;
-        UpdatePerson updatePerson = new UpdatePerson();
         if (finder.findPerson(firstName, lastName, model) == null){
             //Person is not already in model, we cannot delete them
             return ResponseEntity.notFound().build();

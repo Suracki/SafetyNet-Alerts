@@ -1,9 +1,11 @@
 package com.safetynet.alerts.logic;
 
 import com.safetynet.alerts.presentation.model.Firestation;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+@Service
 public class CollectionParser {
 
     public String[] getAddressesFromFirestationMappings(Firestation[] firestations){
