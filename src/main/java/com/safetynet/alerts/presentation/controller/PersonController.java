@@ -2,6 +2,7 @@ package com.safetynet.alerts.presentation.controller;
 
 import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
+import com.safetynet.alerts.logging.LogHandler;
 import com.safetynet.alerts.logic.ModelObjectFinder;
 import com.safetynet.alerts.logic.ResultModel;
 import com.safetynet.alerts.logic.UpdatePerson;
@@ -20,32 +21,33 @@ import javax.xml.crypto.Data;
 @RestController
 public class PersonController {
 
-    JsonHandler jsonHandler;
-    JsonDAO jsonDAO;
-    ModelObjectFinder finder;
-    UpdatePerson updatePerson;
-    DataConfig dataConfig;
+    private LogHandler logHandler;
+    private JsonHandler jsonHandler;
+    private JsonDAO jsonDAO;
+    private ModelObjectFinder finder;
+    private UpdatePerson updatePerson;
+    private DataConfig dataConfig;
 
     @Autowired
     public PersonController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder,
-                            UpdatePerson updatePerson, DataConfig dataConfig) {
+                            UpdatePerson updatePerson, DataConfig dataConfig, LogHandler logHandler) {
         this.jsonHandler = jsonHandler;
         this.jsonDAO = jsonDAO;
         this.finder = finder;
         this.updatePerson = updatePerson;
         this.dataConfig = dataConfig;
+        this.logHandler = logHandler;
     }
 
     private SafetyAlertsModel loadModelFromDisk() {
         JsonHandler jsonHandler = new JsonHandler();
         JsonDAO jsonDAO = new JsonDAO();
         try {
-            //TODO
-            //Add config file to change prod/dev file names
             return jsonHandler.jsonToModel(jsonDAO.readJsonFromFile(dataConfig.getDataFile()));
         }
         catch (Exception e) {
-            System.out.println("Error loading database: " + e);
+            logHandler.setLogger("PersonController");
+            logHandler.error("Error loading database file " + e);
         }
         return null;
     }
@@ -54,20 +56,23 @@ public class PersonController {
         JsonHandler jsonHandler = new JsonHandler();
         JsonDAO jsonDAO = new JsonDAO();
         try {
-            //TODO
-            //Add config file to change prod/dev file names
             jsonDAO.writeJsonToFile(dataConfig.getDataFile(),jsonHandler.modelToJson(model));
         }
         catch (Exception e) {
-            System.out.println("Error writing to database: " + e);
+            logHandler.setLogger("PersonController");
+            logHandler.error("Error saving database file " + e);
         }
     }
 
     @PostMapping("/person")
-    public ResponseEntity<String> addEntity(@RequestParam("FirstName") String firstName, @RequestParam("LastName") String lastName,
-                                            @RequestParam("Address") String address, @RequestParam("City") String city,
-                                            @RequestParam("Zip") String zip, @RequestParam("Phone") String phone,
-                                            @RequestParam("EMail") String email) {
+    public ResponseEntity<String> addEntity(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName,
+                                            @RequestParam("address") String address, @RequestParam("city") String city,
+                                            @RequestParam("zip") String zip, @RequestParam("phone") String phone,
+                                            @RequestParam("email") String email) {
+        //Log reqquest
+        logHandler.setLogger("PersonController");
+        logHandler.logRequest("POST","/person", new String[] {firstName, lastName, address, city, zip, phone, email});
+
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
@@ -79,7 +84,9 @@ public class PersonController {
         }
         else {
             //Person already exists with this firstName/lastName combination, call fails
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.CONFLICT).build();
+            logHandler.logResponse("POST",response);
+            return response;
         }
 
         //save data
@@ -87,21 +94,29 @@ public class PersonController {
         //respond
         HttpHeaders responseHeaders = new HttpHeaders();
         ResponseEntity<String> response = new ResponseEntity<String>(newPerson.toString(), responseHeaders, HttpStatus.CREATED);
+
+        //Log response
+        logHandler.logResponse("POST", response);
         return response;
     }
 
     @PutMapping("/person")
-    public ResponseEntity<String> updateEntity(@RequestParam("FirstName") String firstName, @RequestParam("LastName") String lastName,
-                                               @RequestParam("Address") String address, @RequestParam("City") String city,
-                                               @RequestParam("Zip") String zip, @RequestParam("Phone") String phone,
-                                               @RequestParam("EMail") String email) {
+    public ResponseEntity<String> updateEntity(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName,
+                                               @RequestParam("address") String address, @RequestParam("city") String city,
+                                               @RequestParam("zip") String zip, @RequestParam("phone") String phone,
+                                               @RequestParam("email") String email) {
+        //Log reqquest
+        logHandler.setLogger("PersonController");
+        logHandler.logRequest("PUT","/person", new String[] {firstName, lastName, address, city, zip, phone, email});
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
         Person newPerson;
         if (finder.findPerson(firstName, lastName, model) == null){
             //Person is not already in model, we cannot update them
-            return ResponseEntity.notFound().build();
+            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            logHandler.logResponse("PUT", response);
+            return response;
         }
         else {
             //Person already exists with this firstName/lastName combination, call fails
@@ -113,19 +128,27 @@ public class PersonController {
             }
             else {
                 //Person failed to be added
-                //TODO add specific error details once we check fields
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                ResponseEntity<String> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                logHandler.logResponse("PUT",response);
+                return response;
             }
         }
 
         //save data
         saveModelToDisk(model);
+        //Log response
+        ResponseEntity<String> response = ResponseEntity.ok().build();
+        logHandler.logResponse("PUT",response);
         //respond
-        return ResponseEntity.ok().build();
+        return response;
     }
 
     @DeleteMapping("/person")
-    public ResponseEntity<String> deleteEntity(@RequestParam("FirstName") String firstName, @RequestParam("LastName") String lastName) {
+    public ResponseEntity<String> deleteEntity(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
+
+        //Log reqquest
+        logHandler.setLogger("PersonController");
+        logHandler.logRequest("DELETE","/person", new String[] {firstName, lastName});
 
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
@@ -133,7 +156,9 @@ public class PersonController {
         Person newPerson;
         if (finder.findPerson(firstName, lastName, model) == null){
             //Person is not already in model, we cannot delete them
-            return ResponseEntity.notFound().build();
+            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            logHandler.logResponse("DELETE",response);
+            return response;
         }
         else {
             //Person does exist, we can delete them
@@ -145,15 +170,19 @@ public class PersonController {
             }
             else {
                 //Person failed to be deleted
-                //TODO add specific error details once we check fields
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                ResponseEntity<String> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                logHandler.logResponse("DELETE",response);
+                return response;
             }
         }
 
         //save data
         saveModelToDisk(model);
+        //Log response
+        ResponseEntity<String> response = ResponseEntity.ok().build();
+        logHandler.logResponse("DELETE",response);
         //respond
-        return ResponseEntity.ok().build();
+        return response;
     }
 
 }

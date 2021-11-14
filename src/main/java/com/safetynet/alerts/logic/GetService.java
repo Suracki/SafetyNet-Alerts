@@ -158,6 +158,11 @@ public class GetService {
         Person[] persons = finder.findPersons(firstName, lastName, model);
         builder.reset();
 
+        if (persons.length == 0) {
+            //No people found with matching first name/last name. Return 'not found'.
+            return ResponseEntity.notFound().build();
+        }
+
         for (Person person : persons) {
             builder.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
         }
@@ -174,6 +179,11 @@ public class GetService {
                                                           OutputBuilder builder){
         Person[] persons = finder.findPersonByCity(city, model);
         builder.reset();
+
+        if (persons.length == 0) {
+            //No people found for this city. Return 'not found'.
+            return ResponseEntity.notFound().build();
+        }
 
         for (Person person : persons) {
             builder.addPerson(person, new MedicalRecord());

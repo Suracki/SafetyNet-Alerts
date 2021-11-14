@@ -2,6 +2,7 @@ package com.safetynet.alerts.presentation.controller;
 
 import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
+import com.safetynet.alerts.logging.LogHandler;
 import com.safetynet.alerts.logic.ModelObjectFinder;
 import com.safetynet.alerts.logic.ResultModel;
 import com.safetynet.alerts.logic.UpdateMedicalRecord;
@@ -14,54 +15,74 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.crypto.Data;
-
 @RestController
 public class MedicalRecordController {
 
-    JsonHandler jsonHandler;
-    JsonDAO jsonDAO;
-    ModelObjectFinder finder;
-    UpdateMedicalRecord updateMedicalRecord;
-    DataConfig dataConfig;
+    private LogHandler logHandler;
+    private JsonHandler jsonHandler;
+    private JsonDAO jsonDAO;
+    private ModelObjectFinder finder;
+    private UpdateMedicalRecord updateMedicalRecord;
+    private DataConfig dataConfig;
 
     @Autowired
     public MedicalRecordController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder,
-                                   UpdateMedicalRecord updateMedicalRecord, DataConfig dataConfig) {
+                                   UpdateMedicalRecord updateMedicalRecord, DataConfig dataConfig,
+                                   LogHandler logHandler) {
         this.jsonHandler = jsonHandler;
         this.jsonDAO = jsonDAO;
         this.finder = finder;
         this.updateMedicalRecord = updateMedicalRecord;
         this.dataConfig = dataConfig;
+        this.logHandler = logHandler;
     }
 
     private SafetyAlertsModel loadModelFromDisk() {
         try {
-            //TODO
-            //Add config file to change prod/dev file names
             return jsonHandler.jsonToModel(jsonDAO.readJsonFromFile(dataConfig.getDataFile()));
         }
         catch (Exception e) {
-            System.out.println("Error loading database: " + e);
+            logHandler.setLogger("MedicalRecordController");
+            logHandler.error("Error loading database file " + e);
         }
         return null;
     }
 
     private void saveModelToDisk(SafetyAlertsModel model) {
         try {
-            //TODO
-            //Add config file to change prod/dev file names
             jsonDAO.writeJsonToFile(dataConfig.getDataFile(),jsonHandler.modelToJson(model));
         }
         catch (Exception e) {
-            System.out.println("Error writing to database: " + e);
+            logHandler.setLogger("MedicalRecordController");
+            logHandler.error("Error saving database file " + e);
         }
     }
 
+    private String stringArrayToString(String[] stringArray) {
+        StringBuilder builder = new StringBuilder();
+        if (stringArray.length == 0) {
+            return "[]";
+        }
+        builder.append("[");
+        for (String string : stringArray) {
+            builder.append("\"")
+                    .append(string)
+                    .append("\",");
+        }
+        //remove final ,
+        builder.setLength(builder.length() - 1);
+        builder.append("]");
+        return builder.toString();
+    }
+
     @PostMapping("/medicalRecord")
-    public ResponseEntity<String> addEntity(@RequestParam("FirstName") String firstName, @RequestParam("LastName") String lastName,
-                                            @RequestParam("BirthDate") String birthdate, @RequestParam("Medications") String[] medications,
-                                            @RequestParam("Allergies") String[] allergies) {
+    public ResponseEntity<String> addEntity(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName,
+                                            @RequestParam("birthDate") String birthdate, @RequestParam("medications") String[] medications,
+                                            @RequestParam("allergies") String[] allergies) {
+        //Log reqquest
+        logHandler.setLogger("MedicalRecordController");
+        logHandler.logRequest("POST","/medicalRecord",
+                new String[] {firstName, lastName, birthdate, stringArrayToString(medications), stringArrayToString(allergies)});
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
@@ -73,7 +94,9 @@ public class MedicalRecordController {
         }
         else {
             //Medical record already exists with this firstName/lastName combination, call fails
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.CONFLICT).build();
+            logHandler.logResponse("POST",response);
+            return response;
         }
 
         //save data
@@ -81,44 +104,61 @@ public class MedicalRecordController {
         //respond
         HttpHeaders responseHeaders = new HttpHeaders();
         ResponseEntity<String> response = new ResponseEntity<String>(newMedicalRecord.toString(), responseHeaders, HttpStatus.CREATED);
+
+        //Log response
+        logHandler.logResponse("POST", response);
         return response;
     }
 
     @PutMapping("/medicalRecord")
-    public ResponseEntity<String> updateEntity(@RequestParam("FirstName") String firstName, @RequestParam("LastName") String lastName,
-                                               @RequestParam("BirthDate") String birthdate, @RequestParam("Medications") String[] medications,
-                                               @RequestParam("Allergies") String[] allergies) {
+    public ResponseEntity<String> updateEntity(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName,
+                                               @RequestParam("birthDate") String birthdate, @RequestParam("medications") String[] medications,
+                                               @RequestParam("allergies") String[] allergies) {
+        //Log reqquest
+        logHandler.setLogger("MedicalRecordController");
+        logHandler.logRequest("PUT","/medicalRecord",
+                new String[] {firstName, lastName, birthdate, stringArrayToString(medications), stringArrayToString(allergies)});
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
         MedicalRecord newMedicalRecord;
         if (finder.findMedicalRecord(firstName, lastName, model) == null){
             //Medical record is not already in model, we cannot update them
-            return ResponseEntity.notFound().build();
+            ResponseEntity<String> response = ResponseEntity.notFound().build();
+            logHandler.logResponse("PUT",response);
+            return response;
         }
         else {
             //Person already exists with this firstName/lastName combination, call fails
             newMedicalRecord = new MedicalRecord(firstName,lastName,birthdate,medications,allergies);
             ResultModel result = updateMedicalRecord.updateMedicalRecord(finder, model, newMedicalRecord);
             if (result.getBool()) {
-                //Person was added successfully
+                //Recprd was added successfully
                 model = result.getModel();
             }
             else {
-                //Person failed to be added
-                //TODO add specific error details once we check fields
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                //Record failed to be added
+                ResponseEntity<String> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                logHandler.logResponse("PUT",response);
+                return response;
             }
         }
 
         //save data
         saveModelToDisk(model);
         //respond
-        return ResponseEntity.ok().build();
+        ResponseEntity<String> response = ResponseEntity.ok().build();;
+
+        //Log response
+        logHandler.logResponse("PUT", response);
+        return response;
     }
 
     @DeleteMapping("/medicalRecord")
-    public ResponseEntity<String> deleteEntity(@RequestParam("FirstName") String firstName, @RequestParam("LastName") String lastName) {
+    public ResponseEntity<String> deleteEntity(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
+        //Log reqquest
+        logHandler.setLogger("MedicalRecordController");
+        logHandler.logRequest("DELETE","/medicalRecord", new String[] {firstName, lastName});
 
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
@@ -126,7 +166,9 @@ public class MedicalRecordController {
         MedicalRecord newMedicalRecord;
         if (finder.findMedicalRecord(firstName, lastName, model) == null){
             //Medical Record is not already in model, we cannot delete them
-            return ResponseEntity.notFound().build();
+            ResponseEntity<String> response = ResponseEntity.notFound().build();
+            logHandler.logResponse("DELETE",response);
+            return response;
         }
         else {
             //Medical Record does exist, we can delete it
@@ -138,15 +180,20 @@ public class MedicalRecordController {
             }
             else {
                 //Medical Record failed to be deleted
-                //TODO add specific error details once we check fields
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                ResponseEntity<String> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+                logHandler.logResponse("DELETE",response);
+                return response;
             }
         }
 
         //save data
         saveModelToDisk(model);
         //respond
-        return ResponseEntity.ok().build();
+        ResponseEntity<String> response = ResponseEntity.ok().build();;
+
+        //Log response
+        logHandler.logResponse("DELETE", response);
+        return response;
     }
 
 }
