@@ -1,5 +1,6 @@
 package com.safetynet.alerts.presentation.controller;
 
+import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
 import com.safetynet.alerts.logic.ModelObjectFinder;
 import com.safetynet.alerts.logic.ResultModel;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.crypto.Data;
+
 @RestController
 public class MedicalRecordController {
 
@@ -20,20 +23,23 @@ public class MedicalRecordController {
     JsonDAO jsonDAO;
     ModelObjectFinder finder;
     UpdateMedicalRecord updateMedicalRecord;
+    DataConfig dataConfig;
 
     @Autowired
-    public MedicalRecordController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder, UpdateMedicalRecord updateMedicalRecord) {
+    public MedicalRecordController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder,
+                                   UpdateMedicalRecord updateMedicalRecord, DataConfig dataConfig) {
         this.jsonHandler = jsonHandler;
         this.jsonDAO = jsonDAO;
         this.finder = finder;
         this.updateMedicalRecord = updateMedicalRecord;
+        this.dataConfig = dataConfig;
     }
 
     private SafetyAlertsModel loadModelFromDisk() {
         try {
             //TODO
             //Add config file to change prod/dev file names
-            return jsonHandler.jsonToModel(jsonDAO.readJsonFromFile("testdata.json"));
+            return jsonHandler.jsonToModel(jsonDAO.readJsonFromFile(dataConfig.getDataFile()));
         }
         catch (Exception e) {
             System.out.println("Error loading database: " + e);
@@ -45,10 +51,10 @@ public class MedicalRecordController {
         try {
             //TODO
             //Add config file to change prod/dev file names
-            jsonDAO.writeJsonToFile("testdata.json",jsonHandler.modelToJson(model));
+            jsonDAO.writeJsonToFile(dataConfig.getDataFile(),jsonHandler.modelToJson(model));
         }
         catch (Exception e) {
-            System.out.println("Error loading database: " + e);
+            System.out.println("Error writing to database: " + e);
         }
     }
 

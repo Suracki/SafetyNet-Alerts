@@ -182,7 +182,7 @@ public class OutputBuilderTest {
                 "    \"persons\": [\n" +
                 "        {\"firstName\":\"FirstOne\",\"lastName\":\"LastOne\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"Age\":\"26\",\"email\":\"name@mail.com\",\"medications\":[\"medicationOne\",\"medicationTwo\"],\"allergies\":[\"allergy\"]}\n" +
                 "    ]\n" +
-                "}\n";
+                "}";
 
         //Method
         String responseString = outputBuilder.getPersonInfoByFirstNameLastNameResult(new PersonAndRecordParser());

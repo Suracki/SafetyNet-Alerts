@@ -1,5 +1,6 @@
 package com.safetynet.alerts.presentation.controller;
 
+import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
 import com.safetynet.alerts.logic.ModelObjectFinder;
 import com.safetynet.alerts.logic.ResultModel;
@@ -21,21 +22,22 @@ public class FirestationController {
     JsonDAO jsonDAO;
     ModelObjectFinder finder;
     UpdateFirestation updateFirestation;
+    DataConfig dataConfig;
 
     @Autowired
-    public FirestationController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder, UpdateFirestation updateFirestation) {
+    public FirestationController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder,
+                                 UpdateFirestation updateFirestation, DataConfig dataConfig) {
         this.jsonHandler = jsonHandler;
         this.jsonDAO = jsonDAO;
         this.finder = finder;
         this.updateFirestation = updateFirestation;
+        this.dataConfig = dataConfig;
     }
 
     private SafetyAlertsModel loadModelFromDisk() {
 
         try {
-            //TODO
-            //Add config file to change prod/dev file names
-            return jsonHandler.jsonToModel(jsonDAO.readJsonFromFile("testdata.json"));
+            return jsonHandler.jsonToModel(jsonDAO.readJsonFromFile(dataConfig.getDataFile()));
         }
         catch (Exception e) {
             System.out.println("Error loading database: " + e);
@@ -48,15 +50,15 @@ public class FirestationController {
         try {
             //TODO
             //Add config file to change prod/dev file names
-            jsonDAO.writeJsonToFile("testdata.json",jsonHandler.modelToJson(model));
+            jsonDAO.writeJsonToFile(dataConfig.getDataFile(),jsonHandler.modelToJson(model));
         }
         catch (Exception e) {
-            System.out.println("Error loading database: " + e);
+            System.out.println("Error writing to database: " + e);
         }
     }
 
     @PostMapping("/firestation")
-    public ResponseEntity<String> addEntity(@RequestParam("Address") String address, @RequestParam("Station") int station){
+    public ResponseEntity<String> addEntity(@RequestParam("address") String address, @RequestParam("station") int station){
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
@@ -80,7 +82,7 @@ public class FirestationController {
     }
 
     @PutMapping("/firestation")
-    public ResponseEntity<String> updateEntity(@RequestParam("Address") String address, @RequestParam("Station") int station){
+    public ResponseEntity<String> updateEntity(@RequestParam("address") String address, @RequestParam("station") int station){
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
         //Perform Request
@@ -111,7 +113,7 @@ public class FirestationController {
     }
 
     @DeleteMapping("/firestation")
-    public ResponseEntity<String> deleteEntity(@RequestParam("Address") String address, @RequestParam("Station") int station){
+    public ResponseEntity<String> deleteEntity(@RequestParam("address") String address, @RequestParam("station") int station){
 
         //load data
         SafetyAlertsModel model = loadModelFromDisk();

@@ -1,5 +1,6 @@
 package com.safetynet.alerts.presentation.controller;
 
+import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
 import com.safetynet.alerts.logic.CollectionParser;
 import com.safetynet.alerts.logic.GetService;
@@ -37,6 +38,10 @@ public class GetControllerBeanSetup {
     @Bean
     public GetService getService() {
         return new GetService();
+    }
+    @Bean
+    public DataConfig dataConfig() {
+        return new DataConfig("database/testdata.json");
     }
 
 }

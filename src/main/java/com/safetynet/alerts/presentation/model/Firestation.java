@@ -30,4 +30,11 @@ public class Firestation {
         this.address = newFirestation.getAddress();
         this.station = newFirestation.getStation();
     }
+
+    @Override
+    public String toString() {
+        String output = "{\"address\":\"" + address +
+                "\", \"station\":\"" + station + "\"}";
+        return output;
+    }
 }

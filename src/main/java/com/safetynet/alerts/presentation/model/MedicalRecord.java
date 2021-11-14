@@ -83,5 +83,33 @@ public class MedicalRecord {
         this.allergies = medicalRecord.getAllergies();
     }
 
+    @Override
+    public String toString() {
+        String output = "{\"firstName\":\"" + firstName +
+                "\", \"lastName\":\"" + lastName +
+                "\", \"birthdate\":\"" + birthdate +
+                "\", \"medications\":\"" + stringArrayToString(medications) +
+                "\", \"allergies\":\"" + stringArrayToString(allergies) + "\"}";
+
+        return output;
+    }
+
+    private String stringArrayToString(String[] stringArray) {
+        StringBuilder builder = new StringBuilder();
+        if (stringArray.length == 0) {
+            return "[]";
+        }
+        builder.append("[");
+        for (String string : stringArray) {
+            builder.append("\"")
+                    .append(string)
+                    .append("\",");
+        }
+        //remove final ,
+        builder.setLength(builder.length() - 1);
+        builder.append("]");
+        return builder.toString();
+    }
+
 
 }
