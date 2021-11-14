@@ -15,9 +15,10 @@ public class ModelObjectFinderTest {
     @BeforeAll
     public static void setUp() {
         Person[] persons = new Person[]{
-                new Person("FirstOne", "LastOne", "AddressOne", "City", "Zip", "555-1234", "name@mail.com"),
-                new Person("FirstTwo", "LastTwo", "AddressOne", "City", "Zip", "555-1234", "name@mail.com"),
-                new Person("FirstThree", "LastThree", "AddressTwo", "City", "Zip", "555-1234", "name@mail.com")
+                new Person("FirstOne", "LastOne", "AddressOne", "CityOne", "Zip", "555-1234", "name@mail.com"),
+                new Person("FirstTwo", "LastTwo", "AddressOne", "CityTwo", "Zip", "555-1234", "name@mail.com"),
+                new Person("FirstTwo", "LastTwo", "AddressThree", "CityThree", "Zip", "555-1234", "name@mail.com"),
+                new Person("FirstThree", "LastThree", "AddressTwo", "CityOne", "Zip", "555-1234", "name@mail.com")
         };
         Firestation[] firestations = new Firestation[]{
                 new Firestation("AddressOne", 1),
@@ -45,6 +46,21 @@ public class ModelObjectFinderTest {
         //Verification
         assertEquals("FirstOne", person.getFirstName());
         assertEquals("LastOne", person.getLastName());
+    }
+
+    @Test
+    public void modelObjectFinderCanFindMultiplePeopleWithSameName() {
+        //Preparation
+        ModelObjectFinder finder = new ModelObjectFinder();
+        String firstName = "FirstTwo";
+        String lastName = "LastTwo";
+
+        //Method
+        Person[] persons = finder.findPersons(firstName, lastName, model);
+
+        //Verification
+        assertEquals("FirstTwo", persons[0].getFirstName());
+        assertEquals("FirstTwo", persons[1].getFirstName());
     }
 
     @Test
@@ -116,6 +132,21 @@ public class ModelObjectFinderTest {
         assertEquals("FirstOne", foundPersons[0].getFirstName());
         assertEquals("FirstTwo", foundPersons[1].getFirstName());
 
+    }
+
+    @Test
+    public void modelObjectFinderCanFindAllPeopleLivingInACity() {
+        //Preparation
+        ModelObjectFinder finder = new ModelObjectFinder();
+        String city = "CityOne";
+
+        //Method
+        Person[] foundPersons = finder.findPersonByCity(city, model);
+
+        //Verification
+        assertEquals(2, foundPersons.length);
+        assertEquals("FirstOne", foundPersons[0].getFirstName());
+        assertEquals("FirstThree", foundPersons[1].getFirstName());
     }
 
 

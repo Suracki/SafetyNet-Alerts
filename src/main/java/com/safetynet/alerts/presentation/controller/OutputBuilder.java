@@ -11,15 +11,14 @@ import java.util.TreeMap;
 @Service
 public class OutputBuilder {
 
-    TreeMap<Person, MedicalRecord> persons;
-    TreeMap<Person, MedicalRecord> childPersons;
-    ArrayList<String> phoneNumbers;
-    ArrayList<Household> households;
-    int[] stationNumbers;
-    Firestation firestation;
-    int children;
-    int adults;
-    int stations;
+    private TreeMap<Person, MedicalRecord> persons;
+    private TreeMap<Person, MedicalRecord> childPersons;
+    private ArrayList<String> phoneNumbers;
+    private ArrayList<Household> households;
+    private int[] stationNumbers;
+    private Firestation firestation;
+    private int children;
+    private int adults;
 
 
     public OutputBuilder() {
@@ -30,7 +29,6 @@ public class OutputBuilder {
         firestation = null;
         children = 0;
         adults = 0;
-        stations = 0;
         stationNumbers = new int[0];
     }
 
@@ -42,7 +40,6 @@ public class OutputBuilder {
         firestation = null;
         children = 0;
         adults = 0;
-        stations = 0;
         stationNumbers = new int[0];
     }
 
@@ -68,10 +65,6 @@ public class OutputBuilder {
 
     public void addFirestation(Firestation firestation) {
         this.firestation = firestation;
-    }
-
-    public void addFirestationCount() {
-        stations++;
     }
 
     public void addHousehold(Household household) {
@@ -113,7 +106,7 @@ public class OutputBuilder {
     public String getChildrenAtAddressResult(PersonAndRecordParser parser) {
         if (childPersons.size() == 0) {
             //No children added yet
-            return "";
+            return "{[]}";
         }
         StringBuilder builder = new StringBuilder();
         builder.append("{\n    \"children\": [\n");
@@ -230,8 +223,10 @@ public class OutputBuilder {
         builder.append("{\n    \"firestations\": [\n");
         for (int station : stationNumbers) {
             builder.append("        {\"station\":" + station + ",\"households\":[\n");
+            boolean found = false;
             for (Household household : households) {
                 if (household.getStation() == station) {
+                    found = true;
                     builder.append("            {\"address\": \"" + household.getAddress() + "\",\"persons\":[\n");
                     TreeMap<Person, MedicalRecord> people = household.getPeople();
                     for (Map.Entry<Person, MedicalRecord> entry : people.entrySet()) {
@@ -257,8 +252,15 @@ public class OutputBuilder {
                 }
             }
             //remove final ,
-            builder.setLength(builder.length() - 2);
-            builder.append("\n        ]},\n");
+            if (found) {
+                builder.setLength(builder.length() - 2);
+                builder.append("\n        ]},\n");
+            }
+            else {
+                builder.setLength(builder.length() - 1);
+                builder.append("]},\n");
+            }
+
 
 
         }
@@ -324,7 +326,7 @@ public class OutputBuilder {
         //remove final ,
         builder.setLength(builder.length() - 2);
 
-        builder.append("\n    ]\n}\n");
+        builder.append("\n    ]\n}");
 
         return builder.toString();
 

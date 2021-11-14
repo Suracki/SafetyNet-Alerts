@@ -1,10 +1,7 @@
 package com.safetynet.alerts.presentation.controller;
 
 import com.safetynet.alerts.logic.PersonAndRecordParser;
-import com.safetynet.alerts.presentation.model.Firestation;
-import com.safetynet.alerts.presentation.model.MedicalRecord;
-import com.safetynet.alerts.presentation.model.Person;
-import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
+import com.safetynet.alerts.presentation.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -137,6 +134,78 @@ public class OutputBuilderTest {
 
         //Method
         String responseString = outputBuilder.getFirestationNumberAndResidentsForAddressResult(new PersonAndRecordParser());
+
+        //Result
+        assertEquals(expectedString, responseString);
+    }
+
+    @Test
+    public void outputBuilderGeneratesStringForGetHouseholdsByFirestationResult() {
+        //Preparation
+        outputBuilder.setStationNumbers(new int[] {1,2});
+        Household householdTestOne = new Household("Address", 1);
+        householdTestOne.addPerson(model.getPersons()[0], model.getMedicalRecords()[0]);
+        Household householdTestTwo = new Household("AddressTwo", 2);
+        householdTestTwo.addPerson(model.getPersons()[3], model.getMedicalRecords()[3]);
+        outputBuilder.addHousehold(householdTestOne);
+        outputBuilder.addHousehold(householdTestTwo);
+
+        String expectedString = "{\n" +
+                "    \"firestations\": [\n" +
+                "        {\"station\":1,\"households\":[\n" +
+                "            {\"address\": \"Address\",\"persons\":[\n" +
+                "                {\"firstName\":\"FirstOne\",\"lastName\":\"LastOne\",\"phone\":\"555-1234\",\"Age\":\"26\",\"medications\":[\"medicationOne\",\"medicationTwo\"],\"allergies\":[\"allergy\"]}\n" +
+                "            ]}\n" +
+                "        ]},\n" +
+                "        {\"station\":2,\"households\":[\n" +
+                "            {\"address\": \"AddressTwo\",\"persons\":[\n" +
+                "                {\"firstName\":\"LastFour\",\"lastName\":\"LastFour\",\"phone\":\"555-1234\",\"Age\":\"6\",\"medications\":[\"medicationThree\"],\"allergies\":[\"allergyOne\",\"allergyTwo\"]}\n" +
+                "            ]}\n" +
+                "        ]}\n" +
+                "    ]\n" +
+                "}";
+
+        //Method
+        String responseString = outputBuilder.getHouseholdsByFirestationResult(new PersonAndRecordParser());
+
+        //Result
+        assertEquals(expectedString, responseString);
+
+    }
+
+    @Test
+    public void outputBuilderGeneratesStringForGetPersonInfoByFirstNameLastNameResult() {
+        //Preparation
+        outputBuilder.addPerson(model.getPersons()[0], model.getMedicalRecords()[0]);
+
+        String expectedString = "{\n" +
+                "    \"persons\": [\n" +
+                "        {\"firstName\":\"FirstOne\",\"lastName\":\"LastOne\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"Age\":\"26\",\"email\":\"name@mail.com\",\"medications\":[\"medicationOne\",\"medicationTwo\"],\"allergies\":[\"allergy\"]}\n" +
+                "    ]\n" +
+                "}\n";
+
+        //Method
+        String responseString = outputBuilder.getPersonInfoByFirstNameLastNameResult(new PersonAndRecordParser());
+
+        //Result
+        assertEquals(expectedString, responseString);
+    }
+
+    @Test
+    public void outputBuilderGeneratesStringForGetEmailAddressByCityResult() {
+        //Preparation
+        outputBuilder.addPerson(model.getPersons()[0], model.getMedicalRecords()[0]);
+        outputBuilder.addPerson(model.getPersons()[1], model.getMedicalRecords()[1]);
+
+        String expectedString = "{\n" +
+                "    \"residentEmails\": [\n" +
+                "        {\"email\":\"name@mail.com\"},\n" +
+                "        {\"email\":\"name@mail.com\"}\n" +
+                "    ]\n" +
+                "}";
+
+        //Method
+        String responseString = outputBuilder.getEmailAddressesByCityResult();
 
         //Result
         assertEquals(expectedString, responseString);

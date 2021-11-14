@@ -2,6 +2,7 @@ package com.safetynet.alerts.presentation.controller;
 
 import com.safetynet.alerts.data.io.JsonDAO;
 import com.safetynet.alerts.logic.CollectionParser;
+import com.safetynet.alerts.logic.GetService;
 import com.safetynet.alerts.logic.ModelObjectFinder;
 import com.safetynet.alerts.logic.PersonAndRecordParser;
 import com.safetynet.alerts.presentation.model.*;
@@ -16,22 +17,24 @@ import java.util.ArrayList;
 @RestController
 public class GetMappingController {
 
-    JsonHandler jsonHandler;
-    JsonDAO jsonDAO;
-    ModelObjectFinder finder;
-    CollectionParser parser;
-    PersonAndRecordParser recordParser;
-    OutputBuilder builder;
+    private JsonHandler jsonHandler;
+    private JsonDAO jsonDAO;
+    private ModelObjectFinder finder;
+    private CollectionParser parser;
+    private PersonAndRecordParser recordParser;
+    private OutputBuilder builder;
+    private GetService getService;
 
     @Autowired
     public GetMappingController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder, CollectionParser parser,
-                                PersonAndRecordParser recordParser, OutputBuilder builder) {
+                                PersonAndRecordParser recordParser, OutputBuilder builder, GetService getService) {
         this.jsonHandler = jsonHandler;
         this.jsonDAO = jsonDAO;
         this.finder = finder;
         this.parser = parser;
         this.recordParser = recordParser;
         this.builder = builder;
+        this.getService = getService;
     }
 
     private SafetyAlertsModel loadModelFromDisk() {
@@ -46,46 +49,15 @@ public class GetMappingController {
         return null;
     }
 
-    private void saveModelToDisk(SafetyAlertsModel model) {
-        try {
-            //TODO
-            //Add config file to change prod/dev file names
-            jsonDAO.writeJsonToFile("testdata.json",jsonHandler.modelToJson(model));
-        }
-        catch (Exception e) {
-            System.out.println("Error loading database: " + e);
-        }
-    }
-
     @GetMapping("/firestation")
     public ResponseEntity<String> getPeopleServicedByStation(@RequestParam("stationNumber") int stationNumber) {
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
 
-        //Perform Request
-        Firestation[] firestations = finder.findFirestationByNumber(stationNumber, model);
-        if (firestations.length == 0) {
-            //No mappings found for this Firestation number. Return 'not found'.
-            return ResponseEntity.notFound().build();
-        }
-        String[] addresses = parser.getAddressesFromFirestationMappings(firestations);
-        Person[] peopleAtAddress = finder.findPersonByAddress(addresses, model);
-
-        builder.reset();
-
-        for (Person person : peopleAtAddress) {
-            builder.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
-            if (recordParser.isAChild(person, model.getMedicalRecords())) {
-                builder.addChild();
-            }
-            else {
-                builder.addAdult();
-            }
-        }
-        String responseString = builder.getPeopleServicedByStationResult();
-        //respond
-        HttpHeaders responseHeaders = new HttpHeaders();
-        ResponseEntity<String> response = new ResponseEntity<String>(responseString, responseHeaders, HttpStatus.OK);
+        //Perform request
+        ResponseEntity<String> response = getService.getPeopleServicedByStation(stationNumber, model, finder,
+                                                                                parser, builder, recordParser);
+        //Respond
         return response;
 
     }
@@ -96,22 +68,9 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform Request
-        Person[] peopleAtAddress = finder.findPersonByAddress(new String[] {address},model);
-        builder.reset();
-        for (Person person : peopleAtAddress) {
-            if (recordParser.isAChild(person, model.getMedicalRecords())) {
-                builder.addChildPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
-            }
-            else {
-                builder.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
-            }
-        }
-        String responseString = builder.getChildrenAtAddressResult(recordParser);
+        ResponseEntity<String> response = getService.getChildrenAtAddress(address, model, finder, builder, recordParser);
 
-
-        //respond
-        HttpHeaders responseHeaders = new HttpHeaders();
-        ResponseEntity<String> response = new ResponseEntity<String>(responseString, responseHeaders, HttpStatus.OK);
+        //Respond
         return response;
     }
 
@@ -195,7 +154,6 @@ public class GetMappingController {
         builder.setStationNumbers(stationNumbers);
         for (Firestation firestation : firestationsMappings) {
             String[] addresses = parser.getAddressesFromFirestationMappings(new Firestation[] {firestation});
-            builder.addFirestationCount();
             for (String address : addresses) {
                 Household household = new Household(address, firestation.getStation());
                 Person[] peopleAtAddress = finder.findPersonByAddress(addresses, model);
