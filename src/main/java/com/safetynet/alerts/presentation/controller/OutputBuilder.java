@@ -305,7 +305,7 @@ public class OutputBuilder {
         //remove final ,
         builder.setLength(builder.length() - 2);
 
-        builder.append("\n    ]\n}\n");
+        builder.append("\n    ]\n}");
 
         return builder.toString();
     }
