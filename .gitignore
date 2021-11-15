@@ -33,7 +33,7 @@ build/
 .vscode/
 
 ### Log Files ###
-/logs/*
+/logs/
 
 ### Data Files ###
-/database/*
+/database/
