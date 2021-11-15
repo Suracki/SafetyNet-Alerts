@@ -107,7 +107,7 @@ public class MedicalRecordTest {
     @Test
     public void medicalRecordEndpointCanAddNewMedicalRecordViaPost() throws Exception {
         //Preparation
-        String uri = "/medicalRecord?FirstName=Testame&LastName=Name&BirthDate=01/01/2000&Medications=something:1g,another:2g&Allergies=nothing,really";
+        String uri = "/medicalRecord?firstName=Testame&lastName=Name&birthDate=01/01/2000&medications=something:1g,another:2g&allergies=nothing,really";
         String expectedResponse = "{\"firstName\":\"Testame\", \"lastName\":\"Name\", \"birthdate\":\"01/01/2000\", \"medications\":\"[\"something:1g\",\"another:2g\"]\", \"allergies\":\"[\"nothing\",\"really\"]\"}";
 
         //Method
@@ -123,7 +123,7 @@ public class MedicalRecordTest {
     @Test
     public void medicalRecordEndpointCanUpdateMedicalRecordViaPut() throws Exception {
         //Preparation
-        String uri = "/medicalRecord?FirstName=John&LastName=Boyd&BirthDate=01/01/2000&Medications=&Allergies=";
+        String uri = "/medicalRecord?firstName=John&lastName=Boyd&birthDate=01/01/2000&medications=&allergies=";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
@@ -137,7 +137,7 @@ public class MedicalRecordTest {
     @Test
     public void medicalRecordEndpointCanRemoveMedicalRecordViaDelete() throws Exception {
         //Preparation
-        String uri = "/medicalRecord?FirstName=John&LastName=Boyd";
+        String uri = "/medicalRecord?firstName=John&lastName=Boyd";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)

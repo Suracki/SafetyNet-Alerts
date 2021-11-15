@@ -123,18 +123,24 @@ public class OutputBuilder {
         //remove final ,\n
         builder.setLength(builder.length() - 2);
 
-        builder.append("\n    ],\n    \"adults\": [\n");
-        for (Map.Entry<Person, MedicalRecord> entry : persons.entrySet()) {
-            builder.append("        {\"firstName\":\"")
-                    .append(entry.getKey().getFirstName())
-                    .append("\",\"lastName\":\"")
-                    .append(entry.getKey().getLastName())
-                    .append("\"},\n");
+        if (persons.size() == 0) {
+            //Address has children but no adults
+            builder.append("\n    ],\n    \"adults\": []\n}");
         }
-        //remove final ,\n
-        builder.setLength(builder.length() - 2);
+        else {
+            builder.append("\n    ],\n    \"adults\": [\n");
+            for (Map.Entry<Person, MedicalRecord> entry : persons.entrySet()) {
+                builder.append("        {\"firstName\":\"")
+                        .append(entry.getKey().getFirstName())
+                        .append("\",\"lastName\":\"")
+                        .append(entry.getKey().getLastName())
+                        .append("\"},\n");
+            }
+            //remove final ,\n
+            builder.setLength(builder.length() - 2);
 
-        builder.append("\n    ]\n}");
+            builder.append("\n    ]\n}");
+        }
         return builder.toString();
     }
 

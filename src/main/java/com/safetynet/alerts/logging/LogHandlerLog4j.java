@@ -1,20 +1,17 @@
 package com.safetynet.alerts.logging;
 
 import org.springframework.http.ResponseEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LogHandler {
+public class LogHandlerLog4j {
 
     private static Logger logger;
 
-    public LogHandler() {
-    }
-
     public void setLogger(String name) {
-        logger = LoggerFactory.getLogger(name);
+        logger = LogManager.getLogger(name);
     }
 
     public void logRequest(String requestType, String mapping, String[] params) {

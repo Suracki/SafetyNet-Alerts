@@ -1,0 +1,26 @@
+2021-11-15 15:30:40.988  INFO 3468 --- [main] c.s.alerts.SafetyNetAlertsApplication    : Starting SafetyNetAlertsApplication using Java 17 on DESKTOP-2B57NSB with PID 3468 (C:\Users\simon\Documents\workspace-spring-tools\SafetyNet-Alerts\target\classes started by simon in C:\Users\simon\Documents\workspace-spring-tools\SafetyNet-Alerts)
+2021-11-15 15:30:40.990  INFO 3468 --- [main] c.s.alerts.SafetyNetAlertsApplication    : No active profile set, falling back to default profiles: default
+2021-11-15 15:30:41.936  INFO 3468 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2021-11-15 15:30:41.944  INFO 3468 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-11-15 15:30:41.944  INFO 3468 --- [main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.54]
+2021-11-15 15:30:42.010  INFO 3468 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-11-15 15:30:42.011  INFO 3468 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 984 ms
+2021-11-15 15:30:42.721  WARN 3468 --- [main] ion$DefaultTemplateResolverConfiguration : Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+2021-11-15 15:30:42.956  INFO 3468 --- [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoint(s) beneath base path '/actuator'
+2021-11-15 15:30:43.008  INFO 3468 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2021-11-15 15:30:43.018  INFO 3468 --- [main] c.s.alerts.SafetyNetAlertsApplication    : Started SafetyNetAlertsApplication in 2.338 seconds (JVM running for 2.591)
+2021-11-15 15:30:47.102  INFO 3468 --- [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-11-15 15:30:47.102  INFO 3468 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2021-11-15 15:30:47.103  INFO 3468 --- [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2021-11-15 15:30:47.128  INFO 3468 --- [http-nio-8080-exec-2] GetMappingController                     : GET request received on /childAlert with parameters ["834 Binoc Ave"]
+2021-11-15 15:30:47.145  INFO 3468 --- [http-nio-8080-exec-2] GetMappingController                     : GET request completed with response 200
+2021-11-15 15:30:47.145  INFO 3468 --- [http-nio-8080-exec-2] GetMappingController                     : GET request reponse generated: {"children": [{"firstName":"Tessa","lastName":"Carman","age":"9"}],"adults": []}
+2021-11-15 15:30:51.048  INFO 3468 --- [http-nio-8080-exec-3] PersonController                         : POST request received on /person with parameters ["Davey","Jones","1509 Culver St","Culver","97451","841-874-6512","jaboyd@email.com"]
+2021-11-15 15:30:51.056  INFO 3468 --- [http-nio-8080-exec-3] PersonController                         : POST request completed with response 201
+2021-11-15 15:30:51.056  INFO 3468 --- [http-nio-8080-exec-3] PersonController                         : POST request reponse generated: {"firstName":"Davey", "lastName":"Jones", "address":"1509 Culver St", "city":"Culver", "zip":"97451", "phone":"841-874-6512", "email":"jaboyd@email.com"}
+2021-11-15 15:30:53.513  INFO 3468 --- [http-nio-8080-exec-4] PersonController                         : PUT request received on /person with parameters ["Davey","Jones","1509 Culver St","Culver","97451","841-874-6512","jaboyd@email.com"]
+2021-11-15 15:30:53.521  INFO 3468 --- [http-nio-8080-exec-4] PersonController                         : PUT request completed with response 200
+2021-11-15 15:30:55.949  INFO 3468 --- [http-nio-8080-exec-5] PersonController                         : DELETE request received on /person with parameters ["Davey","Jones"]
+2021-11-15 15:30:55.953  INFO 3468 --- [http-nio-8080-exec-5] PersonController                         : DELETE request completed with response 200
+2021-11-15 15:30:57.525  INFO 3468 --- [http-nio-8080-exec-6] PersonController                         : DELETE request received on /person with parameters ["Davey","Jones"]
+2021-11-15 15:30:57.528 ERROR 3468 --- [http-nio-8080-exec-6] PersonController                         : DELETE request completed with response 404

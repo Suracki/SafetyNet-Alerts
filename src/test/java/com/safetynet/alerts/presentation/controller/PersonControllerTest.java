@@ -107,7 +107,7 @@ public class PersonControllerTest {
     @Test
     public void personEndpointCanAddNewPersonViaPost() throws Exception {
         //Preparation
-        String uri = "/person?FirstName=TestFirst&LastName=TestLast&Address=Test Street&City=Test City&Zip=123&Phone=555-1234&EMail=test@email.com";
+        String uri = "/person?firstName=TestFirst&lastName=TestLast&address=Test Street&city=Test City&zip=123&phone=555-1234&email=test@email.com";
         String expectedResponse = "{\"firstName\":\"TestFirst\", \"lastName\":\"TestLast\", \"address\":\"Test Street\", \"city\":\"Test City\", \"zip\":\"123\", \"phone\":\"555-1234\", \"email\":\"test@email.com\"}";
 
 
@@ -124,7 +124,7 @@ public class PersonControllerTest {
     @Test
     public void personEndpointCanUpdatePersonViaPut() throws Exception {
         //Preparation
-        String uri = "/person?FirstName=John&LastName=Boyd&Address=Test Road&City=Test Town&Zip=123&Phone=555-5678&EMail=test@email.com";
+        String uri = "/person?firstName=John&lastName=Boyd&address=Test Road&city=Test Town&zip=123&phone=555-5678&email=test@email.com";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
@@ -138,7 +138,7 @@ public class PersonControllerTest {
     @Test
     public void personEndpointCanRemovePersonViaDelete() throws Exception {
         //Preparation
-        String uri = "/person?FirstName=Jacob&LastName=Boyd";
+        String uri = "/person?firstName=Jacob&lastName=Boyd";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)
