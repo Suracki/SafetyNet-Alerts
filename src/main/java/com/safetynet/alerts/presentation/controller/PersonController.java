@@ -1,5 +1,7 @@
 package com.safetynet.alerts.presentation.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
 import com.safetynet.alerts.logging.LogHandler;
@@ -92,8 +94,11 @@ public class PersonController {
         //save data
         saveModelToDisk(model);
         //respond
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().create();
+        String responseString = gson.toJson(newPerson);
         HttpHeaders responseHeaders = new HttpHeaders();
-        ResponseEntity<String> response = new ResponseEntity<String>(newPerson.toString(), responseHeaders, HttpStatus.CREATED);
+        ResponseEntity<String> response = new ResponseEntity<>(responseString, responseHeaders, HttpStatus.CREATED);
 
         //Log response
         logHandler.logResponse("POST", response);

@@ -23,20 +23,18 @@ public class GetMappingController {
     private ModelObjectFinder finder;
     private CollectionParser parser;
     private PersonAndRecordParser recordParser;
-    private OutputBuilder builder;
     private GetService getService;
     private DataConfig dataConfig;
 
     @Autowired
     public GetMappingController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder, CollectionParser parser,
-                                PersonAndRecordParser recordParser, OutputBuilder builder, GetService getService,
+                                PersonAndRecordParser recordParser, GetService getService,
                                 DataConfig dataConfig, LogHandler logHandler) {
         this.jsonHandler = jsonHandler;
         this.jsonDAO = jsonDAO;
         this.finder = finder;
         this.parser = parser;
         this.recordParser = recordParser;
-        this.builder = builder;
         this.getService = getService;
         this.dataConfig = dataConfig;
         this.logHandler = logHandler;
@@ -66,8 +64,8 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform request
-        ResponseEntity<String> response = getService.getPeopleServicedByStation(stationNumber, model, finder,
-                                                                                parser, builder, recordParser);
+        ResponseEntity<String> response = getService.getPeopleServicedByStationEntity(stationNumber, model, finder,
+                parser, recordParser);
         //Log response
         logHandler.logResponse("GET", response);
         //Respond
@@ -85,7 +83,7 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform Request
-        ResponseEntity<String> response = getService.getChildrenAtAddress(address, model, finder, builder, recordParser);
+        ResponseEntity<String> response = getService.getChildrenAtAddressEntity(address, model, finder, recordParser);
 
         //Log response
         logHandler.logResponse("GET", response);
@@ -104,8 +102,8 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform Request
-        ResponseEntity<String> response = getService.getPhoneNumbersForPeopleServicedByStation(stationNumber, model,
-                finder, builder, parser);
+        ResponseEntity<String> response = getService.getPhoneNumbersForPeopleServicedByStationEntity(stationNumber, model,
+                finder, parser);
 
         //Log response
         logHandler.logResponse("GET", response);
@@ -124,8 +122,8 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform Request
-        ResponseEntity<String> response = getService.getFirestationNumberAndResidentsForAddress(address, model, finder,
-                builder, parser, recordParser);
+        ResponseEntity<String> response = getService.getFirestationNumberAndResidentsForAddressEntity(address, model, finder,
+                parser, recordParser);
 
         //Log response
         logHandler.logResponse("GET", response);
@@ -142,7 +140,7 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform Request
-        ResponseEntity<String> response = getService.getHouseholdsByFirestation(stationNumbers, model, finder, builder,
+        ResponseEntity<String> response = getService.getHouseholdsByFirestationEntity(stationNumbers, model, finder,
                 parser, recordParser);
 
         //Log response
@@ -161,7 +159,7 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform Request
-        ResponseEntity<String> response = getService.getPersonInfoByFirstNameLastName(firstName, lastName, model, finder, builder);
+        ResponseEntity<String> response = getService.getPersonInfoByFirstNameLastNameEntity(firstName, lastName, model, finder, recordParser);
 
         //Log response
         logHandler.logResponse("GET", response);
@@ -178,7 +176,7 @@ public class GetMappingController {
         SafetyAlertsModel model = loadModelFromDisk();
 
         //Perform Request
-        ResponseEntity<String> response = getService.getEmailAddressesByCity(city, model, finder, builder);
+        ResponseEntity<String> response = getService.getEmailAddressesByCity(city, model, finder);
 
         //Log response
         logHandler.logResponse("GET", response);

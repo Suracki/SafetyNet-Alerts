@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @WebMvcTest(MedicalRecordController.class)
 @WebAppConfiguration
 @Import(ObjectControllerBeanSetup.class)
-public class MedicalRecordTest {
+public class MedicalRecordControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -108,16 +108,18 @@ public class MedicalRecordTest {
     public void medicalRecordEndpointCanAddNewMedicalRecordViaPost() throws Exception {
         //Preparation
         String uri = "/medicalRecord?firstName=Testame&lastName=Name&birthDate=01/01/2000&medications=something:1g,another:2g&allergies=nothing,really";
-        String expectedResponse = "{\"firstName\":\"Testame\", \"lastName\":\"Name\", \"birthdate\":\"01/01/2000\", \"medications\":\"[\"something:1g\",\"another:2g\"]\", \"allergies\":\"[\"nothing\",\"really\"]\"}";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-        int status = mvcResult.getResponse().getStatus();
 
         //Verification
+        int status = mvcResult.getResponse().getStatus();
+        String receivedResponse = mvcResult.getResponse().getContentAsString()
+                .replace("\n", "").replace("  ", "");
+
         assertEquals(201, status);
-        assertEquals(expectedResponse,mvcResult.getResponse().getContentAsString());
+        assertEquals(TestConstants.medicalRecordControllerPostExpectedResponse,receivedResponse);
     }
 
     @Test

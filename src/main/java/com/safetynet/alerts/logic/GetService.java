@@ -1,6 +1,8 @@
 package com.safetynet.alerts.logic;
 
-import com.safetynet.alerts.presentation.controller.OutputBuilder;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.safetynet.alerts.presentation.controller.entity.*;
 import com.safetynet.alerts.presentation.model.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -8,14 +10,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class GetService {
 
-    public ResponseEntity<String> getPeopleServicedByStation(int stationNumber, SafetyAlertsModel model, ModelObjectFinder finder,
-                                                             CollectionParser parser, OutputBuilder builder,
+    public ResponseEntity<String> getPeopleServicedByStationEntity(int stationNumber, SafetyAlertsModel model, ModelObjectFinder finder,
+                                                             CollectionParser parser,
                                                              PersonAndRecordParser recordParser) {
-
         //Perform Request
         Firestation[] firestations = finder.findFirestationByNumber(stationNumber, model);
         if (firestations.length == 0) {
@@ -24,49 +27,50 @@ public class GetService {
         }
         String[] addresses = parser.getAddressesFromFirestationMappings(firestations);
         Person[] peopleAtAddress = finder.findPersonByAddress(addresses, model);
-
-        builder.reset();
+        PeopleServicedByStationResponseEntity entity = new PeopleServicedByStationResponseEntity();
 
         for (Person person : peopleAtAddress) {
-            builder.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
+            entity.addPerson(person);
             if (recordParser.isAChild(person, model.getMedicalRecords())) {
-                builder.addChild();
+                entity.addChild();
             } else {
-                builder.addAdult();
+                entity.addAdult();
             }
         }
         //Generate response
-        String responseString = builder.getPeopleServicedByStationResult();
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().create();
+        String responseString = gson.toJson(entity);
         HttpHeaders responseHeaders = new HttpHeaders();
-        ResponseEntity<String> response = new ResponseEntity<String>(responseString, responseHeaders, HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(responseString, responseHeaders, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> getChildrenAtAddress(String address, SafetyAlertsModel model, ModelObjectFinder finder,
-                                                       OutputBuilder builder, PersonAndRecordParser recordParser) {
+    public ResponseEntity<String> getChildrenAtAddressEntity(String address, SafetyAlertsModel model, ModelObjectFinder finder,
+                                                       PersonAndRecordParser recordParser) {
         //Perform Request
         Person[] peopleAtAddress = finder.findPersonByAddress(new String[] {address},model);
-        builder.reset();
+        ChildrenAtAddressResponseEntity entity = new ChildrenAtAddressResponseEntity();
+
         for (Person person : peopleAtAddress) {
             if (recordParser.isAChild(person, model.getMedicalRecords())) {
-                builder.addChildPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
+
+                entity.addChild(person, recordParser.getAge(
+                        finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model)));
             }
             else {
-                builder.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
+                entity.addAdult(person);
             }
         }
-        String responseString = builder.getChildrenAtAddressResult(recordParser);
-
-
         //respond
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().create();
+        String responseString = gson.toJson(entity);
         HttpHeaders responseHeaders = new HttpHeaders();
-        ResponseEntity<String> response = new ResponseEntity<String>(responseString, responseHeaders, HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(responseString, responseHeaders, HttpStatus.OK);
     }
 
-
-    public ResponseEntity<String> getPhoneNumbersForPeopleServicedByStation(int stationNumber, SafetyAlertsModel model, ModelObjectFinder finder,
-                                                                            OutputBuilder builder, CollectionParser parser){
+    public ResponseEntity<String> getPhoneNumbersForPeopleServicedByStationEntity(int stationNumber, SafetyAlertsModel model,
+                                                                            ModelObjectFinder finder, CollectionParser parser){
         Firestation[] firestations = finder.findFirestationByNumber(stationNumber, model);
         if (firestations.length == 0) {
             //No mappings found for this Firestation number. Return 'not found'.
@@ -74,22 +78,22 @@ public class GetService {
         }
         String[] addresses = parser.getAddressesFromFirestationMappings(firestations);
         Person[] peopleAtAddress = finder.findPersonByAddress(addresses, model);
-        builder.reset();
+        PhoneNumbersForPeopleServicedByStationEntity entity = new PhoneNumbersForPeopleServicedByStationEntity();
         for (Person person : peopleAtAddress) {
-            builder.addPhone(person.getPhone());
+            entity.addPhone(person.getPhone());
         }
-        String responseString = builder.getPhoneNumbersForStationResult();
 
         //respond
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().create();
+        String responseString = gson.toJson(entity);
         HttpHeaders responseHeaders = new HttpHeaders();
-        ResponseEntity<String> response = new ResponseEntity<String>(responseString, responseHeaders, HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(responseString, responseHeaders, HttpStatus.OK);
     }
 
 
-    public ResponseEntity<String> getFirestationNumberAndResidentsForAddress(String address, SafetyAlertsModel model, ModelObjectFinder finder,
-                                                                             OutputBuilder builder, CollectionParser parser,
-                                                                             PersonAndRecordParser recordParser){
+    public ResponseEntity<String> getFirestationNumberAndResidentsForAddressEntity(String address, SafetyAlertsModel model, ModelObjectFinder finder,
+                                                                             CollectionParser parser, PersonAndRecordParser recordParser){
         Firestation firestation = finder.findFirestation(address, model);
         if (firestation == null) {
             //No mappings found for this address Return 'not found'.
@@ -98,102 +102,107 @@ public class GetService {
 
         String[] addresses = parser.getAddressesFromFirestationMappings(new Firestation[] {firestation});
         Person[] peopleAtAddress = finder.findPersonByAddress(addresses, model);
+        FirestationNumberAndResidentsForAddressEntity entity = new FirestationNumberAndResidentsForAddressEntity();
 
-        builder.reset();
-        builder.addFirestation(firestation);
-
+        entity.addFirestation(firestation);
         for (Person person : peopleAtAddress) {
-            builder.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
+            entity.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model),
+                    recordParser.getAge(finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model)));
         }
-        String responseString = builder.getFirestationNumberAndResidentsForAddressResult(recordParser);
 
         //respond
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().create();
+        String responseString = gson.toJson(entity);
         HttpHeaders responseHeaders = new HttpHeaders();
-        ResponseEntity<String> response = new ResponseEntity<String>(responseString, responseHeaders, HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(responseString, responseHeaders, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> getHouseholdsByFirestation(int[] stationNumbers, SafetyAlertsModel model, ModelObjectFinder finder,
-                                                                             OutputBuilder builder, CollectionParser parser,
-                                                                             PersonAndRecordParser recordParser){
-        builder.reset();
-
-        ArrayList<Firestation> firestationsMappings = new ArrayList<Firestation>();
+    public ResponseEntity<String> getHouseholdsByFirestationEntity(int[] stationNumbers, SafetyAlertsModel model, ModelObjectFinder finder,
+                                                                   CollectionParser parser, PersonAndRecordParser recordParser){
+        ArrayList<Firestation> firestationsMappings = new ArrayList<>();
         for (int stationNumber : stationNumbers) {
             Firestation[] foundStationMappings = finder.findFirestationByNumber(stationNumber, model);
-            for (Firestation firestation : foundStationMappings) {
-                firestationsMappings.add(firestation);
-            }
+            firestationsMappings.addAll(Arrays.asList(foundStationMappings));
         }
         if (firestationsMappings.size() == 0) {
             //No mappings found for the provided station numbers. Return 'not found'.
             return ResponseEntity.notFound().build();
         }
+        //firestationsMappings = collection of firestations
 
-        //Loop through firestation mappings and get people, create households and add them to builder
-        builder.setStationNumbers(stationNumbers);
+        HouseholdsByFirestationResponseEntity entity = new HouseholdsByFirestationResponseEntity();
+
         for (Firestation firestation : firestationsMappings) {
+            //Find households for each firestation
             String[] addresses = parser.getAddressesFromFirestationMappings(new Firestation[] {firestation});
+            ArrayList<HouseholdEntity> households = new ArrayList<>();
             for (String address : addresses) {
-                Household household = new Household(address, firestation.getStation());
+                HouseholdEntity household = new HouseholdEntity(address, firestation.getStation());
                 Person[] peopleAtAddress = finder.findPersonByAddress(addresses, model);
                 for (Person person : peopleAtAddress) {
-                    household.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
+                    int age = recordParser.getAge(finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
+                    household.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model), age);
                 }
-                builder.addHousehold(household);
+                households.add(household);
             }
-
+            entity.addStation(firestation, households);
         }
 
-        String responseString = builder.getHouseholdsByFirestationResult(recordParser);
-
         //respond
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().create();
+        String responseString = gson.toJson(entity);
         HttpHeaders responseHeaders = new HttpHeaders();
-        ResponseEntity<String> response = new ResponseEntity<String>(responseString, responseHeaders, HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(responseString, responseHeaders, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> getPersonInfoByFirstNameLastName(String firstName, String lastName, SafetyAlertsModel model,
-                                                                   ModelObjectFinder finder, OutputBuilder builder){
+    public ResponseEntity<String> getPersonInfoByFirstNameLastNameEntity(String firstName, String lastName, SafetyAlertsModel model,
+                                                                   ModelObjectFinder finder,
+                                                                   PersonAndRecordParser recordParser){
         Person[] persons = finder.findPersons(firstName, lastName, model);
-        builder.reset();
 
         if (persons.length == 0) {
             //No people found with matching first name/last name. Return 'not found'.
             return ResponseEntity.notFound().build();
         }
 
+        PersonInfoByFnLnResponseEntity entity = new PersonInfoByFnLnResponseEntity();
+
         for (Person person : persons) {
-            builder.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
+            int age = recordParser.getAge(finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
+            entity.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model), age);
         }
 
-        String responseString = builder.getPersonInfoByFirstNameLastNameResult(new PersonAndRecordParser());
-
         //respond
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().create();
+        String responseString = gson.toJson(entity);
         HttpHeaders responseHeaders = new HttpHeaders();
-        ResponseEntity<String> response = new ResponseEntity<String>(responseString, responseHeaders, HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(responseString, responseHeaders, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> getEmailAddressesByCity(String city, SafetyAlertsModel model, ModelObjectFinder finder,
-                                                          OutputBuilder builder){
+    public ResponseEntity<String> getEmailAddressesByCity(String city, SafetyAlertsModel model, ModelObjectFinder finder){
         Person[] persons = finder.findPersonByCity(city, model);
-        builder.reset();
 
         if (persons.length == 0) {
             //No people found for this city. Return 'not found'.
             return ResponseEntity.notFound().build();
         }
 
+        EmailAddressesByCityResultEntity entity = new EmailAddressesByCityResultEntity();
+
         for (Person person : persons) {
-            builder.addPerson(person, new MedicalRecord());
+            if (person.getCity().equals(city)) {
+                entity.addEmail(person.getEmail());
+            }
         }
 
-        String responseString = builder.getEmailAddressesByCityResult();
-
         //respond
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.setPrettyPrinting().create();
+        String responseString = gson.toJson(entity);
         HttpHeaders responseHeaders = new HttpHeaders();
-        ResponseEntity<String> response = new ResponseEntity<String>(responseString, responseHeaders, HttpStatus.OK);
-        return response;
+        return new ResponseEntity<>(responseString, responseHeaders, HttpStatus.OK);
     }
 }

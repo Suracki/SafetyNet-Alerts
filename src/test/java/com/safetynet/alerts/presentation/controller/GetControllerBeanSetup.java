@@ -33,10 +33,6 @@ public class GetControllerBeanSetup {
         return new PersonAndRecordParser();
     }
     @Bean
-    public OutputBuilder builder() {
-        return new OutputBuilder();
-    }
-    @Bean
     public GetService getService() {
         return new GetService();
     }

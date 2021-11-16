@@ -109,16 +109,18 @@ public class FirestationControllerTest {
     public void firestationEndpointCanAddNewFirestationMappingViaPost() throws Exception {
         //Preparation
         String uri = "/firestation?address=123 Test Street&station=5";
-        String expectedResponse = "{\"address\":\"123 Test Street\", \"station\":\"5\"}";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-        int status = mvcResult.getResponse().getStatus();
 
         //Verification
+        int status = mvcResult.getResponse().getStatus();
+        String receivedResponse = mvcResult.getResponse().getContentAsString()
+                .replace("\n", "").replace("  ", "");
+
         assertEquals(201, status);
-        assertEquals(expectedResponse,mvcResult.getResponse().getContentAsString());
+        assertEquals(TestConstants.firestationControllerPostExpectedResponse,receivedResponse);
     }
 
     @Test
