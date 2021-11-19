@@ -2,7 +2,7 @@ package com.safetynet.alerts.presentation.controller;
 
 import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
-import com.safetynet.alerts.logging.LogHandlerSlf4j;
+import com.safetynet.alerts.logging.LogHandlerTiny;
 import com.safetynet.alerts.logic.*;
 import com.safetynet.alerts.presentation.model.JsonHandler;
 import org.springframework.context.annotation.Bean;
@@ -38,8 +38,8 @@ public class ObjectControllerBeanSetup {
         return new UpdateMedicalRecord();
     }
     @Bean
-    public LogHandlerSlf4j logHandler() {
-        return new LogHandlerSlf4j();
+    public LogHandlerTiny logHandler() {
+        return new LogHandlerTiny();
     }
 
 }
