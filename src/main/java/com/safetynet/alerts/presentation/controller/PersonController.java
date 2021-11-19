@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
-import com.safetynet.alerts.logging.LogHandler;
+import com.safetynet.alerts.logging.LogHandlerTiny;
 import com.safetynet.alerts.logic.ModelObjectFinder;
 import com.safetynet.alerts.logic.ResultModel;
 import com.safetynet.alerts.logic.UpdatePerson;
@@ -17,13 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.crypto.Data;
-
 
 @RestController
 public class PersonController {
 
-    private LogHandler logHandler;
+    private LogHandlerTiny logHandler;
     private JsonHandler jsonHandler;
     private JsonDAO jsonDAO;
     private ModelObjectFinder finder;
@@ -32,7 +30,7 @@ public class PersonController {
 
     @Autowired
     public PersonController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder,
-                            UpdatePerson updatePerson, DataConfig dataConfig, LogHandler logHandler) {
+                            UpdatePerson updatePerson, DataConfig dataConfig, LogHandlerTiny logHandler) {
         this.jsonHandler = jsonHandler;
         this.jsonDAO = jsonDAO;
         this.finder = finder;
@@ -77,6 +75,11 @@ public class PersonController {
 
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
+        if (model == null){
+            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            logHandler.logResponse("POST", response);
+            return response;
+        }
         //Perform Request
         Person newPerson;
         if (finder.findPerson(firstName, lastName, model) == null){
@@ -115,6 +118,11 @@ public class PersonController {
         logHandler.logRequest("PUT","/person", new String[] {firstName, lastName, address, city, zip, phone, email});
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
+        if (model == null){
+            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            logHandler.logResponse("PUT", response);
+            return response;
+        }
         //Perform Request
         Person newPerson;
         if (finder.findPerson(firstName, lastName, model) == null){
@@ -157,6 +165,11 @@ public class PersonController {
 
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
+        if (model == null){
+            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            logHandler.logResponse("DELETE", response);
+            return response;
+        }
         //Perform Request
         Person newPerson;
         if (finder.findPerson(firstName, lastName, model) == null){

@@ -1,37 +1,39 @@
 package com.safetynet.alerts.logging;
 
 import org.springframework.http.ResponseEntity;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.tinylog.Logger;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LogHandlerLog4j implements LogHandler {
+public class LogHandlerTiny implements LogHandler{
 
-    private static Logger logger;
+    private static String className;
+
+    public LogHandlerTiny() {
+    }
 
     public void setLogger(String name) {
-        logger = LogManager.getLogger(name);
+        className = name;
     }
 
     public void logRequest(String requestType, String mapping, String[] params) {
-        logger.info(requestType + " request received on " + mapping + " with parameters " + stringArrayToString(params));
+        Logger.info(className + ": " + requestType + " request received on " + mapping + " with parameters " + stringArrayToString(params));
     }
 
     public void logResponse(String requestType, ResponseEntity<String> response) {
         if (response.getStatusCodeValue() == 200 || response.getStatusCodeValue() == 201) {
-            logger.info(requestType + " request completed with response " + response.getStatusCodeValue());
+            Logger.info(className + ": " + requestType + " request completed with response " + response.getStatusCodeValue());
             if(response.hasBody()){
-                logger.info(requestType + " request reponse generated: " + formatLogResponse(response.getBody()));
+                Logger.info(className + ": " + requestType + " request reponse generated: " + formatLogResponse(response.getBody()));
             }
         }
         else {
-            logger.error(requestType + " request completed with response " + response.getStatusCodeValue());
+            Logger.error(className + ": " + requestType + " request completed with response " + response.getStatusCodeValue());
         }
     }
 
     public void error(String string) {
-        logger.error(string);
+        Logger.error(string);
     }
 
     private String formatLogResponse(String response) {

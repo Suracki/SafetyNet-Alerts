@@ -1,0 +1,3 @@
+14:14:50.296 INFO: GetMappingController: GET request received on /childAlert with parameters ["834 Binoc Ave"]
+14:14:50.313 INFO: GetMappingController: GET request completed with response 200
+14:14:50.313 INFO: GetMappingController: GET request reponse generated: {"children": [{"firstName": "Tessa","lastName": "Carman","age": 9}],"adults": []}

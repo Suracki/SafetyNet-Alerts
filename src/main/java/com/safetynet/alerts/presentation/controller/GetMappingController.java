@@ -2,13 +2,14 @@ package com.safetynet.alerts.presentation.controller;
 
 import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
-import com.safetynet.alerts.logging.LogHandler;
+import com.safetynet.alerts.logging.LogHandlerTiny;
 import com.safetynet.alerts.logic.CollectionParser;
 import com.safetynet.alerts.logic.GetService;
 import com.safetynet.alerts.logic.ModelObjectFinder;
 import com.safetynet.alerts.logic.PersonAndRecordParser;
 import com.safetynet.alerts.presentation.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ import java.util.Arrays;
 @RestController
 public class GetMappingController {
 
-    private LogHandler logHandler;
+    private LogHandlerTiny logHandler;
     private JsonHandler jsonHandler;
     private JsonDAO jsonDAO;
     private ModelObjectFinder finder;
@@ -29,7 +30,7 @@ public class GetMappingController {
     @Autowired
     public GetMappingController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder, CollectionParser parser,
                                 PersonAndRecordParser recordParser, GetService getService,
-                                DataConfig dataConfig, LogHandler logHandler) {
+                                DataConfig dataConfig, LogHandlerTiny logHandler) {
         this.jsonHandler = jsonHandler;
         this.jsonDAO = jsonDAO;
         this.finder = finder;
@@ -62,6 +63,11 @@ public class GetMappingController {
         logHandler.logRequest("GET","/firestation", new String[] {String.valueOf(stationNumber)});
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
+        if (model == null){
+            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            logHandler.logResponse("GET", response);
+            return response;
+        }
 
         //Perform request
         ResponseEntity<String> response = getService.getPeopleServicedByStationEntity(stationNumber, model, finder,
@@ -81,6 +87,11 @@ public class GetMappingController {
 
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
+        if (model == null){
+            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            logHandler.logResponse("GET", response);
+            return response;
+        }
 
         //Perform Request
         ResponseEntity<String> response = getService.getChildrenAtAddressEntity(address, model, finder, recordParser);
@@ -100,6 +111,11 @@ public class GetMappingController {
 
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
+        if (model == null){
+            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            logHandler.logResponse("GET", response);
+            return response;
+        }
 
         //Perform Request
         ResponseEntity<String> response = getService.getPhoneNumbersForPeopleServicedByStationEntity(stationNumber, model,
@@ -120,6 +136,11 @@ public class GetMappingController {
         logHandler.logRequest("GET","/fire", new String[] {address});
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
+        if (model == null){
+            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            logHandler.logResponse("GET", response);
+            return response;
+        }
 
         //Perform Request
         ResponseEntity<String> response = getService.getFirestationNumberAndResidentsForAddressEntity(address, model, finder,
@@ -138,6 +159,11 @@ public class GetMappingController {
         logHandler.logRequest("GET","/flood/stations", intArrayToStringArray(stationNumbers));
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
+        if (model == null){
+            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            logHandler.logResponse("GET", response);
+            return response;
+        }
 
         //Perform Request
         ResponseEntity<String> response = getService.getHouseholdsByFirestationEntity(stationNumbers, model, finder,
@@ -157,6 +183,11 @@ public class GetMappingController {
         logHandler.logRequest("GET","/personInfo", new String[] {firstName, lastName});
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
+        if (model == null){
+            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            logHandler.logResponse("GET", response);
+            return response;
+        }
 
         //Perform Request
         ResponseEntity<String> response = getService.getPersonInfoByFirstNameLastNameEntity(firstName, lastName, model, finder, recordParser);
@@ -174,6 +205,11 @@ public class GetMappingController {
         logHandler.logRequest("GET","/communityEmail", new String[] {city});
         //load data
         SafetyAlertsModel model = loadModelFromDisk();
+        if (model == null){
+            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            logHandler.logResponse("GET", response);
+            return response;
+        }
 
         //Perform Request
         ResponseEntity<String> response = getService.getEmailAddressesByCity(city, model, finder);
