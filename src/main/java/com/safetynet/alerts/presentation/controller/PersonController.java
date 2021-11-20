@@ -40,8 +40,6 @@ public class PersonController {
     }
 
     private SafetyAlertsModel loadModelFromDisk() {
-        JsonHandler jsonHandler = new JsonHandler();
-        JsonDAO jsonDAO = new JsonDAO();
         try {
             return jsonHandler.jsonToModel(jsonDAO.readJsonFromFile(dataConfig.getDataFile()));
         }

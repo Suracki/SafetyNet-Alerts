@@ -24,6 +24,10 @@ public class ChildrenAtAddressResponseEntity {
         adults.add(new AdultFnLn(person));
     }
 
+    public boolean childrenAtAddress() {
+        return children.size() > 0;
+    }
+
 
     private class ChildFnLnAge {
 

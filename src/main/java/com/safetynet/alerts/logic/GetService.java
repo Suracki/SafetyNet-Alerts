@@ -62,6 +62,10 @@ public class GetService {
             }
         }
         //respond
+        if (!entity.childrenAtAddress()) {
+            HttpHeaders responseHeaders = new HttpHeaders();
+            return new ResponseEntity<>("", responseHeaders, HttpStatus.OK);
+        }
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.setPrettyPrinting().create();
         String responseString = gson.toJson(entity);

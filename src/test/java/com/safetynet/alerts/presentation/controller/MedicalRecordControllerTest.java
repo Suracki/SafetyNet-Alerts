@@ -104,6 +104,7 @@ public class MedicalRecordControllerTest {
         jsonDAO.writeJsonToFile("database/testdata.json",databaseString);
     }
 
+    //Testing successful interactions
     @Test
     public void medicalRecordEndpointCanAddNewMedicalRecordViaPost() throws Exception {
         //Preparation
@@ -148,6 +149,50 @@ public class MedicalRecordControllerTest {
 
         //Verification
         assertEquals(200, status);
+    }
+
+    //Testing unsuccessful interactions
+    @Test
+    public void medicalRecordEndpointReturns409WhenPostingDuplicateMedicalRecord() throws Exception {
+        //Preparation
+        String uri = "/medicalRecord?firstName=John&lastName=Boyd&birthDate=01/01/2000&medications=something:1g,another:2g&allergies=nothing,really";
+
+        //Method
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        //Verification
+        int status = mvcResult.getResponse().getStatus();
+
+        assertEquals(409, status);
+    }
+
+    @Test
+    public void medicalRecordEndpointReturnsError404WhenUpdatingNonExistingMedicalRecord() throws Exception {
+        //Preparation
+        String uri = "/medicalRecord?firstName=Doesnt&lastName=Exist&birthDate=01/01/2000&medications=&allergies=";
+
+        //Method
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        int status = mvcResult.getResponse().getStatus();
+
+        //Verification
+        assertEquals(404, status);
+    }
+
+    @Test
+    public void medicalRecordEndpointReturnsError404WhenRemovingNonExistingMedicalRecord() throws Exception {
+        //Preparation
+        String uri = "/medicalRecord?firstName=Doesnt&lastName=Exist&birthDate=01/01/2000&medications=&allergies=";
+
+        //Method
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        int status = mvcResult.getResponse().getStatus();
+
+        //Verification
+        assertEquals(404, status);
     }
 
 }

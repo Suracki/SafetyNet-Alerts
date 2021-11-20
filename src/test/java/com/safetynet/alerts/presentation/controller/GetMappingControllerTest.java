@@ -104,6 +104,7 @@ public class GetMappingControllerTest {
         jsonDAO.writeJsonToFile("database/testdata.json",databaseString);
     }
 
+    //Testing successful interactions
     @Test
     public void firestationReturnsPeopleServicedByStationNumber() throws Exception {
         //Preparation
@@ -195,6 +196,24 @@ public class GetMappingControllerTest {
     }
 
     @Test
+    public void floodStationsReturnsListOfHouseholdsForEachProvidedStationNumberEvenIfSomeHaveNoResidents() throws Exception {
+        //Preparation
+        String uri = "/flood/stations?stations=1,10";
+
+        //Method
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        //Verification
+        int status = mvcResult.getResponse().getStatus();
+        String receivedResponse = mvcResult.getResponse().getContentAsString()
+                .replace("\n", "").replace("  ", "");
+
+        assertEquals(200, status);
+        assertEquals(TestConstants.floodStationsReturnsListOfHouseholdsForEachProvidedStationNumberEvenIfSomeHaveNoResidents,receivedResponse);
+    }
+
+    @Test
     public void personInfoReturnsDetailsForAllPeopleWithProvidedName() throws Exception {
         //Preparation
         String uri = "/personInfo?firstName=John&lastName=Boyd";
@@ -228,5 +247,114 @@ public class GetMappingControllerTest {
 
         assertEquals(200, status);
         assertEquals(TestConstants.communityEmailReturnsEmailAddressesForAllResidentsOfProvidedCity,receivedResponse);
+    }
+
+    //Testing unsuccessful interactions
+    @Test
+    public void firestationReturnsError404IfStationHasNoResidentsAssociated() throws Exception {
+        //Preparation
+        String uri = "/firestation?stationNumber=10";
+
+        //Method
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        //Verification
+        int status = mvcResult.getResponse().getStatus();
+
+        assertEquals(404, status);
+    }
+
+    @Test
+    public void childAlertReturnsEmptyStringIfNoChildrenAtAddress() throws Exception {
+        //Preparation
+        String uri = "/childAlert?address=908 73rd St";
+
+        //Method
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        //Verification
+        int status = mvcResult.getResponse().getStatus();
+        String receivedResponse = mvcResult.getResponse().getContentAsString()
+                .replace("\n", "").replace("  ", "");
+
+        assertEquals(200, status);
+        assertEquals("",receivedResponse);
+    }
+
+    @Test
+    public void phoneAlertReturnsError404IfFirestationNumberHasNoResidentPhoneNumbersAssociated() throws Exception {
+        //Preparation
+        String uri = "/phoneAlert?firestation=10";
+
+        //Method
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        //Verification
+        int status = mvcResult.getResponse().getStatus();
+
+        assertEquals(404, status);
+    }
+
+    @Test
+    public void fireReturnsError404IfAddressIsNotFound() throws Exception {
+        //Preparation
+        String uri = "/fire?address=1 Fake St";
+
+        //Method
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        //Verification
+        int status = mvcResult.getResponse().getStatus();
+
+        assertEquals(404, status);
+    }
+
+    @Test
+    public void floodStationsReturnsError404IfNoProvidedStationNumberHasResidents() throws Exception {
+        //Preparation
+        String uri = "/flood/stations?stations=10,11";
+
+        //Method
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        //Verification
+        int status = mvcResult.getResponse().getStatus();
+
+        assertEquals(404, status);
+    }
+
+    @Test
+    public void personInfoReturnsError404IfNoPeopleWithProvidedName() throws Exception {
+        //Preparation
+        String uri = "/personInfo?firstName=Doesnt&lastName=Exist";
+
+        //Method
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        //Verification
+        int status = mvcResult.getResponse().getStatus();
+
+        assertEquals(404, status);
+    }
+
+    @Test
+    public void communityEmailReturnsErrorIfNoResidentsRegisteredForProvidedCity() throws Exception {
+        //Preparation
+        String uri = "/communityEmail?city=Denver";
+
+        //Method
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        //Verification
+        int status = mvcResult.getResponse().getStatus();
+
+        assertEquals(404, status);
     }
 }

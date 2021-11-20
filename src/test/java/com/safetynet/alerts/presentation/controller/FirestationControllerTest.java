@@ -105,6 +105,7 @@ public class FirestationControllerTest {
         jsonDAO.writeJsonToFile("database/testdata.json",databaseString);
     }
 
+    //Testing successful interactions
     @Test
     public void firestationEndpointCanAddNewFirestationMappingViaPost() throws Exception {
         //Preparation
@@ -149,6 +150,49 @@ public class FirestationControllerTest {
 
         //Verification
         assertEquals(200, status);
+    }
+
+    //Testing unsuccessful interactions
+    @Test
+    public void firestationEndpointReturns409WhenPostingDuplicateFirestationMapping() throws Exception {
+        //Preparation
+        String uri = "/firestation?address=1509 Culver St&station=3";
+        //Method
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+
+        //Verification
+        int status = mvcResult.getResponse().getStatus();
+
+        assertEquals(409, status);
+    }
+
+    @Test
+    public void firestationEndpointReturnsError404WhenUpdatingNonExistingFirestationMapping() throws Exception {
+        //Preparation
+        String uri = "/firestation?address=123 Doesnt Exist Street&station=10";
+
+        //Method
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        int status = mvcResult.getResponse().getStatus();
+
+        //Verification
+        assertEquals(404, status);
+    }
+
+    @Test
+    public void firestationEndpointReturnsError404WhenRemovingNonExistingFirestationMapping() throws Exception {
+        //Preparation
+        String uri = "/firestation?address=123 Doesnt Exist Street&station=10";
+
+        //Method
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)
+                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        int status = mvcResult.getResponse().getStatus();
+
+        //Verification
+        assertEquals(404, status);
     }
 
 }
