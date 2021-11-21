@@ -251,7 +251,7 @@ public class GetMappingControllerTest {
 
     //Testing unsuccessful interactions
     @Test
-    public void firestationReturnsError404IfStationHasNoResidentsAssociated() throws Exception {
+    public void firestationReturnsEmptyJsonIfStationHasNoResidentsAssociated() throws Exception {
         //Preparation
         String uri = "/firestation?stationNumber=10";
 
@@ -261,8 +261,11 @@ public class GetMappingControllerTest {
 
         //Verification
         int status = mvcResult.getResponse().getStatus();
+        String receivedResponse = mvcResult.getResponse().getContentAsString()
+                .replace("\n", "").replace("  ", "");
 
-        assertEquals(404, status);
+        assertEquals(200, status);
+        assertEquals(TestConstants.firestationEmptyJson,receivedResponse);
     }
 
     @Test
@@ -284,7 +287,7 @@ public class GetMappingControllerTest {
     }
 
     @Test
-    public void phoneAlertReturnsError404IfFirestationNumberHasNoResidentPhoneNumbersAssociated() throws Exception {
+    public void phoneAlertReturnsEmptyJsonIfFirestationNumberHasNoResidentPhoneNumbersAssociated() throws Exception {
         //Preparation
         String uri = "/phoneAlert?firestation=10";
 
@@ -294,12 +297,15 @@ public class GetMappingControllerTest {
 
         //Verification
         int status = mvcResult.getResponse().getStatus();
+        String receivedResponse = mvcResult.getResponse().getContentAsString()
+                .replace("\n", "").replace("  ", "");
 
-        assertEquals(404, status);
+        assertEquals(200, status);
+        assertEquals(TestConstants.phoneAlertEmptyJson,receivedResponse);
     }
 
     @Test
-    public void fireReturnsError404IfAddressIsNotFound() throws Exception {
+    public void fireReturnsEmptyJsonIfAddressIsNotFound() throws Exception {
         //Preparation
         String uri = "/fire?address=1 Fake St";
 
@@ -309,12 +315,15 @@ public class GetMappingControllerTest {
 
         //Verification
         int status = mvcResult.getResponse().getStatus();
+        String receivedResponse = mvcResult.getResponse().getContentAsString()
+                .replace("\n", "").replace("  ", "");
 
-        assertEquals(404, status);
+        assertEquals(200, status);
+        assertEquals(TestConstants.fireEmptyJson,receivedResponse);
     }
 
     @Test
-    public void floodStationsReturnsError404IfNoProvidedStationNumberHasResidents() throws Exception {
+    public void floodStationsReturnsEmptyJsonIfNoProvidedStationNumberHasResidents() throws Exception {
         //Preparation
         String uri = "/flood/stations?stations=10,11";
 
@@ -324,12 +333,15 @@ public class GetMappingControllerTest {
 
         //Verification
         int status = mvcResult.getResponse().getStatus();
+        String receivedResponse = mvcResult.getResponse().getContentAsString()
+                .replace("\n", "").replace("  ", "");
 
-        assertEquals(404, status);
+        assertEquals(200, status);
+        assertEquals(TestConstants.floodStationsEmptyJson,receivedResponse);
     }
 
     @Test
-    public void personInfoReturnsError404IfNoPeopleWithProvidedName() throws Exception {
+    public void personInfoReturnsEmptyJsonIfNoPeopleWithProvidedName() throws Exception {
         //Preparation
         String uri = "/personInfo?firstName=Doesnt&lastName=Exist";
 
@@ -339,12 +351,15 @@ public class GetMappingControllerTest {
 
         //Verification
         int status = mvcResult.getResponse().getStatus();
+        String receivedResponse = mvcResult.getResponse().getContentAsString()
+                .replace("\n", "").replace("  ", "");
 
-        assertEquals(404, status);
+        assertEquals(200, status);
+        assertEquals(TestConstants.personInfoEmptyJson,receivedResponse);
     }
 
     @Test
-    public void communityEmailReturnsErrorIfNoResidentsRegisteredForProvidedCity() throws Exception {
+    public void communityEmailReturnsEmptyJsonIfNoResidentsRegisteredForProvidedCity() throws Exception {
         //Preparation
         String uri = "/communityEmail?city=Denver";
 
@@ -354,7 +369,10 @@ public class GetMappingControllerTest {
 
         //Verification
         int status = mvcResult.getResponse().getStatus();
+        String receivedResponse = mvcResult.getResponse().getContentAsString()
+                .replace("\n", "").replace("  ", "");
 
-        assertEquals(404, status);
+        assertEquals(200, status);
+        assertEquals(TestConstants.communityEmailEmptyJson,receivedResponse);
     }
 }

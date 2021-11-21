@@ -1,15 +1,18 @@
 package com.safetynet.alerts.logging;
 
 import org.springframework.http.ResponseEntity;
+import org.tinylog.Logger;
 
 public interface LogHandler {
 
-    public void setLogger(String name);
+    void setLogger(String name);
 
-    public void logRequest(String requestType, String mapping, String[] params);
+    void logRequest(String requestType, String mapping, String[] params);
 
-    public void logResponse(String requestType, ResponseEntity<String> response);
+    void logResponse(String requestType, ResponseEntity<String> response);
 
-    public void error(String string);
+    void error(String string);
+
+    void debug(String debugClassName, String string);
 
 }

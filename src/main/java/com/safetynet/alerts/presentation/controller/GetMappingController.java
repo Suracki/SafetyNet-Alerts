@@ -71,7 +71,7 @@ public class GetMappingController {
 
         //Perform request
         ResponseEntity<String> response = getService.getPeopleServicedByStationEntity(stationNumber, model, finder,
-                parser, recordParser);
+                parser, recordParser, logHandler);
         //Log response
         logHandler.logResponse("GET", response);
         //Respond
@@ -94,7 +94,7 @@ public class GetMappingController {
         }
 
         //Perform Request
-        ResponseEntity<String> response = getService.getChildrenAtAddressEntity(address, model, finder, recordParser);
+        ResponseEntity<String> response = getService.getChildrenAtAddressEntity(address, model, finder, recordParser, logHandler);
 
         //Log response
         logHandler.logResponse("GET", response);
@@ -119,7 +119,7 @@ public class GetMappingController {
 
         //Perform Request
         ResponseEntity<String> response = getService.getPhoneNumbersForPeopleServicedByStationEntity(stationNumber, model,
-                finder, parser);
+                finder, parser, logHandler);
 
         //Log response
         logHandler.logResponse("GET", response);
@@ -144,7 +144,7 @@ public class GetMappingController {
 
         //Perform Request
         ResponseEntity<String> response = getService.getFirestationNumberAndResidentsForAddressEntity(address, model, finder,
-                parser, recordParser);
+                parser, recordParser, logHandler);
 
         //Log response
         logHandler.logResponse("GET", response);
@@ -167,7 +167,7 @@ public class GetMappingController {
 
         //Perform Request
         ResponseEntity<String> response = getService.getHouseholdsByFirestationEntity(stationNumbers, model, finder,
-                parser, recordParser);
+                parser, recordParser, logHandler);
 
         //Log response
         logHandler.logResponse("GET", response);
@@ -190,7 +190,8 @@ public class GetMappingController {
         }
 
         //Perform Request
-        ResponseEntity<String> response = getService.getPersonInfoByFirstNameLastNameEntity(firstName, lastName, model, finder, recordParser);
+        ResponseEntity<String> response = getService.getPersonInfoByFirstNameLastNameEntity(firstName, lastName, model, finder,
+                                                                                            recordParser, logHandler);
 
         //Log response
         logHandler.logResponse("GET", response);
@@ -212,7 +213,7 @@ public class GetMappingController {
         }
 
         //Perform Request
-        ResponseEntity<String> response = getService.getEmailAddressesByCity(city, model, finder);
+        ResponseEntity<String> response = getService.getEmailAddressesByCity(city, model, finder, logHandler);
 
         //Log response
         logHandler.logResponse("GET", response);

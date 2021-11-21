@@ -168,7 +168,7 @@ public class PersonControllerTest {
     }
 
     @Test
-    public void medicalRecordEndpointReturnsError404WhenUpdatingNonExistingMedicalRecord() throws Exception {
+    public void personEndpointReturnsError404WhenUpdatingNonExistingPerson() throws Exception {
         //Preparation
         String uri = "/person?firstName=Doesnt&lastName=Exist&address=Test Road&city=Test Town&zip=123&phone=555-5678&email=test@email.com";
 
@@ -182,7 +182,7 @@ public class PersonControllerTest {
     }
 
     @Test
-    public void medicalRecordEndpointReturnsError404WhenRemovingNonExistingMedicalRecord() throws Exception {
+    public void personEndpointReturnsError404WhenRemovingNonExistingPerson() throws Exception {
         //Preparation
         String uri = "/person?firstName=Doesnt&lastName=Exist&address=Test Road&city=Test Town&zip=123&phone=555-5678&email=test@email.com";
 

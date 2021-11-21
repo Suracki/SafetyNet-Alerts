@@ -25,7 +25,7 @@ public class LogHandlerSlf4j implements LogHandler{
         if (response.getStatusCodeValue() == 200 || response.getStatusCodeValue() == 201) {
             logger.info(requestType + " request completed with response " + response.getStatusCodeValue());
             if(response.hasBody()){
-                logger.info(requestType + " request reponse generated: " + formatLogResponse(response.getBody()));
+                logger.info(requestType + " request response generated: " + formatLogResponse(response.getBody()));
             }
         }
         else {
@@ -35,6 +35,10 @@ public class LogHandlerSlf4j implements LogHandler{
 
     public void error(String string) {
         logger.error(string);
+    }
+
+    public void debug(String debugClassName, String string) {
+        org.tinylog.Logger.debug(debugClassName + ": " + string);
     }
 
     private String formatLogResponse(String response) {

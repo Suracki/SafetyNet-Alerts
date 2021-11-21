@@ -24,7 +24,7 @@ public class LogHandlerTiny implements LogHandler{
         if (response.getStatusCodeValue() == 200 || response.getStatusCodeValue() == 201) {
             Logger.info(className + ": " + requestType + " request completed with response " + response.getStatusCodeValue());
             if(response.hasBody()){
-                Logger.info(className + ": " + requestType + " request reponse generated: " + formatLogResponse(response.getBody()));
+                Logger.info(className + ": " + requestType + " request response generated: " + formatLogResponse(response.getBody()));
             }
         }
         else {
@@ -33,7 +33,11 @@ public class LogHandlerTiny implements LogHandler{
     }
 
     public void error(String string) {
-        Logger.error(string);
+        Logger.error(className + ": " + string);
+    }
+
+    public void debug(String debugClassName, String string) {
+        Logger.debug(debugClassName + ": " + string);
     }
 
     private String formatLogResponse(String response) {
