@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class JsonHandler {
 
-	private Gson gson;
-
 	/**
 	 * Convert a SafetyAlertsModel object into a Json string
 	 *
