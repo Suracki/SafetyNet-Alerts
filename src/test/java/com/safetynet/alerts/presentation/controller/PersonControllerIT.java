@@ -14,13 +14,12 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@WebMvcTest(FirestationController.class)
+@WebMvcTest(PersonController.class)
 @WebAppConfiguration
 @Import(ObjectControllerBeanSetup.class)
-public class FirestationControllerTest {
+public class PersonControllerIT {
 
     @Autowired
     private MockMvc mvc;
@@ -105,11 +104,11 @@ public class FirestationControllerTest {
         jsonDAO.writeJsonToFile("database/testdata.json",databaseString);
     }
 
-    //Testing successful interactions
+    //Test successful interactions
     @Test
-    public void firestationEndpointCanAddNewFirestationMappingViaPost() throws Exception {
+    public void personEndpointCanAddNewPersonViaPost() throws Exception {
         //Preparation
-        String uri = "/firestation?address=123 Test Street&station=5";
+        String uri = "/person?firstName=TestFirst&lastName=TestLast&address=Test Street&city=Test City&zip=123&phone=555-1234&email=test@email.com";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
@@ -121,13 +120,13 @@ public class FirestationControllerTest {
                 .replace("\n", "").replace("  ", "");
 
         assertEquals(201, status);
-        assertEquals(TestConstants.firestationControllerPostExpectedResponse,receivedResponse);
+        assertEquals(TestConstants.personControllerPostExpectedResponse,receivedResponse);
     }
 
     @Test
-    public void firestationEndpointCanUpdateFirestationMappingViaPut() throws Exception {
+    public void personEndpointCanUpdatePersonViaPut() throws Exception {
         //Preparation
-        String uri = "/firestation?address=1509 Culver St&station=5";
+        String uri = "/person?firstName=John&lastName=Boyd&address=Test Road&city=Test Town&zip=123&phone=555-5678&email=test@email.com";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
@@ -139,9 +138,9 @@ public class FirestationControllerTest {
     }
 
     @Test
-    public void firestationEndpointCanRemoveFirestationMappingViaDelete() throws Exception {
+    public void personEndpointCanRemovePersonViaDelete() throws Exception {
         //Preparation
-        String uri = "/firestation?address=1509 Culver St&station=5";
+        String uri = "/person?firstName=Jacob&lastName=Boyd";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)
@@ -154,9 +153,10 @@ public class FirestationControllerTest {
 
     //Testing unsuccessful interactions
     @Test
-    public void firestationEndpointReturns409WhenPostingDuplicateFirestationMapping() throws Exception {
+    public void personEndpointReturns409WhenPostingDuplicatePerson() throws Exception {
         //Preparation
-        String uri = "/firestation?address=1509 Culver St&station=3";
+        String uri = "/person?firstName=John&lastName=Boyd&address=Test Road&city=Test Town&zip=123&phone=555-5678&email=test@email.com";
+
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
@@ -168,9 +168,9 @@ public class FirestationControllerTest {
     }
 
     @Test
-    public void firestationEndpointReturnsError404WhenUpdatingNonExistingFirestationMapping() throws Exception {
+    public void personEndpointReturnsError404WhenUpdatingNonExistingPerson() throws Exception {
         //Preparation
-        String uri = "/firestation?address=123 Doesnt Exist Street&station=10";
+        String uri = "/person?firstName=Doesnt&lastName=Exist&address=Test Road&city=Test Town&zip=123&phone=555-5678&email=test@email.com";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
@@ -182,9 +182,9 @@ public class FirestationControllerTest {
     }
 
     @Test
-    public void firestationEndpointReturnsError404WhenRemovingNonExistingFirestationMapping() throws Exception {
+    public void personEndpointReturnsError404WhenRemovingNonExistingPerson() throws Exception {
         //Preparation
-        String uri = "/firestation?address=123 Doesnt Exist Street&station=10";
+        String uri = "/person?firstName=Doesnt&lastName=Exist&address=Test Road&city=Test Town&zip=123&phone=555-5678&email=test@email.com";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)

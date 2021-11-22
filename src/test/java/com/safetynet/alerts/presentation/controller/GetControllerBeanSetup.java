@@ -8,6 +8,7 @@ import com.safetynet.alerts.logic.GetService;
 import com.safetynet.alerts.logic.ModelObjectFinder;
 import com.safetynet.alerts.logic.PersonAndRecordParser;
 import com.safetynet.alerts.logic.JsonHandler;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 
 public class GetControllerBeanSetup {
@@ -40,9 +41,7 @@ public class GetControllerBeanSetup {
     public DataConfig dataConfig() {
         return new DataConfig("database/testdata.json");
     }
-    @Bean
-    public LogHandlerTiny logHandler() {
-        return new LogHandlerTiny();
-    }
+    @MockBean
+    LogHandlerTiny logHandlerTiny;
 
 }

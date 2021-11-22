@@ -14,12 +14,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@WebMvcTest(GetMappingController.class)
+@WebMvcTest(FirestationController.class)
 @WebAppConfiguration
-@Import(GetControllerBeanSetup.class)
-public class GetMappingControllerTest {
+@Import(ObjectControllerBeanSetup.class)
+public class FirestationControllerIT {
 
     @Autowired
     private MockMvc mvc;
@@ -106,12 +107,12 @@ public class GetMappingControllerTest {
 
     //Testing successful interactions
     @Test
-    public void firestationReturnsPeopleServicedByStationNumber() throws Exception {
+    public void firestationEndpointCanAddNewFirestationMappingViaPost() throws Exception {
         //Preparation
-        String uri = "/firestation?stationNumber=1";
+        String uri = "/firestation?address=123 Test Street&station=5";
 
         //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
         //Verification
@@ -119,260 +120,79 @@ public class GetMappingControllerTest {
         String receivedResponse = mvcResult.getResponse().getContentAsString()
                 .replace("\n", "").replace("  ", "");
 
-        assertEquals(200, status);
-        assertEquals(TestConstants.firestationReturnsPeopleServicedByStationNumber,receivedResponse);
+        assertEquals(201, status);
+        assertEquals(TestConstants.firestationControllerPostExpectedResponse,receivedResponse);
     }
 
     @Test
-    public void childAlertReturnsListOfChildrenAtAddress() throws Exception {
+    public void firestationEndpointCanUpdateFirestationMappingViaPut() throws Exception {
         //Preparation
-        String uri = "/childAlert?address=1509 Culver St";
+        String uri = "/firestation?address=1509 Culver St&station=5";
 
         //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        int status = mvcResult.getResponse().getStatus();
 
         //Verification
-        int status = mvcResult.getResponse().getStatus();
-        String receivedResponse = mvcResult.getResponse().getContentAsString()
-                .replace("\n", "").replace("  ", "");
-
         assertEquals(200, status);
-        assertEquals(TestConstants.childAlertReturnsListOfChildrenAtAddress,receivedResponse);
     }
 
     @Test
-    public void phoneAlertReturnsListOfPhoneNumbersForFirestationNumber() throws Exception {
+    public void firestationEndpointCanRemoveFirestationMappingViaDelete() throws Exception {
         //Preparation
-        String uri = "/phoneAlert?firestation=1";
+        String uri = "/firestation?address=1509 Culver St&station=5";
 
         //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        int status = mvcResult.getResponse().getStatus();
 
         //Verification
-        int status = mvcResult.getResponse().getStatus();
-        String receivedResponse = mvcResult.getResponse().getContentAsString()
-                .replace("\n", "").replace("  ", "");
-
         assertEquals(200, status);
-        assertEquals(TestConstants.phoneAlertReturnsListOfPhoneNumbersForFirestationNumber,receivedResponse);
-    }
-
-    @Test
-    public void fireReturnsFirestationNumberAndResidentsForAddress() throws Exception {
-        //Preparation
-        String uri = "/fire?address=1509 Culver St";
-
-        //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        //Verification
-        int status = mvcResult.getResponse().getStatus();
-        String receivedResponse = mvcResult.getResponse().getContentAsString()
-                .replace("\n", "").replace("  ", "");
-
-        assertEquals(200, status);
-        assertEquals(TestConstants.fireReturnsFirestationNumberAndResidentsForAddress,receivedResponse);
-    }
-
-    @Test
-    public void floodStationsReturnsListOfHouseholdsForEachProvidedStationNumber() throws Exception {
-        //Preparation
-        String uri = "/flood/stations?stations=2,4";
-
-        //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        //Verification
-        int status = mvcResult.getResponse().getStatus();
-        String receivedResponse = mvcResult.getResponse().getContentAsString()
-                .replace("\n", "").replace("  ", "");
-
-        assertEquals(200, status);
-        assertEquals(TestConstants.floodStationsReturnsListOfHouseholdsForEachProvidedStationNumber,receivedResponse);
-    }
-
-    @Test
-    public void floodStationsReturnsListOfHouseholdsForEachProvidedStationNumberEvenIfSomeHaveNoResidents() throws Exception {
-        //Preparation
-        String uri = "/flood/stations?stations=1,10";
-
-        //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        //Verification
-        int status = mvcResult.getResponse().getStatus();
-        String receivedResponse = mvcResult.getResponse().getContentAsString()
-                .replace("\n", "").replace("  ", "");
-
-        assertEquals(200, status);
-        assertEquals(TestConstants.floodStationsReturnsListOfHouseholdsForEachProvidedStationNumberEvenIfSomeHaveNoResidents,receivedResponse);
-    }
-
-    @Test
-    public void personInfoReturnsDetailsForAllPeopleWithProvidedName() throws Exception {
-        //Preparation
-        String uri = "/personInfo?firstName=John&lastName=Boyd";
-
-        //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        //Verification
-        int status = mvcResult.getResponse().getStatus();
-        String receivedResponse = mvcResult.getResponse().getContentAsString()
-                .replace("\n", "").replace("  ", "");
-
-        assertEquals(200, status);
-        assertEquals(TestConstants.personInfoReturnsDetailsForAllPeopleWithProvidedName,receivedResponse);
-    }
-
-    @Test
-    public void communityEmailReturnsEmailAddressesForAllResidentsOfProvidedCity() throws Exception {
-        //Preparation
-        String uri = "/communityEmail?city=Culver";
-
-        //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        //Verification
-        int status = mvcResult.getResponse().getStatus();
-        String receivedResponse = mvcResult.getResponse().getContentAsString()
-                .replace("\n", "").replace("  ", "");
-
-        assertEquals(200, status);
-        assertEquals(TestConstants.communityEmailReturnsEmailAddressesForAllResidentsOfProvidedCity,receivedResponse);
     }
 
     //Testing unsuccessful interactions
     @Test
-    public void firestationReturnsEmptyJsonIfStationHasNoResidentsAssociated() throws Exception {
+    public void firestationEndpointReturns409WhenPostingDuplicateFirestationMapping() throws Exception {
         //Preparation
-        String uri = "/firestation?stationNumber=10";
-
+        String uri = "/firestation?address=1509 Culver St&station=3";
         //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
         //Verification
         int status = mvcResult.getResponse().getStatus();
-        String receivedResponse = mvcResult.getResponse().getContentAsString()
-                .replace("\n", "").replace("  ", "");
 
-        assertEquals(200, status);
-        assertEquals(TestConstants.firestationEmptyJson,receivedResponse);
+        assertEquals(409, status);
     }
 
     @Test
-    public void childAlertReturnsEmptyStringIfNoChildrenAtAddress() throws Exception {
+    public void firestationEndpointReturnsError404WhenUpdatingNonExistingFirestationMapping() throws Exception {
         //Preparation
-        String uri = "/childAlert?address=908 73rd St";
+        String uri = "/firestation?address=123 Doesnt Exist Street&station=10";
 
         //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        int status = mvcResult.getResponse().getStatus();
 
         //Verification
-        int status = mvcResult.getResponse().getStatus();
-        String receivedResponse = mvcResult.getResponse().getContentAsString()
-                .replace("\n", "").replace("  ", "");
-
-        assertEquals(200, status);
-        assertEquals("",receivedResponse);
+        assertEquals(404, status);
     }
 
     @Test
-    public void phoneAlertReturnsEmptyJsonIfFirestationNumberHasNoResidentPhoneNumbersAssociated() throws Exception {
+    public void firestationEndpointReturnsError404WhenRemovingNonExistingFirestationMapping() throws Exception {
         //Preparation
-        String uri = "/phoneAlert?firestation=10";
+        String uri = "/firestation?address=123 Doesnt Exist Street&station=10";
 
         //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
+        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+        int status = mvcResult.getResponse().getStatus();
 
         //Verification
-        int status = mvcResult.getResponse().getStatus();
-        String receivedResponse = mvcResult.getResponse().getContentAsString()
-                .replace("\n", "").replace("  ", "");
-
-        assertEquals(200, status);
-        assertEquals(TestConstants.phoneAlertEmptyJson,receivedResponse);
+        assertEquals(404, status);
     }
 
-    @Test
-    public void fireReturnsEmptyJsonIfAddressIsNotFound() throws Exception {
-        //Preparation
-        String uri = "/fire?address=1 Fake St";
-
-        //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        //Verification
-        int status = mvcResult.getResponse().getStatus();
-        String receivedResponse = mvcResult.getResponse().getContentAsString()
-                .replace("\n", "").replace("  ", "");
-
-        assertEquals(200, status);
-        assertEquals(TestConstants.fireEmptyJson,receivedResponse);
-    }
-
-    @Test
-    public void floodStationsReturnsEmptyJsonIfNoProvidedStationNumberHasResidents() throws Exception {
-        //Preparation
-        String uri = "/flood/stations?stations=10,11";
-
-        //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        //Verification
-        int status = mvcResult.getResponse().getStatus();
-        String receivedResponse = mvcResult.getResponse().getContentAsString()
-                .replace("\n", "").replace("  ", "");
-
-        assertEquals(200, status);
-        assertEquals(TestConstants.floodStationsEmptyJson,receivedResponse);
-    }
-
-    @Test
-    public void personInfoReturnsEmptyJsonIfNoPeopleWithProvidedName() throws Exception {
-        //Preparation
-        String uri = "/personInfo?firstName=Doesnt&lastName=Exist";
-
-        //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        //Verification
-        int status = mvcResult.getResponse().getStatus();
-        String receivedResponse = mvcResult.getResponse().getContentAsString()
-                .replace("\n", "").replace("  ", "");
-
-        assertEquals(200, status);
-        assertEquals(TestConstants.personInfoEmptyJson,receivedResponse);
-    }
-
-    @Test
-    public void communityEmailReturnsEmptyJsonIfNoResidentsRegisteredForProvidedCity() throws Exception {
-        //Preparation
-        String uri = "/communityEmail?city=Denver";
-
-        //Method
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
-                .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-        //Verification
-        int status = mvcResult.getResponse().getStatus();
-        String receivedResponse = mvcResult.getResponse().getContentAsString()
-                .replace("\n", "").replace("  ", "");
-
-        assertEquals(200, status);
-        assertEquals(TestConstants.communityEmailEmptyJson,receivedResponse);
-    }
 }

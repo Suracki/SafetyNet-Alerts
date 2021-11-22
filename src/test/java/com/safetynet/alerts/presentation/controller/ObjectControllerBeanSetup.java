@@ -5,6 +5,7 @@ import com.safetynet.alerts.data.io.JsonDAO;
 import com.safetynet.alerts.logging.LogHandlerTiny;
 import com.safetynet.alerts.logic.*;
 import com.safetynet.alerts.logic.JsonHandler;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 
 public class ObjectControllerBeanSetup {
@@ -37,9 +38,7 @@ public class ObjectControllerBeanSetup {
     public UpdateMedicalRecord updateMedicalRecord() {
         return new UpdateMedicalRecord();
     }
-    @Bean
-    public LogHandlerTiny logHandler() {
-        return new LogHandlerTiny();
-    }
+    @MockBean
+    public LogHandlerTiny logHandlerTiny;
 
 }

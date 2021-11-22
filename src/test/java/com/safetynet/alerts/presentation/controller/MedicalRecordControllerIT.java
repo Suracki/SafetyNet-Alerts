@@ -16,10 +16,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@WebMvcTest(PersonController.class)
+@WebMvcTest(MedicalRecordController.class)
 @WebAppConfiguration
 @Import(ObjectControllerBeanSetup.class)
-public class PersonControllerTest {
+public class MedicalRecordControllerIT {
 
     @Autowired
     private MockMvc mvc;
@@ -104,11 +104,11 @@ public class PersonControllerTest {
         jsonDAO.writeJsonToFile("database/testdata.json",databaseString);
     }
 
-    //Test successful interactions
+    //Testing successful interactions
     @Test
-    public void personEndpointCanAddNewPersonViaPost() throws Exception {
+    public void medicalRecordEndpointCanAddNewMedicalRecordViaPost() throws Exception {
         //Preparation
-        String uri = "/person?firstName=TestFirst&lastName=TestLast&address=Test Street&city=Test City&zip=123&phone=555-1234&email=test@email.com";
+        String uri = "/medicalRecord?firstName=Testame&lastName=Name&birthDate=01/01/2000&medications=something:1g,another:2g&allergies=nothing,really";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
@@ -120,13 +120,13 @@ public class PersonControllerTest {
                 .replace("\n", "").replace("  ", "");
 
         assertEquals(201, status);
-        assertEquals(TestConstants.personControllerPostExpectedResponse,receivedResponse);
+        assertEquals(TestConstants.medicalRecordControllerPostExpectedResponse,receivedResponse);
     }
 
     @Test
-    public void personEndpointCanUpdatePersonViaPut() throws Exception {
+    public void medicalRecordEndpointCanUpdateMedicalRecordViaPut() throws Exception {
         //Preparation
-        String uri = "/person?firstName=John&lastName=Boyd&address=Test Road&city=Test Town&zip=123&phone=555-5678&email=test@email.com";
+        String uri = "/medicalRecord?firstName=John&lastName=Boyd&birthDate=01/01/2000&medications=&allergies=";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
@@ -138,9 +138,9 @@ public class PersonControllerTest {
     }
 
     @Test
-    public void personEndpointCanRemovePersonViaDelete() throws Exception {
+    public void medicalRecordEndpointCanRemoveMedicalRecordViaDelete() throws Exception {
         //Preparation
-        String uri = "/person?firstName=Jacob&lastName=Boyd";
+        String uri = "/medicalRecord?firstName=John&lastName=Boyd";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)
@@ -153,9 +153,9 @@ public class PersonControllerTest {
 
     //Testing unsuccessful interactions
     @Test
-    public void personEndpointReturns409WhenPostingDuplicatePerson() throws Exception {
+    public void medicalRecordEndpointReturns409WhenPostingDuplicateMedicalRecord() throws Exception {
         //Preparation
-        String uri = "/person?firstName=John&lastName=Boyd&address=Test Road&city=Test Town&zip=123&phone=555-5678&email=test@email.com";
+        String uri = "/medicalRecord?firstName=John&lastName=Boyd&birthDate=01/01/2000&medications=something:1g,another:2g&allergies=nothing,really";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
@@ -168,9 +168,9 @@ public class PersonControllerTest {
     }
 
     @Test
-    public void personEndpointReturnsError404WhenUpdatingNonExistingPerson() throws Exception {
+    public void medicalRecordEndpointReturnsError404WhenUpdatingNonExistingMedicalRecord() throws Exception {
         //Preparation
-        String uri = "/person?firstName=Doesnt&lastName=Exist&address=Test Road&city=Test Town&zip=123&phone=555-5678&email=test@email.com";
+        String uri = "/medicalRecord?firstName=Doesnt&lastName=Exist&birthDate=01/01/2000&medications=&allergies=";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
@@ -182,9 +182,9 @@ public class PersonControllerTest {
     }
 
     @Test
-    public void personEndpointReturnsError404WhenRemovingNonExistingPerson() throws Exception {
+    public void medicalRecordEndpointReturnsError404WhenRemovingNonExistingMedicalRecord() throws Exception {
         //Preparation
-        String uri = "/person?firstName=Doesnt&lastName=Exist&address=Test Road&city=Test Town&zip=123&phone=555-5678&email=test@email.com";
+        String uri = "/medicalRecord?firstName=Doesnt&lastName=Exist&birthDate=01/01/2000&medications=&allergies=";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)
