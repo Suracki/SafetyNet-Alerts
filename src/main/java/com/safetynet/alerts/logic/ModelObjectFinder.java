@@ -8,9 +8,20 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+/**
+ * ModelObjectFinder is used to find specific objects or groups of objects in our model
+ */
 @Service
 public class ModelObjectFinder {
 
+    /**
+     * Find a person in the model by firstname/lastname
+     *
+     * @param firstName
+     * @param lastName
+     * @param model
+     * @return Person object with matching name, or null if none found
+     */
     public Person findPerson(String firstName, String lastName, SafetyAlertsModel model) {
 
         for (Person person : model.getPersons()){
@@ -21,6 +32,14 @@ public class ModelObjectFinder {
         return null;
     }
 
+    /**
+     * Find all people with the same firstname/lastname combination
+     *
+     * @param firstName
+     * @param lastName
+     * @param model
+     * @return array of Person objects with matching names
+     */
     public Person[] findPersons(String firstName, String lastName, SafetyAlertsModel model) {
         ArrayList<Person> persons = new ArrayList<Person>();
         for (Person person : model.getPersons()){
@@ -38,6 +57,14 @@ public class ModelObjectFinder {
         return personsWithName;
     }
 
+    /**
+     * Find all people at provided address
+     * Can check for multiple addresses at once
+     *
+     * @param addresses array of address strings
+     * @param model
+     * @return array of Person objects
+     */
     public Person[] findPersonByAddress(String[] addresses, SafetyAlertsModel model){
         ArrayList<Person> persons = new ArrayList<Person>();
         for (String address : addresses) {
@@ -57,6 +84,13 @@ public class ModelObjectFinder {
         return personsAtAddress;
     }
 
+    /**
+     * Find all people living in a specific city
+     *
+     * @param city
+     * @param model
+     * @return array of Person objects
+     */
     public Person[] findPersonByCity(String city, SafetyAlertsModel model){
         ArrayList<Person> persons = new ArrayList<Person>();
         for (Person person : model.getPersons()){
@@ -73,6 +107,14 @@ public class ModelObjectFinder {
         return personsAtCity;
     }
 
+    /**
+     * Find the MedicalRecord for a person with provided firstname/lastname
+     *
+     * @param firstName
+     * @param lastName
+     * @param model
+     * @return MedicalRecord object, or null if none found
+     */
     public MedicalRecord findMedicalRecord(String firstName, String lastName, SafetyAlertsModel model) {
 
         for (MedicalRecord record : model.getMedicalRecords()){
@@ -83,6 +125,13 @@ public class ModelObjectFinder {
         return null;
     }
 
+    /**
+     * Find a firestation mapping for a specific address
+     *
+     * @param address
+     * @param model
+     * @return Firestation object, or null if none found
+     */
     public Firestation findFirestation(String address, SafetyAlertsModel model) {
         for (Firestation firestation : model.getFirestations()){
             if (firestation.getAddress().equals(address)){
@@ -92,6 +141,13 @@ public class ModelObjectFinder {
         return null;
     }
 
+    /**
+     * Find all firestation mappings for a specific firestation number
+     *
+     * @param stationNumber
+     * @param model
+     * @return array of Firestation objects
+     */
     public Firestation[] findFirestationByNumber(int stationNumber, SafetyAlertsModel model) {
         ArrayList<Firestation> stationMappings = new ArrayList<Firestation>();
         for (Firestation firestation : model.getFirestations()){

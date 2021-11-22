@@ -2,6 +2,9 @@ package com.safetynet.alerts.logic;
 
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
 
+/**
+ * Object used to hold an updated SafetyAlertsModel along with a boolean confirming if an operation was successful
+ */
 public class ResultModel {
 
     private SafetyAlertsModel model;

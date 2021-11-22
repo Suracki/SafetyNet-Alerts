@@ -8,7 +8,7 @@ import com.safetynet.alerts.logging.LogHandlerTiny;
 import com.safetynet.alerts.logic.ModelObjectFinder;
 import com.safetynet.alerts.logic.ResultModel;
 import com.safetynet.alerts.logic.UpdatePerson;
-import com.safetynet.alerts.presentation.model.JsonHandler;
+import com.safetynet.alerts.logic.JsonHandler;
 import com.safetynet.alerts.presentation.model.Person;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+/**
+ * RestController for /person endpoint
+ *
+ * Includes POST/PUT/DELETE
+ */
 @RestController
 public class PersonController {
 
@@ -62,6 +66,23 @@ public class PersonController {
         }
     }
 
+    /**
+     * Mapping for POST
+     *
+     * Returns:
+     * HttpStatus.CONFLICT if medical record already exists
+     * HttpStatus.INTERNAL_SERVER_ERROR if data file cannot be accessed
+     * Json string & HttpStatus.CREATED if successful
+     *
+     * @param firstName
+     * @param lastName
+     * @param address
+     * @param city
+     * @param zip
+     * @param phone
+     * @param email
+     * @return Json string & HttpStatus.CREATED if successful
+     */
     @PostMapping("/person")
     public ResponseEntity<String> addEntity(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName,
                                             @RequestParam("address") String address, @RequestParam("city") String city,
@@ -106,6 +127,24 @@ public class PersonController {
         return response;
     }
 
+    /**
+     * Mapping for PUT
+     *
+     * Returns:
+     * HttpStatus.NOT_FOUND if Person does not exist
+     * HttpStatus.INTERNAL_SERVER_ERROR if data file cannot be accessed
+     * HttpStatus.BAD_REQUEST if update fails
+     * HttpStatus.OK if successful
+     *
+     * @param firstName
+     * @param lastName
+     * @param address
+     * @param city
+     * @param zip
+     * @param phone
+     * @param email
+     * @return HttpStatus.OK if successful
+     */
     @PutMapping("/person")
     public ResponseEntity<String> updateEntity(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName,
                                                @RequestParam("address") String address, @RequestParam("city") String city,
@@ -154,6 +193,19 @@ public class PersonController {
         return response;
     }
 
+    /**
+     * Mapping for DELETE
+     *
+     * Returns:
+     * HttpStatus.NOT_FOUND if medical record does not exist
+     * HttpStatus.INTERNAL_SERVER_ERROR if data file cannot be accessed
+     * HttpStatus.BAD_REQUEST if delete fails
+     * HttpStatus.OK if successful
+     *
+     * @param firstName
+     * @param lastName
+     * @return HttpStatus.OK if successful
+     */
     @DeleteMapping("/person")
     public ResponseEntity<String> deleteEntity(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
 

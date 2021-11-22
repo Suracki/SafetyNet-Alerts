@@ -7,7 +7,9 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
 
-
+/**
+ * Implementation of health SpringBoot endpoint
+ */
 @Component
 public class HealthCheck implements HealthIndicator {
 

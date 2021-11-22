@@ -1,4 +1,4 @@
-package com.safetynet.alerts.presentation.controller.entity;
+package com.safetynet.alerts.presentation.model.entity;
 
 import com.safetynet.alerts.presentation.model.MedicalRecord;
 import com.safetynet.alerts.presentation.model.Person;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class HouseholdEntity {
 
-    ArrayList<PersonFnLnPnAgeMedAlrgy> people;
+    private ArrayList<PersonFnLnPnAgeMedAlrgy> people;
     private String address;
     private int station;
 

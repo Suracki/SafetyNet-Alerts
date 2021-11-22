@@ -4,7 +4,7 @@ import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
 import com.safetynet.alerts.logging.LogHandlerTiny;
 import com.safetynet.alerts.logic.*;
-import com.safetynet.alerts.presentation.model.JsonHandler;
+import com.safetynet.alerts.logic.JsonHandler;
 import org.springframework.context.annotation.Bean;
 
 public class ObjectControllerBeanSetup {

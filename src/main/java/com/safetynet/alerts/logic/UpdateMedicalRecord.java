@@ -4,9 +4,20 @@ import com.safetynet.alerts.presentation.model.MedicalRecord;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service to make changes to MedicalRecord objects held in model
+ */
 @Service
 public class UpdateMedicalRecord {
 
+    /**
+     * Add a MedicalRecord object to the model
+     *
+     * @param finder ModelObjectFinder used to parse collection
+     * @param model SafetyAlertsModel
+     * @param medicalRecord MedicalRecord object to be added to model
+     * @return ResultModel containing updated SafetyAlertsModel and a boolean confirming if operation succeeded
+     */
     public ResultModel addMedicalRecord(ModelObjectFinder finder, SafetyAlertsModel model, MedicalRecord medicalRecord) {
         if (finder.findMedicalRecord(medicalRecord.getFirstName(),medicalRecord.getLastName(), model) == null) {
             model.addMedicalRecord(medicalRecord);
@@ -17,6 +28,14 @@ public class UpdateMedicalRecord {
         }
     }
 
+    /**
+     * Update an existing MedicalRecord object, using firstname/lastname as identifiers
+     *
+     * @param finder ModelObjectFinder used to parse collection
+     * @param model SafetyAlertsModel
+     * @param newMedicalRecord updated MedicalRecord object
+     * @return ResultModel containing updated SafetyAlertsModel and a boolean confirming if operation succeeded
+     */
     public ResultModel updateMedicalRecord(ModelObjectFinder finder, SafetyAlertsModel model, MedicalRecord newMedicalRecord) {
         MedicalRecord oldMedicalRecord = finder.findMedicalRecord(newMedicalRecord.getFirstName(), newMedicalRecord.getLastName(), model);
         if (oldMedicalRecord != null) {
@@ -36,6 +55,14 @@ public class UpdateMedicalRecord {
         }
     }
 
+    /**
+     * Remove a MedicalRecord from the model, using firstname/lastname as identifiers
+     *
+     * @param finder ModelObjectFinder used to parse collection
+     * @param model SafetyAlertsModel
+     * @param removeMedicalRecord MedicalRecord to be removed (variables other than firstname/lastname are not checked)
+     * @return ResultModel containing updated SafetyAlertsModel and a boolean confirming if operation succeeded
+     */
     public ResultModel deleteMedicalRecord(ModelObjectFinder finder, SafetyAlertsModel model, MedicalRecord removeMedicalRecord) {
         //Confirm Medical Record exists
         if (finder.findMedicalRecord(removeMedicalRecord.getFirstName(),removeMedicalRecord.getLastName(), model) == null) {

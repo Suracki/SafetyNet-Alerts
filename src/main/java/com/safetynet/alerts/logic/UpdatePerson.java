@@ -4,9 +4,20 @@ import com.safetynet.alerts.presentation.model.Person;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service to make changes to Person objects held in model
+ */
 @Service
 public class UpdatePerson {
 
+    /**
+     * Add a Person object to the model
+     *
+     * @param finder ModelObjectFinder used to parse collection
+     * @param model SafetyAlertsModel
+     * @param person Person object to be added to the model
+     * @return ResultModel containing updated SafetyAlertsModel and a boolean confirming if operation succeeded
+     */
     public ResultModel addPerson(ModelObjectFinder finder, SafetyAlertsModel model, Person person) {
         if (finder.findPerson(person.getFirstName(), person.getLastName(), model) == null) {
             model.addPerson(person);
@@ -17,6 +28,14 @@ public class UpdatePerson {
         }
     }
 
+    /**
+     * Update an existing Person object in the model, using firstname/lastname as identifiers
+     *
+     * @param finder ModelObjectFinder used to parse collection
+     * @param model SafetyAlertsModel
+     * @param newPerson updated Person object
+     * @return ResultModel containing updated SafetyAlertsModel and a boolean confirming if operation succeeded
+     */
     public ResultModel updatePerson(ModelObjectFinder finder, SafetyAlertsModel model, Person newPerson) {
         Person oldPerson = finder.findPerson(newPerson.getFirstName(), newPerson.getLastName(), model);
         if (oldPerson != null) {
@@ -36,6 +55,14 @@ public class UpdatePerson {
         }
     }
 
+    /**
+     * Remove a Person object from the model, using firstname/lastname as identifiers
+     *
+     * @param finder ModelObjectFinder used to parse collection
+     * @param model SafetyAlertsModel
+     * @param removePerson Person object to be removed (variables other than firstname/lastname are not checked)
+     * @return ResultModel containing updated SafetyAlertsModel and a boolean confirming if operation succeeded
+     */
     public ResultModel deletePerson(ModelObjectFinder finder, SafetyAlertsModel model, Person removePerson) {
         //Confirm person exists
         if (finder.findPerson(removePerson.getFirstName(), removePerson.getLastName(), model) == null) {

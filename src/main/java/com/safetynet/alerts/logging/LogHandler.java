@@ -1,8 +1,13 @@
 package com.safetynet.alerts.logging;
 
 import org.springframework.http.ResponseEntity;
-import org.tinylog.Logger;
 
+/**
+ * Interface for LogHandler
+ *
+ * Allows implementation of different LogHandler classes for various logging frameworks
+ * without requiring large amounts of changes to logged code elsewhere in project
+ */
 public interface LogHandler {
 
     void setLogger(String name);

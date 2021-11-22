@@ -5,8 +5,10 @@ import org.springframework.boot.actuate.trace.http.InMemoryHttpTraceRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Implementation of httptrace SpringBoot endpoint
+ */
 @Configuration
-// @Profile("actuator-endpoints") /* if you want: register bean only if profile is set */
 public class HttpTraceActuatorConfig {
 
     @Bean

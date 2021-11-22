@@ -2,13 +2,12 @@ package com.safetynet.alerts.presentation.controller;
 
 import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
-import com.safetynet.alerts.logging.LogHandlerSlf4j;
 import com.safetynet.alerts.logging.LogHandlerTiny;
 import com.safetynet.alerts.logic.CollectionParser;
 import com.safetynet.alerts.logic.GetService;
 import com.safetynet.alerts.logic.ModelObjectFinder;
 import com.safetynet.alerts.logic.PersonAndRecordParser;
-import com.safetynet.alerts.presentation.model.JsonHandler;
+import com.safetynet.alerts.logic.JsonHandler;
 import org.springframework.context.annotation.Bean;
 
 public class GetControllerBeanSetup {

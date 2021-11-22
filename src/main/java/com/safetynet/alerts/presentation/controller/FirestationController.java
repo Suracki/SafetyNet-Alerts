@@ -9,7 +9,7 @@ import com.safetynet.alerts.logic.ModelObjectFinder;
 import com.safetynet.alerts.logic.ResultModel;
 import com.safetynet.alerts.logic.UpdateFirestation;
 import com.safetynet.alerts.presentation.model.Firestation;
-import com.safetynet.alerts.presentation.model.JsonHandler;
+import com.safetynet.alerts.logic.JsonHandler;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * RestController for /firestation endpoint
+ *
+ * Includes POST/PUT/DELETE
+ */
 @RestController
 public class FirestationController {
 
@@ -27,6 +32,17 @@ public class FirestationController {
     private UpdateFirestation updateFirestation;
     private DataConfig dataConfig;
 
+    /**
+     * Constructor for FirestationController
+     * All parameters are Autowired
+     *
+     * @param jsonHandler JsonHandler object
+     * @param jsonDAO JsonDAO object
+     * @param finder ModelObjectFinder object
+     * @param updateFirestation UpdateFirestation object
+     * @param dataConfig DataConfig object
+     * @param logHandler LogHandlerTiny object
+     */
     @Autowired
     public FirestationController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder,
                                  UpdateFirestation updateFirestation, DataConfig dataConfig,
@@ -62,6 +78,18 @@ public class FirestationController {
         }
     }
 
+    /**
+     * Mapping for POST
+     *
+     * Returns:
+     * HttpStatus.CONFLICT if mapping already exists
+     * HttpStatus.INTERNAL_SERVER_ERROR if data file cannot be accessed
+     * Json string & HttpStatus.CREATED if successful
+     *
+     * @param address address for Firestation mapping
+     * @param station station number for Firestation mapping
+     * @return Json string & HttpStatus.CREATED if successful
+     */
     @PostMapping("/firestation")
     public ResponseEntity<String> addEntity(@RequestParam("address") String address, @RequestParam("station") int station){
         //Log reqquest
@@ -104,6 +132,19 @@ public class FirestationController {
         return response;
     }
 
+    /**
+     * Mapping for PUT
+     *
+     * Returns:
+     * HttpStatus.NOT_FOUND if mapping does not exist
+     * HttpStatus.INTERNAL_SERVER_ERROR if data file cannot be accessed
+     * HttpStatus.BAD_REQUEST if update fails
+     * HttpStatus.OK if successful
+     *
+     * @param address address for Firestation mapping
+     * @param station station number for Firestation mapping
+     * @return HttpStatus.OK if successful
+     */
     @PutMapping("/firestation")
     public ResponseEntity<String> updateEntity(@RequestParam("address") String address, @RequestParam("station") int station){
         //Log reqquest
@@ -150,6 +191,19 @@ public class FirestationController {
         return response;
     }
 
+    /**
+     * Mapping for DELETE
+     *
+     * Returns:
+     * HttpStatus.NOT_FOUND if mapping does not exist
+     * HttpStatus.INTERNAL_SERVER_ERROR if data file cannot be accessed
+     * HttpStatus.BAD_REQUEST if delete fails
+     * HttpStatus.OK if successful
+     *
+     * @param address address for Firestation mapping
+     * @param station station number for Firestation mapping
+     * @return HttpStatus.OK if successful
+     */
     @DeleteMapping("/firestation")
     public ResponseEntity<String> deleteEntity(@RequestParam("address") String address, @RequestParam("station") int station){
         //Log reqquest

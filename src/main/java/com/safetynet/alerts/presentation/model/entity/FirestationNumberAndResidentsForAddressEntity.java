@@ -1,4 +1,4 @@
-package com.safetynet.alerts.presentation.controller.entity;
+package com.safetynet.alerts.presentation.model.entity;
 
 import com.safetynet.alerts.presentation.model.Firestation;
 import com.safetynet.alerts.presentation.model.MedicalRecord;

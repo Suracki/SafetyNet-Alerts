@@ -4,9 +4,20 @@ import com.safetynet.alerts.presentation.model.Firestation;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service to make changes to Firestation objects held in model
+ */
 @Service
 public class UpdateFirestation {
 
+    /**
+     * Add a Firestation mapping object to the model
+     *
+     * @param finder ModelObjectFinder used to parse collection
+     * @param model SafetyAlertsModel
+     * @param firestation Firestation mapping object to be added to model
+     * @return ResultModel containing updated SafetyAlertsModel and a boolean confirming if operation succeeded
+     */
     public ResultModel addFirestation(ModelObjectFinder finder, SafetyAlertsModel model, Firestation firestation) {
         if (finder.findFirestation(firestation.getAddress(), model) == null) {
             model.addFirestation(firestation);
@@ -17,6 +28,15 @@ public class UpdateFirestation {
         }
     }
 
+    /**
+     * Update an existing Firestation mapping object in the model
+     * Allows the station number to be changed for an address
+     *
+     * @param finder ModelObjectFinder used to parse collection
+     * @param model SafetyAlertsModel
+     * @param newFirestation updated Firestation mapping
+     * @return ResultModel containing updated SafetyAlertsModel and a boolean confirming if operation succeeded
+     */
     public ResultModel updateFirestation(ModelObjectFinder finder, SafetyAlertsModel model, Firestation newFirestation) {
         Firestation oldFirestation = finder.findFirestation(newFirestation.getAddress(), model);
         if (oldFirestation != null) {
@@ -35,6 +55,14 @@ public class UpdateFirestation {
         }
     }
 
+    /**
+     * Remove a Firestation mapping from the model
+     *
+     * @param finder ModelObjectFinder used to parse collection
+     * @param model SafetyAlertsModel
+     * @param removeFirestation Firestation mapping to be found & removed
+     * @return
+     */
     public ResultModel deleteFirestation(ModelObjectFinder finder, SafetyAlertsModel model, Firestation removeFirestation) {
         //Confirm firestation mapping exists
         if (finder.findFirestation(removeFirestation.getAddress(), model) == null) {

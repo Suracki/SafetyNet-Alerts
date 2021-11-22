@@ -1,10 +1,14 @@
 package com.safetynet.alerts.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+/**
+ * DataConfig class is used to determine which database file to load
+ *
+ * Reads app.environment variable from application.properties
+ */
 @Service
 public class DataConfig {
     private String dataFile;
@@ -13,6 +17,11 @@ public class DataConfig {
     private String appEnvironment;
 
 
+    /**
+     * Consutrctor for DataConfig
+     *
+     * @param environment either 'prod' or 'dev', autofilled from app.environment file
+     */
     @Autowired
     public DataConfig(@Value( "${app.environment}" ) String environment) {
         if (environment.equals("prod")) {
@@ -28,10 +37,12 @@ public class DataConfig {
 
     }
 
-//    public DataConfig(String dataFile) {
-//        this.dataFile = dataFile;
-//    }
 
+    /**
+     * Accessor method for Datafile location String for use in reading/writing files
+     *
+     * @return dataFile location String
+     */
     public String getDataFile() {
         return dataFile;
     }

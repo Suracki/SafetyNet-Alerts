@@ -3,10 +3,7 @@ package com.safetynet.alerts.presentation.controller;
 import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
 import com.safetynet.alerts.logging.LogHandlerTiny;
-import com.safetynet.alerts.logic.CollectionParser;
-import com.safetynet.alerts.logic.GetService;
-import com.safetynet.alerts.logic.ModelObjectFinder;
-import com.safetynet.alerts.logic.PersonAndRecordParser;
+import com.safetynet.alerts.logic.*;
 import com.safetynet.alerts.presentation.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 
+/**
+ * RestController for custom endpoint GET mappings
+ */
 @RestController
 public class GetMappingController {
 
@@ -56,6 +56,14 @@ public class GetMappingController {
         return Arrays.stream(intArray).mapToObj(String::valueOf).toArray(String[]::new);
     }
 
+    /**
+     * Returns all people serviced by a specific fire station.
+     * Includes first name, last name, address, and phone number for each person
+     * Also includes summary of the number of adults and children in the service area
+     *
+     * @param stationNumber
+     * @return Json object as string in ResponseEntity
+     */
     @GetMapping("/firestation")
     public ResponseEntity<String> getPeopleServicedByStation(@RequestParam("stationNumber") int stationNumber) {
         //Log reqquest
@@ -79,6 +87,15 @@ public class GetMappingController {
 
     }
 
+    /**
+     * Returns all children (people under 18) at a specified address.
+     * Includes first name, last name, age for each child
+     * Also includes separated list of adults living at the address
+     * If no children are at the address, response contains an empty string
+     *
+     * @param address
+     * @return Json object as string in ResponseEntity
+     */
     @GetMapping("/childAlert")
     public ResponseEntity<String> getChildrenAtAddress(@RequestParam("address") String address) {
         //Log reqquest
@@ -103,6 +120,12 @@ public class GetMappingController {
         return response;
     }
 
+    /**
+     * Returns a list of phone numbers for each person within the provided firestation's jurisdiction
+     *
+     * @param stationNumber
+     * @return Json object as string in ResponseEntity
+     */
     @GetMapping("/phoneAlert")
     public ResponseEntity<String> getPhoneNumbersForPeopleServicedByStation(@RequestParam("firestation") int stationNumber) {
         //Log reqquest
@@ -129,6 +152,13 @@ public class GetMappingController {
 
     }
 
+    /**
+     * Returns the firestation number that services a provided address
+     * Also includes details of all people living at the address
+     *
+     * @param address
+     * @return Json object as string in ResponseEntity
+     */
     @GetMapping("/fire")
     public ResponseEntity<String> getFirestationNumberAndResidentsForAddress(@RequestParam("address") String address) {
         //Log reqquest
@@ -152,6 +182,13 @@ public class GetMappingController {
         return response;
     }
 
+    /**
+     * Returns a list of all households in each provided firestation's jurisdiction
+     * People are grouped into households by address, and resident details are included in response
+     *
+     * @param stationNumbers
+     * @return Json object as string in ResponseEntity
+     */
     @GetMapping("/flood/stations")
     public ResponseEntity<String> getHouseholdsByFirestation(@RequestParam("stations") int[] stationNumbers) {
         //Log reqquest
@@ -175,6 +212,17 @@ public class GetMappingController {
         return response;
     }
 
+    /**
+     * Returns information for a provided firstname/lastname combination
+     * Includes name, address, age, medications and allergies
+     * <p>
+     * While firstname/lastname should be considered unique in the system,
+     * if there are multiple this will return all matches
+     *
+     * @param firstName
+     * @param lastName
+     * @return Json object as string in ResponseEntity
+     */
     @GetMapping("/personInfo")
     public ResponseEntity<String> getPersonInfoByFirstNameLastName(@RequestParam("firstName") String firstName,
                                                                    @RequestParam("lastName") String lastName) {
@@ -199,6 +247,12 @@ public class GetMappingController {
         return response;
     }
 
+    /**
+     * Returns email addresses for all residents of provided city
+     *
+     * @param city
+     * @return Json object as string in ResponseEntity
+     */
     @GetMapping("/communityEmail")
     public ResponseEntity<String> getEmailAddressesByCity(@RequestParam("city") String city) {
         //Log reqquest

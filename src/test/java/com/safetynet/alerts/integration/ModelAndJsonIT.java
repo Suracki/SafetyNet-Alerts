@@ -1,11 +1,11 @@
 package com.safetynet.alerts.integration;
 
 import com.safetynet.alerts.data.io.JsonDAO;
+import com.safetynet.alerts.logic.JsonHandler;
 import com.safetynet.alerts.presentation.model.*;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertTrue;
