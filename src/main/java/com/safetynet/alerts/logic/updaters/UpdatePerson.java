@@ -1,5 +1,6 @@
-package com.safetynet.alerts.logic;
+package com.safetynet.alerts.logic.updaters;
 
+import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
 import com.safetynet.alerts.presentation.model.Person;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
 import org.springframework.stereotype.Service;

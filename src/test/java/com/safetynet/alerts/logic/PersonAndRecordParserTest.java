@@ -1,5 +1,6 @@
 package com.safetynet.alerts.logic;
 
+import com.safetynet.alerts.logic.parsers.PersonAndRecordParser;
 import com.safetynet.alerts.presentation.model.Firestation;
 import com.safetynet.alerts.presentation.model.MedicalRecord;
 import com.safetynet.alerts.presentation.model.Person;

@@ -1,4 +1,4 @@
-package com.safetynet.alerts.logic;
+package com.safetynet.alerts.logic.parsers;
 
 import com.safetynet.alerts.presentation.model.MedicalRecord;
 import com.safetynet.alerts.presentation.model.Person;

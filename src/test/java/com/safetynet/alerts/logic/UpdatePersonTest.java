@@ -1,10 +1,12 @@
 package com.safetynet.alerts.logic;
 
+import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
+import com.safetynet.alerts.logic.updaters.ResultModel;
+import com.safetynet.alerts.logic.updaters.UpdatePerson;
 import com.safetynet.alerts.presentation.model.Firestation;
 import com.safetynet.alerts.presentation.model.MedicalRecord;
 import com.safetynet.alerts.presentation.model.Person;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
