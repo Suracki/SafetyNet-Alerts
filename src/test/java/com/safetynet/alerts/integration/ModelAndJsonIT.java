@@ -22,20 +22,7 @@ public class ModelAndJsonIT {
     private static JsonDAO jsonDAO;
     private static File testFile;
     private static File comparisonFile;
-    private static String jsonString = "{\n" +
-            "    \"persons\": [\n" +
-            "        {\"firstName\":\"FirstOne\",\"lastName\":\"LastOne\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"},\n" +
-            "        {\"firstName\":\"FirstTwo\",\"lastName\":\"LastTwo\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"}\n" +
-            "    ],\n" +
-            "    \"firestations\": [\n" +
-            "        {\"address\":\"Address\",\"station\":1},\n" +
-            "        {\"address\":\"Address\",\"station\":2}\n" +
-            "    ],\n" +
-            "    \"medicalrecords\": [\n" +
-            "        {\"firstName\":\"FirstOne\",\"lastName\":\"LastOne\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
-            "        {\"firstName\":\"FirstTwo\",\"lastName\":\"LastTwo\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]}\n" +
-            "    ]\n" +
-            "}";
+    private static String jsonString;
 
     @BeforeAll
     private static void setUp() throws IOException {
@@ -43,6 +30,62 @@ public class ModelAndJsonIT {
         jsonHandler = new JsonHandler();
         comparisonFile = new File("comparisonFile.json");
         testFile = new File("testFile.json");
+        jsonString = "{\n" +
+                "  \"persons\": [\n" +
+                "    {\n" +
+                "      \"firstName\": \"FirstOne\",\n" +
+                "      \"lastName\": \"LastOne\",\n" +
+                "      \"address\": \"Address\",\n" +
+                "      \"city\": \"City\",\n" +
+                "      \"zip\": \"Zip\",\n" +
+                "      \"phone\": \"555-1234\",\n" +
+                "      \"email\": \"name@mail.com\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"firstName\": \"FirstTwo\",\n" +
+                "      \"lastName\": \"LastTwo\",\n" +
+                "      \"address\": \"Address\",\n" +
+                "      \"city\": \"City\",\n" +
+                "      \"zip\": \"Zip\",\n" +
+                "      \"phone\": \"555-1234\",\n" +
+                "      \"email\": \"name@mail.com\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"firestations\": [\n" +
+                "    {\n" +
+                "      \"address\": \"Address\",\n" +
+                "      \"station\": 1\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"address\": \"Address\",\n" +
+                "      \"station\": 2\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"medicalrecords\": [\n" +
+                "    {\n" +
+                "      \"firstName\": \"FirstOne\",\n" +
+                "      \"lastName\": \"LastOne\",\n" +
+                "      \"birthdate\": \"01/02/1234\",\n" +
+                "      \"medications\": [\n" +
+                "        \"medication\"\n" +
+                "      ],\n" +
+                "      \"allergies\": [\n" +
+                "        \"allergy\"\n" +
+                "      ]\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"firstName\": \"FirstTwo\",\n" +
+                "      \"lastName\": \"LastTwo\",\n" +
+                "      \"birthdate\": \"01/02/1234\",\n" +
+                "      \"medications\": [\n" +
+                "        \"medication\"\n" +
+                "      ],\n" +
+                "      \"allergies\": [\n" +
+                "        \"allergy\"\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
 
         if (!comparisonFile.exists()) {
             comparisonFile.createNewFile();
@@ -91,11 +134,11 @@ public class ModelAndJsonIT {
                 new Firestation("Address", 1),
                 new Firestation("Address", 2)
         };
-        MedicalRecord[] medicalRecords = new MedicalRecord[]{
+        MedicalRecord[] medicalrecords = new MedicalRecord[]{
                 new MedicalRecord("FirstOne", "LastOne", "01/02/1234", new String[]{"medication"}, new String[]{"allergy"}),
                 new MedicalRecord("FirstTwo", "LastTwo", "01/02/1234", new String[]{"medication"}, new String[]{"allergy"})
         };
-        safetyAlertsModel = new SafetyAlertsModel(persons, firestations, medicalRecords);
+        safetyAlertsModel = new SafetyAlertsModel(persons, firestations, medicalrecords);
 
         testFile = new File("testFile.json");
 

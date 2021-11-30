@@ -7,18 +7,18 @@ public class SafetyAlertsModel {
 
     private Person[] persons;
     private Firestation[] firestations;
-    private MedicalRecord[] medicalRecords;
+    private MedicalRecord[] medicalrecords;
 
     public SafetyAlertsModel() {
         persons = new Person[0];
         firestations = new Firestation[0];
-        medicalRecords = new MedicalRecord[0];
+        medicalrecords = new MedicalRecord[0];
     }
 
     public SafetyAlertsModel(Person[] persons, Firestation[] firestations, MedicalRecord[] medicalRecords) {
         this.persons = persons;
         this.firestations = firestations;
-        this.medicalRecords = medicalRecords;
+        this.medicalrecords = medicalRecords;
     }
 
     public void addPerson(Person person) {
@@ -36,10 +36,10 @@ public class SafetyAlertsModel {
     }
 
     public void addMedicalRecord(MedicalRecord medicalRecord) {
-        MedicalRecord[] updatedArray = new MedicalRecord[medicalRecords.length + 1];
-        System.arraycopy(medicalRecords, 0, updatedArray, 0,medicalRecords.length);
-        updatedArray[medicalRecords.length] = medicalRecord;
-        medicalRecords = updatedArray;
+        MedicalRecord[] updatedArray = new MedicalRecord[medicalrecords.length + 1];
+        System.arraycopy(medicalrecords, 0, updatedArray, 0,medicalrecords.length);
+        updatedArray[medicalrecords.length] = medicalRecord;
+        medicalrecords = updatedArray;
     }
 
     public Person[] getPersons() {
@@ -57,9 +57,9 @@ public class SafetyAlertsModel {
     }
 
     public MedicalRecord[] getMedicalRecords() {
-        return medicalRecords.clone();
+        return medicalrecords.clone();
     }
     public void setMedicalRecords(MedicalRecord[] medicalRecords) {
-        this.medicalRecords = medicalRecords;
+        this.medicalrecords = medicalRecords;
     }
 }

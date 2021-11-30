@@ -33,18 +33,60 @@ public class JsonHandlerTest {
         SafetyAlertsModel model = new SafetyAlertsModel(persons, firestations, medicalRecords);
 
         String expectedJson = "{\n" +
-                "    \"persons\": [\n" +
-                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"},\n" +
-                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"}\n" +
-                "    ],\n" +
-                "    \"firestations\": [\n" +
-                "        {\"address\":\"Address\",\"station\":1},\n" +
-                "        {\"address\":\"Address\",\"station\":2}\n" +
-                "    ],\n" +
-                "    \"medicalrecords\": [\n" +
-                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
-                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]}\n" +
-                "    ]\n" +
+                "  \"persons\": [\n" +
+                "    {\n" +
+                "      \"firstName\": \"First\",\n" +
+                "      \"lastName\": \"Last\",\n" +
+                "      \"address\": \"Address\",\n" +
+                "      \"city\": \"City\",\n" +
+                "      \"zip\": \"Zip\",\n" +
+                "      \"phone\": \"555-1234\",\n" +
+                "      \"email\": \"name@mail.com\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"firstName\": \"First\",\n" +
+                "      \"lastName\": \"Last\",\n" +
+                "      \"address\": \"Address\",\n" +
+                "      \"city\": \"City\",\n" +
+                "      \"zip\": \"Zip\",\n" +
+                "      \"phone\": \"555-1234\",\n" +
+                "      \"email\": \"name@mail.com\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"firestations\": [\n" +
+                "    {\n" +
+                "      \"address\": \"Address\",\n" +
+                "      \"station\": 1\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"address\": \"Address\",\n" +
+                "      \"station\": 2\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"medicalrecords\": [\n" +
+                "    {\n" +
+                "      \"firstName\": \"First\",\n" +
+                "      \"lastName\": \"Last\",\n" +
+                "      \"birthdate\": \"01/02/1234\",\n" +
+                "      \"medications\": [\n" +
+                "        \"medication\"\n" +
+                "      ],\n" +
+                "      \"allergies\": [\n" +
+                "        \"allergy\"\n" +
+                "      ]\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"firstName\": \"First\",\n" +
+                "      \"lastName\": \"Last\",\n" +
+                "      \"birthdate\": \"01/02/1234\",\n" +
+                "      \"medications\": [\n" +
+                "        \"medication\"\n" +
+                "      ],\n" +
+                "      \"allergies\": [\n" +
+                "        \"allergy\"\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ]\n" +
                 "}";
 
         String jsonOutput;
@@ -63,24 +105,25 @@ public class JsonHandlerTest {
         String jsonString = "{\n" +
                 "    \"persons\": [\n" +
                 "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"},\n" +
-                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"},\n" +
+                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"address\":\"Address\",\"city\":\"City\",\"zip\":\"Zip\",\"phone\":\"555-1234\",\"email\":\"name@mail.com\"}\n" +
                 "    ],\n" +
                 "    \"firestations\": [\n" +
                 "        {\"address\":\"Address\",\"station\":1},\n" +
                 "        {\"address\":\"Address\",\"station\":2},\n" +
-                "        {\"address\":\"Address\",\"station\":3},\n" +
+                "        {\"address\":\"Address\",\"station\":3}\n" +
                 "    ],\n" +
                 "    \"medicalrecords\": [\n" +
                 "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
                 "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
                 "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
-                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]},\n" +
-                "    ],\n" +
+                "        {\"firstName\":\"First\",\"lastName\":\"Last\",\"birthdate\":\"01/02/1234\",\"medications\":[\"medication\"],\"allergies\":[\"allergy\"]}\n" +
+                "    ]\n" +
                 "}";
         SafetyAlertsModel model;
 
         //Method
         model = jsonHandler.jsonToModel(jsonString);
+        System.out.println(model);
 
         //Verification
         assertEquals(2, model.getPersons().length);

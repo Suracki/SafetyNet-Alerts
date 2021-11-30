@@ -26,6 +26,11 @@ public class JsonDAO {
         while ((line = bufferedReader.readLine()) != null) {
             jsonBuilder.append(line).append('\n');
         }
+        //Remove final newline character
+        if (jsonBuilder.length() > 0) {
+            jsonBuilder.setLength(jsonBuilder.length() - 1);
+        }
+
 
         bufferedReader.close();
 
