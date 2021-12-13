@@ -210,7 +210,7 @@
 							<archive>
 								<manifest>
 									<mainClass>
-										com.parkit.parkingsystem.App
+										com.safetynet.alerts
 									</mainClass>
 								</manifest>
 							</archive>
