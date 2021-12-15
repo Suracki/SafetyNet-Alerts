@@ -5,6 +5,7 @@ import com.safetynet.alerts.data.io.JsonDAO;
 import com.safetynet.alerts.logging.LogHandlerTiny;
 import com.safetynet.alerts.logic.JsonHandler;
 import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
+import com.safetynet.alerts.logic.service.FirestationService;
 import com.safetynet.alerts.logic.service.PersonService;
 import com.safetynet.alerts.logic.updaters.UpdateFirestation;
 import com.safetynet.alerts.logic.updaters.UpdateMedicalRecord;
@@ -46,6 +47,10 @@ public class ObjectControllerBeanSetup {
     @Bean
     public PersonService personService() {
         return new PersonService();
+    }
+    @Bean
+    public FirestationService firestationService() {
+        return new FirestationService();
     }
     @Bean
     public SafetyAlertsModel safetyAlertsModel() {return new SafetyAlertsModel();}

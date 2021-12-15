@@ -44,20 +44,18 @@ public class DataFileErrorTest {
     @Mock
     LogHandlerTiny logHandlerTiny;
     @Mock
-    UpdateFirestation updateFirestation;
-    @Mock
     UpdateMedicalRecord updateMedicalRecord;
-    @Mock
-    UpdatePerson updatePerson;
     @Mock
     SafetyAlertsModel safetyAlertsModel;
 
 
     GetMappingController getMappingController;
-    FirestationController firestationController;
     MedicalRecordController medicalRecordController;
+
     @InjectMocks
     PersonController personController;
+    @InjectMocks
+    FirestationController firestationController;
 
     @Test
     public void getMappingControllerThrowsError500IfDataFileUnavailable()  {
@@ -75,10 +73,9 @@ public class DataFileErrorTest {
     }
 
     @Test
-    public void firestationControllerThrowsError500IfDataFileUnavailable()  {
+    public void firestationControllerThrowsError500IfDataFileUnavailable() throws Exception {
         //Preparation
-        firestationController = new FirestationController(jsonHandler, jsonDAO, finder, updateFirestation, dataConfig, logHandlerTiny);
-        when(jsonHandler.jsonToModel(Mockito.anyString())).thenThrow(new RuntimeException("Exception"));
+        doThrow(new Exception("Exception")).when(safetyAlertsModel).loadModelFromDisk();
 
         //Method
         ResponseEntity<String> output = firestationController.deleteEntity("address", 10);

@@ -5,8 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.safetynet.alerts.logging.LogHandlerTiny;
 import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
 import com.safetynet.alerts.logic.updaters.ResultModel;
+import com.safetynet.alerts.logic.updaters.UpdateFirestation;
 import com.safetynet.alerts.logic.updaters.UpdatePerson;
-import com.safetynet.alerts.presentation.model.Person;
+import com.safetynet.alerts.presentation.model.Firestation;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -14,95 +15,92 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-
 @Service
-public class PersonService {
+public class FirestationService {
 
     @Autowired
     private LogHandlerTiny logHandler;
     @Autowired
     private ModelObjectFinder finder;
     @Autowired
-    private UpdatePerson updatePerson;
+    private UpdateFirestation updateFirestation;
 
-    public ResponseEntity<String> addEntityService(SafetyAlertsModel model, String firstName, String lastName,
-                                                   String address, String city, String zip, String phone, String email) {
+    public ResponseEntity<String> addEntityService(SafetyAlertsModel safetyAlertsModel, String address, int station) {
 
-        Person newPerson;
-        if (finder.findPerson(firstName, lastName, model) == null){
-            //Person is not already in model, we can add them
-            newPerson = new Person(firstName,lastName,address,city,zip,phone,email);
-            model.addPerson(newPerson);
+        Firestation newFireStation;
+        if (finder.findFirestation(address, safetyAlertsModel) == null){
+            //Address does not already have a firestation mapped, we can add this mapping
+            newFireStation = new Firestation(address,station);
+            safetyAlertsModel.addFirestation(newFireStation);
         }
         else {
-            //Person already exists with this firstName/lastName combination, call fails
+            //Address already has a firestation mapped, cannot add
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.CONFLICT).build();
             logHandler.logResponse("POST",response);
             return response;
         }
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.setPrettyPrinting().create();
-        String responseString = gson.toJson(newPerson);
+        String responseString = gson.toJson(newFireStation);
         HttpHeaders responseHeaders = new HttpHeaders();
         ResponseEntity<String> response = new ResponseEntity<>(responseString, responseHeaders, HttpStatus.CREATED);
 
         return response;
-
     }
 
-
-    public ResponseEntity<String> updateEntityService(SafetyAlertsModel model,String firstName, String lastName,
-                                                      String address, String city, String zip, String phone, String email) {
-
-
-        Person newPerson;
-        if (finder.findPerson(firstName, lastName, model) == null){
-            //Person is not already in model, we cannot update them
+    public ResponseEntity<String> updateEntityService(SafetyAlertsModel safetyAlertsModel, String address, int station) {
+        Firestation newFireStation;
+        if (finder.findFirestation(address, safetyAlertsModel) == null){
+            //Address does not already have a firestation mapped, we cannot update this mapping
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             logHandler.logResponse("PUT", response);
             return response;
         }
         else {
-            //Person already exists with this firstName/lastName combination, we can update
-            newPerson = new Person(firstName,lastName,address,city,zip,phone,email);
-            ResultModel result = updatePerson.updatePerson(finder, model, newPerson);
+            //Address already has a firestation mapped, we can update
+            newFireStation = new Firestation(address,station);
+            ResultModel result = updateFirestation.updateFirestation(finder, safetyAlertsModel, newFireStation);
             if (result.getBool()) {
-                //Person was updated successfully
-                model.updateModel(result.getModel());
+                //Mapping was added successfully
+                safetyAlertsModel.updateModel(result.getModel());
             }
             else {
-                //Person failed to be updated
+                //Mapping failed to be added
                 ResponseEntity<String> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
                 logHandler.logResponse("PUT",response);
                 return response;
             }
         }
+
         return ResponseEntity.ok().build();
+
     }
 
-    public ResponseEntity<String> deleteEntityService(SafetyAlertsModel model, String firstName, String lastName) {
-        Person newPerson;
-        if (finder.findPerson(firstName, lastName, model) == null){
-            //Person is not already in model, we cannot delete them
+    public ResponseEntity<String> deleteEntityService(SafetyAlertsModel safetyAlertsModel, String address, int station) {
+
+        Firestation newFirestation;
+        if (finder.findFirestation(address, safetyAlertsModel) == null){
+            //Firestation mapping is not already in model, we cannot delete them
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            logHandler.logResponse("DELETE",response);
+            logHandler.logResponse("DELETE", response);
             return response;
         }
         else {
-            //Person does exist, we can delete them
-            newPerson = new Person(firstName,lastName,"","","","","");
-            ResultModel result = updatePerson.deletePerson(finder, model, newPerson);
+            //Firestation mapping does exist for this address, we can delete them
+            newFirestation = new Firestation(address,station);
+            ResultModel result = updateFirestation.deleteFirestation(finder, safetyAlertsModel, newFirestation);
             if (result.getBool()) {
-                //Person was deleted successfully
-                model.updateModel(result.getModel());
+                //Mapping was deleted successfully
+                safetyAlertsModel.updateModel(result.getModel());
             }
             else {
-                //Person failed to be deleted
+                //Mapping failed to be deleted
                 ResponseEntity<String> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
                 logHandler.logResponse("DELETE",response);
                 return response;
             }
         }
+
         return ResponseEntity.ok().build();
     }
 

@@ -6,6 +6,7 @@ import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
 import com.safetynet.alerts.logging.LogHandlerTiny;
 import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
+import com.safetynet.alerts.logic.service.FirestationService;
 import com.safetynet.alerts.logic.updaters.ResultModel;
 import com.safetynet.alerts.logic.updaters.UpdateFirestation;
 import com.safetynet.alerts.presentation.model.Firestation;
@@ -25,52 +26,28 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class FirestationController {
 
-    private LogHandlerTiny logHandler;
-    private JsonHandler jsonHandler;
-    private JsonDAO jsonDAO;
-    private ModelObjectFinder finder;
-    private UpdateFirestation updateFirestation;
-    private DataConfig dataConfig;
-
-    /**
-     * Constructor for FirestationController
-     * All parameters are Autowired
-     *
-     * @param jsonHandler JsonHandler object
-     * @param jsonDAO JsonDAO object
-     * @param finder ModelObjectFinder object
-     * @param updateFirestation UpdateFirestation object
-     * @param dataConfig DataConfig object
-     * @param logHandler LogHandlerTiny object
-     */
     @Autowired
-    public FirestationController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder,
-                                 UpdateFirestation updateFirestation, DataConfig dataConfig,
-                                 LogHandlerTiny logHandler) {
-        this.jsonHandler = jsonHandler;
-        this.jsonDAO = jsonDAO;
-        this.finder = finder;
-        this.updateFirestation = updateFirestation;
-        this.dataConfig = dataConfig;
-        this.logHandler = logHandler;
-    }
+    private LogHandlerTiny logHandler;
+    @Autowired
+    private FirestationService firestationService;
+    @Autowired
+    private SafetyAlertsModel safetyAlertsModel;
 
-    private SafetyAlertsModel loadModelFromDisk() {
-
+    private boolean loadModelFromDisk() {
         try {
-            return jsonHandler.jsonToModel(jsonDAO.readJsonFromFile(dataConfig.getDataFile()));
+            safetyAlertsModel.loadModelFromDisk();
+            return true;
         }
         catch (Exception e) {
             logHandler.setLogger("FirestationController");
             logHandler.error("Error loading database file " + e);
         }
-        return null;
+        return false;
     }
 
-    private void saveModelToDisk(SafetyAlertsModel model) {
-
+    private void saveModelToDisk() {
         try {
-            jsonDAO.writeJsonToFile(dataConfig.getDataFile(),jsonHandler.modelToJson(model));
+            safetyAlertsModel.saveModelToDisk();
         }
         catch (Exception e) {
             logHandler.setLogger("FirestationController");
@@ -97,38 +74,21 @@ public class FirestationController {
         logHandler.logRequest("POST","/firestation", new String[] {address, String.valueOf(station)});
 
         //load data
-        SafetyAlertsModel model = loadModelFromDisk();
-        if (model == null){
+        if (!loadModelFromDisk()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("POST", response);
             return response;
         }
         //Perform Request
-        Firestation newFireStation;
-        if (finder.findFirestation(address, model) == null){
-            //Address does not already have a firestation mapped, we can add this mapping
-            newFireStation = new Firestation(address,station);
-            model.addFirestation(newFireStation);
-        }
-        else {
-            //Address already has a firestation mapped, cannot add
-            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.CONFLICT).build();
-            logHandler.logResponse("POST",response);
-            return response;
-        }
+        ResponseEntity<String> response = firestationService.addEntityService(safetyAlertsModel, address, station);
 
         //save data
-        saveModelToDisk(model);
-        //respond
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.setPrettyPrinting().create();
-        String responseString = gson.toJson(newFireStation);
-        HttpHeaders responseHeaders = new HttpHeaders();
-        ResponseEntity<String> response = new ResponseEntity<>(responseString, responseHeaders, HttpStatus.CREATED);
+        saveModelToDisk();
 
         //Log response
         logHandler.logResponse("POST", response);
 
+        //respond
         return response;
     }
 
@@ -152,40 +112,17 @@ public class FirestationController {
         logHandler.logRequest("PUT","/firestation", new String[] {address, String.valueOf(station)});
 
         //load data
-        SafetyAlertsModel model = loadModelFromDisk();
-        if (model == null){
+        if (!loadModelFromDisk()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("PUT", response);
             return response;
         }
         //Perform Request
-        Firestation newFireStation;
-        if (finder.findFirestation(address, model) == null){
-            //Address does not already have a firestation mapped, we cannot update this mapping
-            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            logHandler.logResponse("PUT", response);
-            return response;
-        }
-        else {
-            //Address already has a firestation mapped, we can update
-            newFireStation = new Firestation(address,station);
-            ResultModel result = updateFirestation.updateFirestation(finder, model, newFireStation);
-            if (result.getBool()) {
-                //Mapping was added successfully
-                model = result.getModel();
-            }
-            else {
-                //Mapping failed to be added
-                ResponseEntity<String> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-                logHandler.logResponse("PUT",response);
-                return response;
-            }
-        }
+        ResponseEntity<String> response = firestationService.updateEntityService(safetyAlertsModel, address, station);
 
         //save data
-        saveModelToDisk(model);
+        saveModelToDisk();
         //Log response
-        ResponseEntity<String> response = ResponseEntity.ok().build();
         logHandler.logResponse("PUT",response);
         //respond
         return response;
@@ -211,40 +148,18 @@ public class FirestationController {
         logHandler.logRequest("DELETE","/firestation", new String[] {address, String.valueOf(station)});
 
         //load data
-        SafetyAlertsModel model = loadModelFromDisk();
-        if (model == null){
+        if (!loadModelFromDisk()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("DELETE", response);
             return response;
         }
         //Perform Request
-        Firestation newFirestation;
-        if (finder.findFirestation(address, model) == null){
-            //Firestation mapping is not already in model, we cannot delete them
-            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            logHandler.logResponse("DELETE", response);
-            return response;
-        }
-        else {
-            //Firestation mapping does exist for this address, we can delete them
-            newFirestation = new Firestation(address,station);
-            ResultModel result = updateFirestation.deleteFirestation(finder, model, newFirestation);
-            if (result.getBool()) {
-                //Mapping was deleted successfully
-                model = result.getModel();
-            }
-            else {
-                //Mapping failed to be deleted
-                ResponseEntity<String> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-                logHandler.logResponse("DELETE",response);
-                return response;
-            }
-        }
+        ResponseEntity<String> response = firestationService.deleteEntityService(safetyAlertsModel, address, station);
 
         //save data
-        saveModelToDisk(model);
+        saveModelToDisk();
+
         //Log response
-        ResponseEntity<String> response = ResponseEntity.ok().build();
         logHandler.logResponse("DELETE",response);
         //respond
         return response;
