@@ -4,7 +4,7 @@ import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
 import com.safetynet.alerts.logging.LogHandlerTiny;
 import com.safetynet.alerts.logic.parsers.CollectionParser;
-import com.safetynet.alerts.logic.GetService;
+import com.safetynet.alerts.logic.service.GetService;
 import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
 import com.safetynet.alerts.logic.parsers.PersonAndRecordParser;
 import com.safetynet.alerts.logic.JsonHandler;

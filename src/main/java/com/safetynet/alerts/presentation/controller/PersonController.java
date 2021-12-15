@@ -6,6 +6,7 @@ import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
 import com.safetynet.alerts.logging.LogHandlerTiny;
 import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
+import com.safetynet.alerts.logic.service.PersonService;
 import com.safetynet.alerts.logic.updaters.ResultModel;
 import com.safetynet.alerts.logic.updaters.UpdatePerson;
 import com.safetynet.alerts.logic.JsonHandler;
@@ -31,6 +32,10 @@ public class PersonController {
     private ModelObjectFinder finder;
     private UpdatePerson updatePerson;
     private DataConfig dataConfig;
+    @Autowired
+    private PersonService personService;
+    @Autowired
+    private SafetyAlertsModel safetyAlertsModel;
 
     @Autowired
     public PersonController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder,
@@ -43,22 +48,21 @@ public class PersonController {
         this.logHandler = logHandler;
     }
 
-    private SafetyAlertsModel loadModelFromDisk() {
+    private boolean loadModelFromDisk() {
         try {
-            return jsonHandler.jsonToModel(jsonDAO.readJsonFromFile(dataConfig.getDataFile()));
+            safetyAlertsModel.loadModelFromDisk();
+            return true;
         }
         catch (Exception e) {
             logHandler.setLogger("PersonController");
             logHandler.error("Error loading database file " + e);
         }
-        return null;
+        return false;
     }
 
-    private void saveModelToDisk(SafetyAlertsModel model) {
-        JsonHandler jsonHandler = new JsonHandler();
-        JsonDAO jsonDAO = new JsonDAO();
+    private void saveModelToDisk() {
         try {
-            jsonDAO.writeJsonToFile(dataConfig.getDataFile(),jsonHandler.modelToJson(model));
+            safetyAlertsModel.saveModelToDisk();
         }
         catch (Exception e) {
             logHandler.setLogger("PersonController");
@@ -93,37 +97,20 @@ public class PersonController {
         logHandler.logRequest("POST","/person", new String[] {firstName, lastName, address, city, zip, phone, email});
 
         //load data
-        SafetyAlertsModel model = loadModelFromDisk();
-        if (model == null){
+        if (!loadModelFromDisk()){
+            //If model failed to load, return error
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("POST", response);
             return response;
         }
         //Perform Request
-        Person newPerson;
-        if (finder.findPerson(firstName, lastName, model) == null){
-            //Person is not already in model, we can add them
-            newPerson = new Person(firstName,lastName,address,city,zip,phone,email);
-            model.addPerson(newPerson);
-        }
-        else {
-            //Person already exists with this firstName/lastName combination, call fails
-            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.CONFLICT).build();
-            logHandler.logResponse("POST",response);
-            return response;
-        }
+        ResponseEntity<String> response = personService.addEntityService(safetyAlertsModel, firstName, lastName, address, city, zip, phone, email);
 
         //save data
-        saveModelToDisk(model);
-        //respond
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.setPrettyPrinting().create();
-        String responseString = gson.toJson(newPerson);
-        HttpHeaders responseHeaders = new HttpHeaders();
-        ResponseEntity<String> response = new ResponseEntity<>(responseString, responseHeaders, HttpStatus.CREATED);
-
+        saveModelToDisk();
         //Log response
         logHandler.logResponse("POST", response);
+        //respond
         return response;
     }
 
@@ -154,41 +141,18 @@ public class PersonController {
         logHandler.setLogger("PersonController");
         logHandler.logRequest("PUT","/person", new String[] {firstName, lastName, address, city, zip, phone, email});
         //load data
-        SafetyAlertsModel model = loadModelFromDisk();
-        if (model == null){
+        if (!loadModelFromDisk()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("PUT", response);
             return response;
         }
         //Perform Request
-        Person newPerson;
-        if (finder.findPerson(firstName, lastName, model) == null){
-            //Person is not already in model, we cannot update them
-            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            logHandler.logResponse("PUT", response);
-            return response;
-        }
-        else {
-            //Person already exists with this firstName/lastName combination, call fails
-            newPerson = new Person(firstName,lastName,address,city,zip,phone,email);
-            ResultModel result = updatePerson.updatePerson(finder, model, newPerson);
-            if (result.getBool()) {
-                //Person was added successfully
-                model = result.getModel();
-            }
-            else {
-                //Person failed to be added
-                ResponseEntity<String> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-                logHandler.logResponse("PUT",response);
-                return response;
-            }
-        }
+        ResponseEntity<String> response = personService.updateEntityService(safetyAlertsModel, firstName, lastName, address, city, zip, phone, email);
+        //Log response
+        logHandler.logResponse("PUT",response);
 
         //save data
-        saveModelToDisk(model);
-        //Log response
-        ResponseEntity<String> response = ResponseEntity.ok().build();
-        logHandler.logResponse("PUT",response);
+        saveModelToDisk();
         //respond
         return response;
     }
@@ -214,40 +178,18 @@ public class PersonController {
         logHandler.logRequest("DELETE","/person", new String[] {firstName, lastName});
 
         //load data
-        SafetyAlertsModel model = loadModelFromDisk();
-        if (model == null){
+        if (!loadModelFromDisk()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("DELETE", response);
             return response;
         }
         //Perform Request
-        Person newPerson;
-        if (finder.findPerson(firstName, lastName, model) == null){
-            //Person is not already in model, we cannot delete them
-            ResponseEntity<String> response = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            logHandler.logResponse("DELETE",response);
-            return response;
-        }
-        else {
-            //Person does exist, we can delete them
-            newPerson = new Person(firstName,lastName,"","","","","");
-            ResultModel result = updatePerson.deletePerson(finder, model, newPerson);
-            if (result.getBool()) {
-                //Person was deleted successfully
-                model = result.getModel();
-            }
-            else {
-                //Person failed to be deleted
-                ResponseEntity<String> response = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-                logHandler.logResponse("DELETE",response);
-                return response;
-            }
-        }
+        ResponseEntity<String> response = personService.deleteEntityService(safetyAlertsModel, firstName, lastName);
 
         //save data
-        saveModelToDisk(model);
+        saveModelToDisk();
         //Log response
-        ResponseEntity<String> response = ResponseEntity.ok().build();
+
         logHandler.logResponse("DELETE",response);
         //respond
         return response;

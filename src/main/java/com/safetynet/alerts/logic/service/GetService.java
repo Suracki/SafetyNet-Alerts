@@ -1,4 +1,4 @@
-package com.safetynet.alerts.logic;
+package com.safetynet.alerts.logic.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -7,6 +7,7 @@ import com.safetynet.alerts.logic.*;
 import com.safetynet.alerts.logic.parsers.CollectionParser;
 import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
 import com.safetynet.alerts.logic.parsers.PersonAndRecordParser;
+import com.safetynet.alerts.logic.service.GetService;
 import com.safetynet.alerts.presentation.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
