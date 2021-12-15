@@ -44,14 +44,13 @@ public class DataFileErrorTest {
     @Mock
     LogHandlerTiny logHandlerTiny;
     @Mock
-    UpdateMedicalRecord updateMedicalRecord;
-    @Mock
     SafetyAlertsModel safetyAlertsModel;
 
 
     GetMappingController getMappingController;
-    MedicalRecordController medicalRecordController;
 
+    @InjectMocks
+    MedicalRecordController medicalRecordController;
     @InjectMocks
     PersonController personController;
     @InjectMocks
@@ -82,22 +81,19 @@ public class DataFileErrorTest {
 
         //Verification
         int status = output.getStatusCode().value();
-
         assertEquals(500, status);
     }
 
     @Test
-    public void medicalRecordControllerThrowsError500IfDataFileUnavailable()  {
+    public void medicalRecordControllerThrowsError500IfDataFileUnavailable() throws Exception {
         //Preparation
-        medicalRecordController = new MedicalRecordController(jsonHandler, jsonDAO, finder, updateMedicalRecord, dataConfig, logHandlerTiny);
-        when(jsonHandler.jsonToModel(Mockito.anyString())).thenThrow(new RuntimeException("Exception"));
+        doThrow(new Exception("Exception")).when(safetyAlertsModel).loadModelFromDisk();
 
         //Method
         ResponseEntity<String> output = medicalRecordController.deleteEntity("fake", "fake");
 
         //Verification
         int status = output.getStatusCode().value();
-
         assertEquals(500, status);
     }
 
