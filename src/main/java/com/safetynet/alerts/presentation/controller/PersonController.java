@@ -26,26 +26,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class PersonController {
 
+    @Autowired
     private LogHandlerTiny logHandler;
-    private JsonHandler jsonHandler;
-    private JsonDAO jsonDAO;
-    private ModelObjectFinder finder;
-    private UpdatePerson updatePerson;
-    private DataConfig dataConfig;
     @Autowired
     private PersonService personService;
     @Autowired
     private SafetyAlertsModel safetyAlertsModel;
 
     @Autowired
-    public PersonController(JsonHandler jsonHandler, JsonDAO jsonDAO, ModelObjectFinder finder,
-                            UpdatePerson updatePerson, DataConfig dataConfig, LogHandlerTiny logHandler) {
-        this.jsonHandler = jsonHandler;
-        this.jsonDAO = jsonDAO;
-        this.finder = finder;
-        this.updatePerson = updatePerson;
-        this.dataConfig = dataConfig;
-        this.logHandler = logHandler;
+    public PersonController() {
     }
 
     private boolean loadModelFromDisk() {

@@ -11,14 +11,17 @@ import com.safetynet.alerts.logic.service.GetService;
 import com.safetynet.alerts.logic.updaters.UpdateFirestation;
 import com.safetynet.alerts.logic.updaters.UpdateMedicalRecord;
 import com.safetynet.alerts.logic.updaters.UpdatePerson;
+import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,10 +49,14 @@ public class DataFileErrorTest {
     UpdateMedicalRecord updateMedicalRecord;
     @Mock
     UpdatePerson updatePerson;
+    @Mock
+    SafetyAlertsModel safetyAlertsModel;
+
 
     GetMappingController getMappingController;
     FirestationController firestationController;
     MedicalRecordController medicalRecordController;
+    @InjectMocks
     PersonController personController;
 
     @Test
@@ -98,17 +105,15 @@ public class DataFileErrorTest {
     }
 
     @Test
-    public void personControllerThrowsError500IfDataFileUnavailable()  {
+    public void personControllerThrowsError500IfDataFileUnavailable() throws Exception {
         //Preparation
-        personController = new PersonController(jsonHandler, jsonDAO, finder, updatePerson, dataConfig, logHandlerTiny);
-        when(jsonHandler.jsonToModel(Mockito.anyString())).thenThrow(new RuntimeException("Exception"));
+        doThrow(new Exception("Exception")).when(safetyAlertsModel).loadModelFromDisk();
 
         //Method
         ResponseEntity<String> output = personController.deleteEntity("fake", "fake");
 
         //Verification
         int status = output.getStatusCode().value();
-
         assertEquals(500, status);
     }
 
