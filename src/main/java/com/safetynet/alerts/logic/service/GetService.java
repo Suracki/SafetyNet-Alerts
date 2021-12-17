@@ -3,7 +3,6 @@ package com.safetynet.alerts.logic.service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.safetynet.alerts.logic.parsers.CollectionParser;
-import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
 import com.safetynet.alerts.logic.parsers.PersonAndRecordParser;
 import com.safetynet.alerts.presentation.model.entity.*;
 import com.safetynet.alerts.presentation.model.*;

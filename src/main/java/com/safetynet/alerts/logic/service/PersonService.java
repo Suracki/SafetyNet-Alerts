@@ -2,8 +2,6 @@ package com.safetynet.alerts.logic.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.safetynet.alerts.logging.LogHandlerTiny;
-import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
 import com.safetynet.alerts.logic.updaters.ResultModel;
 import com.safetynet.alerts.logic.updaters.UpdatePerson;
 import com.safetynet.alerts.presentation.model.Person;
