@@ -1,14 +1,6 @@
 package com.safetynet.alerts.presentation.controller;
 
-import com.safetynet.alerts.configuration.DataConfig;
-import com.safetynet.alerts.data.io.JsonDAO;
-import com.safetynet.alerts.logging.LogHandlerTiny;
-import com.safetynet.alerts.logic.*;
-import com.safetynet.alerts.logic.parsers.CollectionParser;
-import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
-import com.safetynet.alerts.logic.parsers.PersonAndRecordParser;
 import com.safetynet.alerts.logic.service.GetService;
-import com.safetynet.alerts.presentation.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,14 +12,10 @@ import java.util.Arrays;
  * RestController for custom endpoint GET mappings
  */
 @RestController
-public class GetMappingController {
+public class GetMappingController extends BaseController{
 
     @Autowired
-    private LogHandlerTiny logHandler;
-    @Autowired
     private GetService getService;
-    @Autowired
-    private SafetyAlertsModel safetyAlertsModel;
 
     private String[] intArrayToStringArray(int[] intArray) {
         return Arrays.stream(intArray).mapToObj(String::valueOf).toArray(String[]::new);

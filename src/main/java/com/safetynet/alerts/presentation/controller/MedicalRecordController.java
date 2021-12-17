@@ -24,14 +24,10 @@ import org.springframework.web.bind.annotation.*;
  * Includes POST/PUT/DELETE
  */
 @RestController
-public class MedicalRecordController {
+public class MedicalRecordController extends BaseController {
 
     @Autowired
-    private LogHandlerTiny logHandler;
-    @Autowired
     private MedicalRecordService medicalRecordService;
-    @Autowired
-    private SafetyAlertsModel safetyAlertsModel;
 
     private String stringArrayToString(String[] stringArray) {
         StringBuilder builder = new StringBuilder();

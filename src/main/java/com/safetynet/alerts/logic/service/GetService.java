@@ -2,7 +2,6 @@ package com.safetynet.alerts.logic.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.safetynet.alerts.logging.LogHandlerTiny;
 import com.safetynet.alerts.logic.parsers.CollectionParser;
 import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
 import com.safetynet.alerts.logic.parsers.PersonAndRecordParser;
@@ -21,18 +20,12 @@ import java.util.Arrays;
  * GetService generates ResponseEntities for each of the custom Get request endpoints
  */
 @Service
-public class GetService {
+public class GetService extends BaseService {
 
-    @Autowired
-    SafetyAlertsModel model;
-    @Autowired
-    ModelObjectFinder finder;
     @Autowired
     CollectionParser parser;
     @Autowired
     PersonAndRecordParser recordParser;
-    @Autowired
-    LogHandlerTiny logHandlerTiny;
 
     /**
      * Returns all people serviced by a specific fire station.
@@ -56,10 +49,10 @@ public class GetService {
         for (Person person : peopleAtAddress) {
             entity.addPerson(person);
             if (recordParser.isAChild(person, model.getMedicalRecords())) {
-                logHandlerTiny.debug("GetService" ,"Adding Child to Entity");
+                logHandler.debug("GetService" ,"Adding Child to Entity");
                 entity.addChild();
             } else {
-                logHandlerTiny.debug("GetService" , "Adding Adult to Entity");
+                logHandler.debug("GetService" , "Adding Adult to Entity");
                 entity.addAdult();
             }
         }
@@ -89,12 +82,12 @@ public class GetService {
         //Loop through all people at the address and add them to output entity
         for (Person person : peopleAtAddress) {
             if (recordParser.isAChild(person, model.getMedicalRecords())) {
-                logHandlerTiny.debug("GetService" ,"Adding Child to Entity");
+                logHandler.debug("GetService" ,"Adding Child to Entity");
                 entity.addChild(person, recordParser.getAge(
                         finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model)));
             }
             else {
-                logHandlerTiny.debug("GetService" ,"Adding Adult to Entity");
+                logHandler.debug("GetService" ,"Adding Adult to Entity");
                 entity.addAdult(person);
             }
         }
@@ -102,7 +95,7 @@ public class GetService {
         //Generate response
         if (!entity.childrenAtAddress()) {
             //If there are no children at address, return empty string
-            logHandlerTiny.debug("GetService" ,"No children found at address");
+            logHandler.debug("GetService" ,"No children found at address");
             HttpHeaders responseHeaders = new HttpHeaders();
             return new ResponseEntity<>("", responseHeaders, HttpStatus.OK);
         }
@@ -131,7 +124,7 @@ public class GetService {
 
         //Loop through all people at the address, add their phone number to output entity
         for (Person person : peopleAtAddress) {
-            logHandlerTiny.debug("GetService" ,"Adding Phonenumber to Entity");
+            logHandler.debug("GetService" ,"Adding Phonenumber to Entity");
             entity.addPhone(person.getPhone());
         }
 
@@ -159,7 +152,7 @@ public class GetService {
 
         if (firestation == null) {
             //No mappings found for this address, return empty json.
-            logHandlerTiny.debug("GetService" ,"Address not found in Firestation mappings");
+            logHandler.debug("GetService" ,"Address not found in Firestation mappings");
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.setPrettyPrinting().create();
             String responseString = gson.toJson(entity);
@@ -177,7 +170,7 @@ public class GetService {
 
         //Loop through all people at the address and add them to output entity
         for (Person person : peopleAtAddress) {
-            logHandlerTiny.debug("GetService" ,"Adding Person to Entity");
+            logHandler.debug("GetService" ,"Adding Person to Entity");
             entity.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model),
                     recordParser.getAge(finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model)));
         }
@@ -210,21 +203,21 @@ public class GetService {
         //Loop through firestation mappings
         for (Firestation firestation : firestationsMappings) {
             //Find households for each firestation
-            logHandlerTiny.debug("GetService" ,"Address mapping found for firestation " + firestation.getStation());
+            logHandler.debug("GetService" ,"Address mapping found for firestation " + firestation.getStation());
             String[] addresses = parser.getAddressesFromFirestationMappings(new Firestation[] {firestation});
             ArrayList<HouseholdEntity> households = new ArrayList<>();
             for (String address : addresses) {
                 //Create household object for each address
-                logHandlerTiny.debug("GetService" ,"Creating household");
+                logHandler.debug("GetService" ,"Creating household");
                 HouseholdEntity household = new HouseholdEntity(address, firestation.getStation());
                 Person[] peopleAtAddress = finder.findPersonByAddress(addresses, model);
                 for (Person person : peopleAtAddress) {
                     //Add each person at address to the household object
-                    logHandlerTiny.debug("GetService" ,"Adding person to Household");
+                    logHandler.debug("GetService" ,"Adding person to Household");
                     int age = recordParser.getAge(finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
                     household.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model), age);
                 }
-                logHandlerTiny.debug("GetService" ,"Adding Household to Entity");
+                logHandler.debug("GetService" ,"Adding Household to Entity");
                 households.add(household);
             }
             //Add firestation & its households to output entity
@@ -257,7 +250,7 @@ public class GetService {
 
         //For each person, add the required information to the output entity
         for (Person person : persons) {
-            logHandlerTiny.debug("GetService" ,"Adding Person to Entity");
+            logHandler.debug("GetService" ,"Adding Person to Entity");
             int age = recordParser.getAge(finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
             entity.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model), age);
         }
@@ -285,7 +278,7 @@ public class GetService {
         //For each person, add their email address to the entity
         for (Person person : persons) {
             if (person.getCity().equals(city)) {
-                logHandlerTiny.debug("GetService" ,"Adding Email to Entity");
+                logHandler.debug("GetService" ,"Adding Email to Entity");
                 entity.addEmail(person.getEmail());
             }
         }

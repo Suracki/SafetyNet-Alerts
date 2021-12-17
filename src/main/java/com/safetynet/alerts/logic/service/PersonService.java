@@ -16,12 +16,8 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class PersonService {
+public class PersonService extends BaseService{
 
-    @Autowired
-    private LogHandlerTiny logHandler;
-    @Autowired
-    private ModelObjectFinder finder;
     @Autowired
     private UpdatePerson updatePerson;
 

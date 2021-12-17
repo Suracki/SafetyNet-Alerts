@@ -1,5 +1,6 @@
 package com.safetynet.alerts.logic.service;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.safetynet.alerts.logging.LogHandlerTiny;
@@ -16,12 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FirestationService {
+public class FirestationService extends BaseService {
 
-    @Autowired
-    private LogHandlerTiny logHandler;
-    @Autowired
-    private ModelObjectFinder finder;
     @Autowired
     private UpdateFirestation updateFirestation;
 

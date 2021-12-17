@@ -24,40 +24,10 @@ import org.springframework.web.bind.annotation.*;
  * Includes POST/PUT/DELETE
  */
 @RestController
-public class PersonController {
+public class PersonController extends BaseController{
 
-    @Autowired
-    private LogHandlerTiny logHandler;
     @Autowired
     private PersonService personService;
-    @Autowired
-    private SafetyAlertsModel safetyAlertsModel;
-
-    @Autowired
-    public PersonController() {
-    }
-
-//    private boolean loadModelFromDisk() {
-//        try {
-//            safetyAlertsModel.loadModelFromDisk();
-//            return true;
-//        }
-//        catch (Exception e) {
-//            logHandler.setLogger("PersonController");
-//            logHandler.error("Error loading database file " + e);
-//        }
-//        return false;
-//    }
-//
-//    private void saveModelToDisk() {
-//        try {
-//            safetyAlertsModel.saveModelToDisk();
-//        }
-//        catch (Exception e) {
-//            logHandler.setLogger("PersonController");
-//            logHandler.error("Error saving database file " + e);
-//        }
-//    }
 
     /**
      * Mapping for POST

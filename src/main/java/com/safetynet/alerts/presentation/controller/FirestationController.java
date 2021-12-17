@@ -1,19 +1,9 @@
 package com.safetynet.alerts.presentation.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.safetynet.alerts.configuration.DataConfig;
-import com.safetynet.alerts.data.io.JsonDAO;
 import com.safetynet.alerts.logging.LogHandlerTiny;
-import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
 import com.safetynet.alerts.logic.service.FirestationService;
-import com.safetynet.alerts.logic.updaters.ResultModel;
-import com.safetynet.alerts.logic.updaters.UpdateFirestation;
-import com.safetynet.alerts.presentation.model.Firestation;
-import com.safetynet.alerts.logic.JsonHandler;
 import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,14 +14,11 @@ import org.springframework.web.bind.annotation.*;
  * Includes POST/PUT/DELETE
  */
 @RestController
-public class FirestationController {
+public class FirestationController extends BaseController{
 
     @Autowired
-    private LogHandlerTiny logHandler;
-    @Autowired
     private FirestationService firestationService;
-    @Autowired
-    private SafetyAlertsModel safetyAlertsModel;
+
 
     /**
      * Mapping for POST

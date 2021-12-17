@@ -15,12 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MedicalRecordService {
+public class MedicalRecordService extends BaseService{
 
-    @Autowired
-    private LogHandlerTiny logHandler;
-    @Autowired
-    private ModelObjectFinder finder;
     @Autowired
     private UpdateMedicalRecord updateMedicalRecord;
 
