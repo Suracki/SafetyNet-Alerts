@@ -29,18 +29,6 @@ public class GetMappingController {
     @Autowired
     private SafetyAlertsModel safetyAlertsModel;
 
-    private boolean loadModelFromDisk() {
-        try {
-            safetyAlertsModel.loadModelFromDisk();
-            return true;
-        }
-        catch (Exception e) {
-            logHandler.setLogger("GetMappingController");
-            logHandler.error("Error loading database file " + e);
-        }
-        return false;
-    }
-
     private String[] intArrayToStringArray(int[] intArray) {
         return Arrays.stream(intArray).mapToObj(String::valueOf).toArray(String[]::new);
     }
@@ -58,8 +46,9 @@ public class GetMappingController {
         //Log reqquest
         logHandler.setLogger("GetMappingController");
         logHandler.logRequest("GET","/firestation", new String[] {String.valueOf(stationNumber)});
-        //load data
-        if (!loadModelFromDisk()){
+
+        //confirm data is loaded
+        if (!safetyAlertsModel.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("GET", response);
             return response;
@@ -89,8 +78,8 @@ public class GetMappingController {
         logHandler.setLogger("GetMappingController");
         logHandler.logRequest("GET","/childAlert", new String[] {address});
 
-        //load data
-        if (!loadModelFromDisk()){
+        //confirm data is loaded
+        if (!safetyAlertsModel.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("GET", response);
             return response;
@@ -118,8 +107,8 @@ public class GetMappingController {
         logHandler.setLogger("GetMappingController");
         logHandler.logRequest("GET","/phoneAlert", new String[] {String.valueOf(stationNumber)});
 
-        //load data
-        if (!loadModelFromDisk()){
+        //confirm data is loaded
+        if (!safetyAlertsModel.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("GET", response);
             return response;
@@ -145,11 +134,11 @@ public class GetMappingController {
      */
     @GetMapping("/fire")
     public ResponseEntity<String> getFirestationNumberAndResidentsForAddress(@RequestParam("address") String address) {
-        //Log reqquest
+        //Log request
         logHandler.setLogger("GetMappingController");
         logHandler.logRequest("GET","/fire", new String[] {address});
-        //load data
-        if (!loadModelFromDisk()){
+        //confirm data is loaded
+        if (!safetyAlertsModel.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("GET", response);
             return response;
@@ -176,8 +165,8 @@ public class GetMappingController {
         //Log reqquest
         logHandler.setLogger("GetMappingController");
         logHandler.logRequest("GET","/flood/stations", intArrayToStringArray(stationNumbers));
-        //load data
-        if (!loadModelFromDisk()){
+        //confirm data is loaded
+        if (!safetyAlertsModel.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("GET", response);
             return response;
@@ -209,8 +198,8 @@ public class GetMappingController {
         //Log reqquest
         logHandler.setLogger("GetMappingController");
         logHandler.logRequest("GET","/personInfo", new String[] {firstName, lastName});
-        //load data
-        if (!loadModelFromDisk()){
+        //confirm data is loaded
+        if (!safetyAlertsModel.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("GET", response);
             return response;
@@ -236,8 +225,8 @@ public class GetMappingController {
         //Log reqquest
         logHandler.setLogger("GetMappingController");
         logHandler.logRequest("GET","/communityEmail", new String[] {city});
-        //load data
-        if (!loadModelFromDisk()){
+        //confirm data is loaded
+        if (!safetyAlertsModel.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("GET", response);
             return response;

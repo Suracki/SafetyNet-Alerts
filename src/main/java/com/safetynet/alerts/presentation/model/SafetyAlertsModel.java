@@ -2,11 +2,17 @@ package com.safetynet.alerts.presentation.model;
 
 import com.safetynet.alerts.configuration.DataConfig;
 import com.safetynet.alerts.data.io.JsonDAO;
+import com.safetynet.alerts.logging.LogHandlerTiny;
 import com.safetynet.alerts.logic.JsonHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 @Service
+@ConfigurationProperties("static")
 public class SafetyAlertsModel {
 
     @Autowired
@@ -15,32 +21,58 @@ public class SafetyAlertsModel {
     private transient JsonDAO jsonDAO;
     @Autowired
     private transient DataConfig dataConfig;
+    @Autowired
+    private transient LogHandlerTiny logHandler;
 
     private Person[] persons;
     private Firestation[] firestations;
     private MedicalRecord[] medicalrecords;
+    private transient boolean dataLoaded;
 
     public SafetyAlertsModel() {
         persons = new Person[0];
         firestations = new Firestation[0];
         medicalrecords = new MedicalRecord[0];
+        dataLoaded = false;
     }
 
     public SafetyAlertsModel(Person[] persons, Firestation[] firestations, MedicalRecord[] medicalRecords) {
         this.persons = persons;
         this.firestations = firestations;
         this.medicalrecords = medicalRecords;
+        dataLoaded = true;
     }
 
-    public void loadModelFromDisk() throws Exception {
-        SafetyAlertsModel newModel = jsonHandler.jsonToModel(jsonDAO.readJsonFromFile(dataConfig.getDataFile()));
-        this.persons = newModel.getPersons();
-        this.firestations = newModel.getFirestations();
-        this.medicalrecords = newModel.medicalrecords;
+    public boolean isDataLoaded() {
+        return dataLoaded;
     }
 
-    public void saveModelToDisk() throws Exception{
-        jsonDAO.writeJsonToFile(dataConfig.getDataFile(),jsonHandler.modelToJson(this));
+    @PostConstruct
+    public void loadModelFromDisk() {
+        try {
+            SafetyAlertsModel newModel = jsonHandler.jsonToModel(jsonDAO.readJsonFromFile(dataConfig.getDataFile()));
+            this.persons = newModel.getPersons();
+            this.firestations = newModel.getFirestations();
+            this.medicalrecords = newModel.medicalrecords;
+            dataLoaded = true;
+        }
+        catch (Exception e) {
+            dataLoaded = false;
+            logHandler.setLogger("SafetyAlertsModel");
+            logHandler.error("Error saving database file " + e);
+        }
+
+    }
+
+    @PreDestroy
+    public void saveModelToDisk() {
+        try {
+            jsonDAO.writeJsonToFile(dataConfig.getDataFile(),jsonHandler.modelToJson(this));
+        }
+        catch (Exception e) {
+            logHandler.setLogger("SafetyAlertsModel");
+            logHandler.error("Error saving database file " + e);
+        }
     }
 
     public void updateModel(SafetyAlertsModel model) {

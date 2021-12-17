@@ -33,28 +33,6 @@ public class MedicalRecordController {
     @Autowired
     private SafetyAlertsModel safetyAlertsModel;
 
-    private boolean loadModelFromDisk() {
-        try {
-            safetyAlertsModel.loadModelFromDisk();
-            return true;
-        }
-        catch (Exception e) {
-            logHandler.setLogger("MedicalRecordController");
-            logHandler.error("Error loading database file " + e);
-        }
-        return false;
-    }
-
-    private void saveModelToDisk() {
-        try {
-            safetyAlertsModel.saveModelToDisk();
-        }
-        catch (Exception e) {
-            logHandler.setLogger("MedicalRecordController");
-            logHandler.error("Error saving database file " + e);
-        }
-    }
-
     private String stringArrayToString(String[] stringArray) {
         StringBuilder builder = new StringBuilder();
         if (stringArray.length == 0) {
@@ -95,8 +73,8 @@ public class MedicalRecordController {
         logHandler.setLogger("MedicalRecordController");
         logHandler.logRequest("POST","/medicalRecord",
                 new String[] {firstName, lastName, birthdate, stringArrayToString(medications), stringArrayToString(allergies)});
-        //load data
-        if (!loadModelFromDisk()){
+        //confirm data is loaded
+        if (!safetyAlertsModel.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("POST", response);
             return response;
@@ -105,12 +83,9 @@ public class MedicalRecordController {
         ResponseEntity<String> response = medicalRecordService.addEntityService(safetyAlertsModel, firstName, lastName,
                 birthdate, medications, allergies);
 
-        //save data
-        saveModelToDisk();
-        //respond
-
         //Log response
         logHandler.logResponse("POST", response);
+        //respond
         return response;
     }
 
@@ -138,8 +113,8 @@ public class MedicalRecordController {
         logHandler.setLogger("MedicalRecordController");
         logHandler.logRequest("PUT","/medicalRecord",
                 new String[] {firstName, lastName, birthdate, stringArrayToString(medications), stringArrayToString(allergies)});
-        //load data
-        if (!loadModelFromDisk()){
+        //confirm data is loaded
+        if (!safetyAlertsModel.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("PUT", response);
             return response;
@@ -147,9 +122,6 @@ public class MedicalRecordController {
         //Perform Request
         ResponseEntity<String> response = medicalRecordService.updateEntityService(safetyAlertsModel, firstName, lastName,
                 birthdate, medications, allergies);
-
-        //save data
-        saveModelToDisk();
 
         //Log response
         logHandler.logResponse("PUT", response);
@@ -172,21 +144,18 @@ public class MedicalRecordController {
      */
     @DeleteMapping("/medicalRecord")
     public ResponseEntity<String> deleteEntity(@RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName) {
-        //Log reqquest
+        //Log request
         logHandler.setLogger("MedicalRecordController");
         logHandler.logRequest("DELETE","/medicalRecord", new String[] {firstName, lastName});
 
-        //load data
-        if (!loadModelFromDisk()){
+        //confirm data is loaded
+        if (!safetyAlertsModel.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("DELETE", response);
             return response;
         }
         //Perform Request
         ResponseEntity<String> response = medicalRecordService.deleteEntityService(safetyAlertsModel, firstName, lastName);
-
-        //save data
-        saveModelToDisk();
 
         //Log response
         logHandler.logResponse("DELETE", response);

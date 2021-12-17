@@ -156,7 +156,7 @@ public class FirestationControllerIT {
     @Test
     public void firestationEndpointReturns409WhenPostingDuplicateFirestationMapping() throws Exception {
         //Preparation
-        String uri = "/firestation?address=1509 Culver St&station=3";
+        String uri = "/firestation?address=489 Manchester St&station=3";
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();

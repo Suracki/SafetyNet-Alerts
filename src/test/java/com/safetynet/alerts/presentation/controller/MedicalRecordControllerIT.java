@@ -126,7 +126,7 @@ public class MedicalRecordControllerIT {
     @Test
     public void medicalRecordEndpointCanUpdateMedicalRecordViaPut() throws Exception {
         //Preparation
-        String uri = "/medicalRecord?firstName=John&lastName=Boyd&birthDate=01/01/2000&medications=&allergies=";
+        String uri = "/medicalRecord?firstName=Tessa&lastName=Carman&birthDate=01/01/2000&medications=&allergies=";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
@@ -140,7 +140,7 @@ public class MedicalRecordControllerIT {
     @Test
     public void medicalRecordEndpointCanRemoveMedicalRecordViaDelete() throws Exception {
         //Preparation
-        String uri = "/medicalRecord?firstName=John&lastName=Boyd";
+        String uri = "/medicalRecord?firstName=Eric&lastName=Cadigan";
 
         //Method
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.delete(uri)

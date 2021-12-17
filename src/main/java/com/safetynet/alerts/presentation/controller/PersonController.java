@@ -37,27 +37,27 @@ public class PersonController {
     public PersonController() {
     }
 
-    private boolean loadModelFromDisk() {
-        try {
-            safetyAlertsModel.loadModelFromDisk();
-            return true;
-        }
-        catch (Exception e) {
-            logHandler.setLogger("PersonController");
-            logHandler.error("Error loading database file " + e);
-        }
-        return false;
-    }
-
-    private void saveModelToDisk() {
-        try {
-            safetyAlertsModel.saveModelToDisk();
-        }
-        catch (Exception e) {
-            logHandler.setLogger("PersonController");
-            logHandler.error("Error saving database file " + e);
-        }
-    }
+//    private boolean loadModelFromDisk() {
+//        try {
+//            safetyAlertsModel.loadModelFromDisk();
+//            return true;
+//        }
+//        catch (Exception e) {
+//            logHandler.setLogger("PersonController");
+//            logHandler.error("Error loading database file " + e);
+//        }
+//        return false;
+//    }
+//
+//    private void saveModelToDisk() {
+//        try {
+//            safetyAlertsModel.saveModelToDisk();
+//        }
+//        catch (Exception e) {
+//            logHandler.setLogger("PersonController");
+//            logHandler.error("Error saving database file " + e);
+//        }
+//    }
 
     /**
      * Mapping for POST
@@ -85,8 +85,8 @@ public class PersonController {
         logHandler.setLogger("PersonController");
         logHandler.logRequest("POST","/person", new String[] {firstName, lastName, address, city, zip, phone, email});
 
-        //load data
-        if (!loadModelFromDisk()){
+        //confirm data is loaded
+        if (!safetyAlertsModel.isDataLoaded()){
             //If model failed to load, return error
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("POST", response);
@@ -95,8 +95,6 @@ public class PersonController {
         //Perform Request
         ResponseEntity<String> response = personService.addEntityService(safetyAlertsModel, firstName, lastName, address, city, zip, phone, email);
 
-        //save data
-        saveModelToDisk();
         //Log response
         logHandler.logResponse("POST", response);
         //respond
@@ -129,8 +127,8 @@ public class PersonController {
         //Log reqquest
         logHandler.setLogger("PersonController");
         logHandler.logRequest("PUT","/person", new String[] {firstName, lastName, address, city, zip, phone, email});
-        //load data
-        if (!loadModelFromDisk()){
+        //confirm data is loaded
+        if (!safetyAlertsModel.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("PUT", response);
             return response;
@@ -140,8 +138,6 @@ public class PersonController {
         //Log response
         logHandler.logResponse("PUT",response);
 
-        //save data
-        saveModelToDisk();
         //respond
         return response;
     }
@@ -166,8 +162,8 @@ public class PersonController {
         logHandler.setLogger("PersonController");
         logHandler.logRequest("DELETE","/person", new String[] {firstName, lastName});
 
-        //load data
-        if (!loadModelFromDisk()){
+        //confirm data is loaded
+        if (!safetyAlertsModel.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("DELETE", response);
             return response;
@@ -175,10 +171,7 @@ public class PersonController {
         //Perform Request
         ResponseEntity<String> response = personService.deleteEntityService(safetyAlertsModel, firstName, lastName);
 
-        //save data
-        saveModelToDisk();
         //Log response
-
         logHandler.logResponse("DELETE",response);
         //respond
         return response;

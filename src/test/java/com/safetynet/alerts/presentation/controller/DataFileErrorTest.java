@@ -21,8 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class DataFileErrorTest {
@@ -60,7 +59,7 @@ public class DataFileErrorTest {
     @Test
     public void getMappingControllerThrowsError500IfDataFileUnavailable() throws Exception {
         //Preparation
-        doThrow(new Exception("Exception")).when(safetyAlertsModel).loadModelFromDisk();
+        doReturn(false).when(safetyAlertsModel).isDataLoaded();
 
         //Method
         ResponseEntity<String> output = getMappingController.getChildrenAtAddress("address");
@@ -74,7 +73,7 @@ public class DataFileErrorTest {
     @Test
     public void firestationControllerThrowsError500IfDataFileUnavailable() throws Exception {
         //Preparation
-        doThrow(new Exception("Exception")).when(safetyAlertsModel).loadModelFromDisk();
+        doReturn(false).when(safetyAlertsModel).isDataLoaded();
 
         //Method
         ResponseEntity<String> output = firestationController.deleteEntity("address", 10);
@@ -87,7 +86,7 @@ public class DataFileErrorTest {
     @Test
     public void medicalRecordControllerThrowsError500IfDataFileUnavailable() throws Exception {
         //Preparation
-        doThrow(new Exception("Exception")).when(safetyAlertsModel).loadModelFromDisk();
+        doReturn(false).when(safetyAlertsModel).isDataLoaded();
 
         //Method
         ResponseEntity<String> output = medicalRecordController.deleteEntity("fake", "fake");
@@ -100,7 +99,7 @@ public class DataFileErrorTest {
     @Test
     public void personControllerThrowsError500IfDataFileUnavailable() throws Exception {
         //Preparation
-        doThrow(new Exception("Exception")).when(safetyAlertsModel).loadModelFromDisk();
+        doReturn(false).when(safetyAlertsModel).isDataLoaded();
 
         //Method
         ResponseEntity<String> output = personController.deleteEntity("fake", "fake");
