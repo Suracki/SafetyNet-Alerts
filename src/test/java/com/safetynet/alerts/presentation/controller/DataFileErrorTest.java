@@ -47,6 +47,7 @@ public class DataFileErrorTest {
     SafetyAlertsModel safetyAlertsModel;
 
 
+    @InjectMocks
     GetMappingController getMappingController;
 
     @InjectMocks
@@ -57,10 +58,9 @@ public class DataFileErrorTest {
     FirestationController firestationController;
 
     @Test
-    public void getMappingControllerThrowsError500IfDataFileUnavailable()  {
+    public void getMappingControllerThrowsError500IfDataFileUnavailable() throws Exception {
         //Preparation
-        getMappingController = new GetMappingController(jsonHandler, jsonDAO, finder, parser, recordParser, getService, dataConfig, logHandlerTiny);
-        when(jsonHandler.jsonToModel(Mockito.anyString())).thenThrow(new RuntimeException("Exception"));
+        doThrow(new Exception("Exception")).when(safetyAlertsModel).loadModelFromDisk();
 
         //Method
         ResponseEntity<String> output = getMappingController.getChildrenAtAddress("address");

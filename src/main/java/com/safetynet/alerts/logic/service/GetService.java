@@ -8,6 +8,7 @@ import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
 import com.safetynet.alerts.logic.parsers.PersonAndRecordParser;
 import com.safetynet.alerts.presentation.model.entity.*;
 import com.safetynet.alerts.presentation.model.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,23 +23,26 @@ import java.util.Arrays;
 @Service
 public class GetService {
 
+    @Autowired
+    SafetyAlertsModel model;
+    @Autowired
+    ModelObjectFinder finder;
+    @Autowired
+    CollectionParser parser;
+    @Autowired
+    PersonAndRecordParser recordParser;
+    @Autowired
+    LogHandlerTiny logHandlerTiny;
+
     /**
      * Returns all people serviced by a specific fire station.
      * Includes first name, last name, address, and phone number for each person
      * Also includes summary of the number of adults and children in the service area
      *
      * @param stationNumber the number of the firestation
-     * @param model the SafetyAlertsModel being processed
-     * @param finder ModelObjectFinder for use in processing
-     * @param parser CollectionParser for use in processing
-     * @param recordParser PersonAndRecordParser for use in processing
-     * @param logHandlerTiny LogHandler for logging debug steps
      * @return ResponseEntity containing the output
      */
-    public ResponseEntity<String> getPeopleServicedByStationEntity(int stationNumber, SafetyAlertsModel model, ModelObjectFinder finder,
-                                                                   CollectionParser parser,
-                                                                   PersonAndRecordParser recordParser,
-                                                                   LogHandlerTiny logHandlerTiny) {
+    public ResponseEntity<String> getPeopleServicedByStationEntity(int stationNumber) {
         //Find firestation mappings for provided station number
         Firestation[] firestations = finder.findFirestationByNumber(stationNumber, model);
         //Get all addresses served by this station
@@ -74,15 +78,9 @@ public class GetService {
      * If no children are at the address, response contains an empty string
      *
      * @param address the residence address
-     * @param model the SafetyAlertsModel being processed
-     * @param finder ModelObjectFinder for use in processing
-     * @param recordParser PersonAndRecordParser for use in processing
-     * @param logHandlerTiny LogHandler for logging debug steps
      * @return ResponseEntity containing the output
      */
-    public ResponseEntity<String> getChildrenAtAddressEntity(String address, SafetyAlertsModel model, ModelObjectFinder finder,
-                                                             PersonAndRecordParser recordParser,
-                                                             LogHandlerTiny logHandlerTiny) {
+    public ResponseEntity<String> getChildrenAtAddressEntity(String address) {
         //Find al people living at this address
         Person[] peopleAtAddress = finder.findPersonByAddress(new String[] {address},model);
 
@@ -119,15 +117,9 @@ public class GetService {
      * Returns a list of phone numbers for each person within the provided firestation's jurisdiction
      *
      * @param stationNumber the number of the firestation
-     * @param model the SafetyAlertsModel being processed
-     * @param finder ModelObjectFinder for use in processing
-     * @param parser CollectionParser for use in processing
-     * @param logHandlerTiny LogHandler for logging debug steps
      * @return ResponseEntity containing the output
      */
-    public ResponseEntity<String> getPhoneNumbersForPeopleServicedByStationEntity(int stationNumber, SafetyAlertsModel model,
-                                                                                  ModelObjectFinder finder, CollectionParser parser,
-                                                                                  LogHandlerTiny logHandlerTiny){
+    public ResponseEntity<String> getPhoneNumbersForPeopleServicedByStationEntity(int stationNumber){
         //Find firestation mappings for provided station number
         Firestation[] firestations = finder.findFirestationByNumber(stationNumber, model);
         //Get all addresses served by this station
@@ -157,16 +149,9 @@ public class GetService {
      * Also includes details of all people living at the address
      *
      * @param address the residence address
-     * @param model the SafetyAlertsModel being processed
-     * @param finder ModelObjectFinder for use in processing
-     * @param parser CollectionParser for use in processing
-     * @param recordParser PersonAndRecordParser for use in processing
-     * @param logHandlerTiny LogHandler for logging debug steps
      * @return ResponseEntity containing the output
      */
-    public ResponseEntity<String> getFirestationNumberAndResidentsForAddressEntity(String address, SafetyAlertsModel model, ModelObjectFinder finder,
-                                                                                   CollectionParser parser, PersonAndRecordParser recordParser,
-                                                                                   LogHandlerTiny logHandlerTiny){
+    public ResponseEntity<String> getFirestationNumberAndResidentsForAddressEntity(String address){
         //Find firestation mapping for provided address
         Firestation firestation = finder.findFirestation(address, model);
 
@@ -210,16 +195,9 @@ public class GetService {
      * People are grouped into households by address, and resident details are included in response
      *
      * @param stationNumbers collection of firestation numbers
-     * @param model the SafetyAlertsModel being processed
-     * @param finder ModelObjectFinder for use in processing
-     * @param parser CollectionParser for use in processing
-     * @param recordParser PersonAndRecordParser for use in processing
-     * @param logHandlerTiny LogHandler for logging debug steps
      * @return ResponseEntity containing the output
      */
-    public ResponseEntity<String> getHouseholdsByFirestationEntity(int[] stationNumbers, SafetyAlertsModel model, ModelObjectFinder finder,
-                                                                   CollectionParser parser, PersonAndRecordParser recordParser,
-                                                                   LogHandlerTiny logHandlerTiny){
+    public ResponseEntity<String> getHouseholdsByFirestationEntity(int[] stationNumbers){
         ArrayList<Firestation> firestationsMappings = new ArrayList<>();
         //Loop through provided firestation numbers, and for each get their firestation mappings
         for (int stationNumber : stationNumbers) {
@@ -269,16 +247,9 @@ public class GetService {
      * if there are multiple this will return all matches
      * @param firstName
      * @param lastName
-     * @param model the SafetyAlertsModel being processed
-     * @param finder ModelObjectFinder for use in processing
-     * @param recordParser PersonAndRecordParser for use in processing
-     * @param logHandlerTiny LogHandler for logging debug steps
      * @return ResponseEntity containing the output
      */
-    public ResponseEntity<String> getPersonInfoByFirstNameLastNameEntity(String firstName, String lastName, SafetyAlertsModel model,
-                                                                        ModelObjectFinder finder,
-                                                                        PersonAndRecordParser recordParser,
-                                                                        LogHandlerTiny logHandlerTiny){
+    public ResponseEntity<String> getPersonInfoByFirstNameLastNameEntity(String firstName, String lastName){
         //Get all people with matching firstname/lastname
         Person[] persons = finder.findPersons(firstName, lastName, model);
 
@@ -303,13 +274,9 @@ public class GetService {
      * Returns email addresses for all residents of provided city
      *
      * @param city
-     * @param model the SafetyAlertsModel being processed
-     * @param finder ModelObjectFinder for use in processing
-     * @param logHandlerTiny LogHandler for logging debug steps
      * @return ResponseEntity containing the output
      */
-    public ResponseEntity<String> getEmailAddressesByCity(String city, SafetyAlertsModel model, ModelObjectFinder finder,
-                                                          LogHandlerTiny logHandlerTiny){
+    public ResponseEntity<String> getEmailAddressesByCity(String city){
         //Get all people living at specified city
         Person[] persons = finder.findPersonByCity(city, model);
 
