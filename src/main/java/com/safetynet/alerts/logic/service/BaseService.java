@@ -12,9 +12,13 @@ public class BaseService {
     @Autowired
     LogHandlerTiny logHandler;
     @Autowired
-    SafetyAlertsModel model;
+    SafetyAlertsModel safetyAlertsModel;
     @Autowired
     ModelObjectFinder finder;
+
+    public boolean isDataLoaded(){
+        return safetyAlertsModel.isDataLoaded();
+    }
 
 
 }

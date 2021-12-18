@@ -20,7 +20,7 @@ public class MedicalRecordService extends BaseService{
     @Autowired
     private UpdateMedicalRecord updateMedicalRecord;
 
-    public ResponseEntity<String> addEntityService(SafetyAlertsModel safetyAlertsModel, String firstName, String lastName,
+    public ResponseEntity<String> addEntityService(String firstName, String lastName,
                                                    String birthdate, String[] medications, String[] allergies){
         MedicalRecord newMedicalRecord;
         if (finder.findMedicalRecord(firstName, lastName, safetyAlertsModel) == null){
@@ -42,7 +42,7 @@ public class MedicalRecordService extends BaseService{
         return response;
     }
 
-    public ResponseEntity<String> updateEntityService(SafetyAlertsModel safetyAlertsModel, String firstName, String lastName,
+    public ResponseEntity<String> updateEntityService(String firstName, String lastName,
                                                    String birthdate, String[] medications, String[] allergies){
 
         MedicalRecord newMedicalRecord;
@@ -71,7 +71,7 @@ public class MedicalRecordService extends BaseService{
         return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<String> deleteEntityService(SafetyAlertsModel safetyAlertsModel, String firstName, String lastName) {
+    public ResponseEntity<String> deleteEntityService(String firstName, String lastName) {
 
         MedicalRecord newMedicalRecord;
         if (finder.findMedicalRecord(firstName, lastName, safetyAlertsModel) == null){

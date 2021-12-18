@@ -7,7 +7,10 @@ import com.safetynet.alerts.logic.JsonHandler;
 import com.safetynet.alerts.logic.parsers.CollectionParser;
 import com.safetynet.alerts.logic.parsers.ModelObjectFinder;
 import com.safetynet.alerts.logic.parsers.PersonAndRecordParser;
+import com.safetynet.alerts.logic.service.FirestationService;
 import com.safetynet.alerts.logic.service.GetService;
+import com.safetynet.alerts.logic.service.MedicalRecordService;
+import com.safetynet.alerts.logic.service.PersonService;
 import com.safetynet.alerts.logic.updaters.UpdateFirestation;
 import com.safetynet.alerts.logic.updaters.UpdateMedicalRecord;
 import com.safetynet.alerts.logic.updaters.UpdatePerson;
@@ -44,6 +47,12 @@ public class DataFileErrorTest {
     LogHandlerTiny logHandlerTiny;
     @Mock
     SafetyAlertsModel safetyAlertsModel;
+    @Mock
+    PersonService personService;
+    @Mock
+    MedicalRecordService medicalRecordService;
+    @Mock
+    FirestationService firestationService;
 
 
     @InjectMocks
@@ -59,7 +68,7 @@ public class DataFileErrorTest {
     @Test
     public void getMappingControllerThrowsError500IfDataFileUnavailable() throws Exception {
         //Preparation
-        doReturn(false).when(safetyAlertsModel).isDataLoaded();
+        doReturn(false).when(getService).isDataLoaded();
 
         //Method
         ResponseEntity<String> output = getMappingController.getChildrenAtAddress("address");
@@ -73,7 +82,7 @@ public class DataFileErrorTest {
     @Test
     public void firestationControllerThrowsError500IfDataFileUnavailable() throws Exception {
         //Preparation
-        doReturn(false).when(safetyAlertsModel).isDataLoaded();
+        doReturn(false).when(firestationService).isDataLoaded();
 
         //Method
         ResponseEntity<String> output = firestationController.deleteEntity("address", 10);
@@ -86,7 +95,7 @@ public class DataFileErrorTest {
     @Test
     public void medicalRecordControllerThrowsError500IfDataFileUnavailable() throws Exception {
         //Preparation
-        doReturn(false).when(safetyAlertsModel).isDataLoaded();
+        doReturn(false).when(medicalRecordService).isDataLoaded();
 
         //Method
         ResponseEntity<String> output = medicalRecordController.deleteEntity("fake", "fake");
@@ -99,7 +108,7 @@ public class DataFileErrorTest {
     @Test
     public void personControllerThrowsError500IfDataFileUnavailable() throws Exception {
         //Preparation
-        doReturn(false).when(safetyAlertsModel).isDataLoaded();
+        doReturn(false).when(personService).isDataLoaded();
 
         //Method
         ResponseEntity<String> output = personController.deleteEntity("fake", "fake");

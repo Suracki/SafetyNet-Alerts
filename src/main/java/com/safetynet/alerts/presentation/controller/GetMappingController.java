@@ -36,7 +36,7 @@ public class GetMappingController extends BaseController{
         logHandler.logRequest("GET","/firestation", new String[] {String.valueOf(stationNumber)});
 
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!getService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("GET", response);
             return response;
@@ -67,7 +67,7 @@ public class GetMappingController extends BaseController{
         logHandler.logRequest("GET","/childAlert", new String[] {address});
 
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!getService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("GET", response);
             return response;
@@ -96,7 +96,7 @@ public class GetMappingController extends BaseController{
         logHandler.logRequest("GET","/phoneAlert", new String[] {String.valueOf(stationNumber)});
 
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!getService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("GET", response);
             return response;
@@ -126,7 +126,7 @@ public class GetMappingController extends BaseController{
         logHandler.setLogger("GetMappingController");
         logHandler.logRequest("GET","/fire", new String[] {address});
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!getService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("GET", response);
             return response;
@@ -154,7 +154,7 @@ public class GetMappingController extends BaseController{
         logHandler.setLogger("GetMappingController");
         logHandler.logRequest("GET","/flood/stations", intArrayToStringArray(stationNumbers));
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!getService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("GET", response);
             return response;
@@ -187,7 +187,7 @@ public class GetMappingController extends BaseController{
         logHandler.setLogger("GetMappingController");
         logHandler.logRequest("GET","/personInfo", new String[] {firstName, lastName});
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!getService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("GET", response);
             return response;
@@ -214,7 +214,7 @@ public class GetMappingController extends BaseController{
         logHandler.setLogger("GetMappingController");
         logHandler.logRequest("GET","/communityEmail", new String[] {city});
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!getService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("GET", response);
             return response;

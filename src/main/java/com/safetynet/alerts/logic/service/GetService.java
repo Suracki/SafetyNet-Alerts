@@ -36,18 +36,18 @@ public class GetService extends BaseService {
      */
     public ResponseEntity<String> getPeopleServicedByStationEntity(int stationNumber) {
         //Find firestation mappings for provided station number
-        Firestation[] firestations = finder.findFirestationByNumber(stationNumber, model);
+        Firestation[] firestations = finder.findFirestationByNumber(stationNumber, safetyAlertsModel);
         //Get all addresses served by this station
         String[] addresses = parser.getAddressesFromFirestationMappings(firestations);
         //Find all people living at these addresses
-        Person[] peopleAtAddress = finder.findPersonByAddress(addresses, model);
+        Person[] peopleAtAddress = finder.findPersonByAddress(addresses, safetyAlertsModel);
 
         PeopleServicedByStationResponseEntity entity = new PeopleServicedByStationResponseEntity();
 
         //Loop through all people at the address and add them to output entity
         for (Person person : peopleAtAddress) {
             entity.addPerson(person);
-            if (recordParser.isAChild(person, model.getMedicalRecords())) {
+            if (recordParser.isAChild(person, safetyAlertsModel.getMedicalRecords())) {
                 logHandler.debug("GetService" ,"Adding Child to Entity");
                 entity.addChild();
             } else {
@@ -74,16 +74,16 @@ public class GetService extends BaseService {
      */
     public ResponseEntity<String> getChildrenAtAddressEntity(String address) {
         //Find al people living at this address
-        Person[] peopleAtAddress = finder.findPersonByAddress(new String[] {address},model);
+        Person[] peopleAtAddress = finder.findPersonByAddress(new String[] {address},safetyAlertsModel);
 
         ChildrenAtAddressResponseEntity entity = new ChildrenAtAddressResponseEntity();
 
         //Loop through all people at the address and add them to output entity
         for (Person person : peopleAtAddress) {
-            if (recordParser.isAChild(person, model.getMedicalRecords())) {
+            if (recordParser.isAChild(person, safetyAlertsModel.getMedicalRecords())) {
                 logHandler.debug("GetService" ,"Adding Child to Entity");
                 entity.addChild(person, recordParser.getAge(
-                        finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model)));
+                        finder.findMedicalRecord(person.getFirstName(), person.getLastName(), safetyAlertsModel)));
             }
             else {
                 logHandler.debug("GetService" ,"Adding Adult to Entity");
@@ -113,11 +113,11 @@ public class GetService extends BaseService {
      */
     public ResponseEntity<String> getPhoneNumbersForPeopleServicedByStationEntity(int stationNumber){
         //Find firestation mappings for provided station number
-        Firestation[] firestations = finder.findFirestationByNumber(stationNumber, model);
+        Firestation[] firestations = finder.findFirestationByNumber(stationNumber, safetyAlertsModel);
         //Get all addresses served by this station
         String[] addresses = parser.getAddressesFromFirestationMappings(firestations);
         //Find all people living at these addresses
-        Person[] peopleAtAddress = finder.findPersonByAddress(addresses, model);
+        Person[] peopleAtAddress = finder.findPersonByAddress(addresses, safetyAlertsModel);
 
         PhoneNumbersForPeopleServicedByStationEntity entity = new PhoneNumbersForPeopleServicedByStationEntity();
 
@@ -145,7 +145,7 @@ public class GetService extends BaseService {
      */
     public ResponseEntity<String> getFirestationNumberAndResidentsForAddressEntity(String address){
         //Find firestation mapping for provided address
-        Firestation firestation = finder.findFirestation(address, model);
+        Firestation firestation = finder.findFirestation(address, safetyAlertsModel);
 
         FirestationNumberAndResidentsForAddressEntity entity = new FirestationNumberAndResidentsForAddressEntity();
 
@@ -163,15 +163,15 @@ public class GetService extends BaseService {
         String[] addresses = parser.getAddressesFromFirestationMappings(new Firestation[] {firestation});
 
         //Find all people living at address
-        Person[] peopleAtAddress = finder.findPersonByAddress(addresses, model);
+        Person[] peopleAtAddress = finder.findPersonByAddress(addresses, safetyAlertsModel);
 
         entity.addFirestation(firestation);
 
         //Loop through all people at the address and add them to output entity
         for (Person person : peopleAtAddress) {
             logHandler.debug("GetService" ,"Adding Person to Entity");
-            entity.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model),
-                    recordParser.getAge(finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model)));
+            entity.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), safetyAlertsModel),
+                    recordParser.getAge(finder.findMedicalRecord(person.getFirstName(), person.getLastName(), safetyAlertsModel)));
         }
 
         //Generate response
@@ -193,7 +193,7 @@ public class GetService extends BaseService {
         ArrayList<Firestation> firestationsMappings = new ArrayList<>();
         //Loop through provided firestation numbers, and for each get their firestation mappings
         for (int stationNumber : stationNumbers) {
-            Firestation[] foundStationMappings = finder.findFirestationByNumber(stationNumber, model);
+            Firestation[] foundStationMappings = finder.findFirestationByNumber(stationNumber, safetyAlertsModel);
             firestationsMappings.addAll(Arrays.asList(foundStationMappings));
         }
 
@@ -209,12 +209,12 @@ public class GetService extends BaseService {
                 //Create household object for each address
                 logHandler.debug("GetService" ,"Creating household");
                 HouseholdEntity household = new HouseholdEntity(address, firestation.getStation());
-                Person[] peopleAtAddress = finder.findPersonByAddress(addresses, model);
+                Person[] peopleAtAddress = finder.findPersonByAddress(addresses, safetyAlertsModel);
                 for (Person person : peopleAtAddress) {
                     //Add each person at address to the household object
                     logHandler.debug("GetService" ,"Adding person to Household");
-                    int age = recordParser.getAge(finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
-                    household.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model), age);
+                    int age = recordParser.getAge(finder.findMedicalRecord(person.getFirstName(), person.getLastName(), safetyAlertsModel));
+                    household.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), safetyAlertsModel), age);
                 }
                 logHandler.debug("GetService" ,"Adding Household to Entity");
                 households.add(household);
@@ -243,15 +243,15 @@ public class GetService extends BaseService {
      */
     public ResponseEntity<String> getPersonInfoByFirstNameLastNameEntity(String firstName, String lastName){
         //Get all people with matching firstname/lastname
-        Person[] persons = finder.findPersons(firstName, lastName, model);
+        Person[] persons = finder.findPersons(firstName, lastName, safetyAlertsModel);
 
         PersonInfoByFnLnResponseEntity entity = new PersonInfoByFnLnResponseEntity();
 
         //For each person, add the required information to the output entity
         for (Person person : persons) {
             logHandler.debug("GetService" ,"Adding Person to Entity");
-            int age = recordParser.getAge(finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model));
-            entity.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), model), age);
+            int age = recordParser.getAge(finder.findMedicalRecord(person.getFirstName(), person.getLastName(), safetyAlertsModel));
+            entity.addPerson(person, finder.findMedicalRecord(person.getFirstName(), person.getLastName(), safetyAlertsModel), age);
         }
 
         //Generate response
@@ -270,7 +270,7 @@ public class GetService extends BaseService {
      */
     public ResponseEntity<String> getEmailAddressesByCity(String city){
         //Get all people living at specified city
-        Person[] persons = finder.findPersonByCity(city, model);
+        Person[] persons = finder.findPersonByCity(city, safetyAlertsModel);
 
         EmailAddressesByCityResultEntity entity = new EmailAddressesByCityResultEntity();
 

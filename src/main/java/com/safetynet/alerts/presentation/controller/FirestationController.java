@@ -39,13 +39,13 @@ public class FirestationController extends BaseController{
         logHandler.logRequest("POST","/firestation", new String[] {address, String.valueOf(station)});
 
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!firestationService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("POST", response);
             return response;
         }
         //Perform Request
-        ResponseEntity<String> response = firestationService.addEntityService(safetyAlertsModel, address, station);
+        ResponseEntity<String> response = firestationService.addEntityService(address, station);
 
         //Log response
         logHandler.logResponse("POST", response);
@@ -74,13 +74,13 @@ public class FirestationController extends BaseController{
         logHandler.logRequest("PUT","/firestation", new String[] {address, String.valueOf(station)});
 
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!firestationService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("PUT", response);
             return response;
         }
         //Perform Request
-        ResponseEntity<String> response = firestationService.updateEntityService(safetyAlertsModel, address, station);
+        ResponseEntity<String> response = firestationService.updateEntityService(address, station);
 
         //Log response
         logHandler.logResponse("PUT",response);
@@ -108,13 +108,13 @@ public class FirestationController extends BaseController{
         logHandler.logRequest("DELETE","/firestation", new String[] {address, String.valueOf(station)});
 
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!firestationService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("DELETE", response);
             return response;
         }
         //Perform Request
-        ResponseEntity<String> response = firestationService.deleteEntityService(safetyAlertsModel, address, station);
+        ResponseEntity<String> response = firestationService.deleteEntityService(address, station);
 
         //Log response
         logHandler.logResponse("DELETE",response);

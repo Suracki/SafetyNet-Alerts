@@ -70,13 +70,13 @@ public class MedicalRecordController extends BaseController {
         logHandler.logRequest("POST","/medicalRecord",
                 new String[] {firstName, lastName, birthdate, stringArrayToString(medications), stringArrayToString(allergies)});
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!medicalRecordService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("POST", response);
             return response;
         }
         //Perform Request
-        ResponseEntity<String> response = medicalRecordService.addEntityService(safetyAlertsModel, firstName, lastName,
+        ResponseEntity<String> response = medicalRecordService.addEntityService(firstName, lastName,
                 birthdate, medications, allergies);
 
         //Log response
@@ -110,13 +110,13 @@ public class MedicalRecordController extends BaseController {
         logHandler.logRequest("PUT","/medicalRecord",
                 new String[] {firstName, lastName, birthdate, stringArrayToString(medications), stringArrayToString(allergies)});
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!medicalRecordService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("PUT", response);
             return response;
         }
         //Perform Request
-        ResponseEntity<String> response = medicalRecordService.updateEntityService(safetyAlertsModel, firstName, lastName,
+        ResponseEntity<String> response = medicalRecordService.updateEntityService(firstName, lastName,
                 birthdate, medications, allergies);
 
         //Log response
@@ -145,13 +145,13 @@ public class MedicalRecordController extends BaseController {
         logHandler.logRequest("DELETE","/medicalRecord", new String[] {firstName, lastName});
 
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!medicalRecordService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("DELETE", response);
             return response;
         }
         //Perform Request
-        ResponseEntity<String> response = medicalRecordService.deleteEntityService(safetyAlertsModel, firstName, lastName);
+        ResponseEntity<String> response = medicalRecordService.deleteEntityService(firstName, lastName);
 
         //Log response
         logHandler.logResponse("DELETE", response);

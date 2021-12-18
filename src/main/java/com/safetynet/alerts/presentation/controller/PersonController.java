@@ -56,14 +56,14 @@ public class PersonController extends BaseController{
         logHandler.logRequest("POST","/person", new String[] {firstName, lastName, address, city, zip, phone, email});
 
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!personService.isDataLoaded()){
             //If model failed to load, return error
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("POST", response);
             return response;
         }
         //Perform Request
-        ResponseEntity<String> response = personService.addEntityService(safetyAlertsModel, firstName, lastName, address, city, zip, phone, email);
+        ResponseEntity<String> response = personService.addEntityService(firstName, lastName, address, city, zip, phone, email);
 
         //Log response
         logHandler.logResponse("POST", response);
@@ -98,13 +98,13 @@ public class PersonController extends BaseController{
         logHandler.setLogger("PersonController");
         logHandler.logRequest("PUT","/person", new String[] {firstName, lastName, address, city, zip, phone, email});
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!personService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("PUT", response);
             return response;
         }
         //Perform Request
-        ResponseEntity<String> response = personService.updateEntityService(safetyAlertsModel, firstName, lastName, address, city, zip, phone, email);
+        ResponseEntity<String> response = personService.updateEntityService(firstName, lastName, address, city, zip, phone, email);
         //Log response
         logHandler.logResponse("PUT",response);
 
@@ -133,13 +133,13 @@ public class PersonController extends BaseController{
         logHandler.logRequest("DELETE","/person", new String[] {firstName, lastName});
 
         //confirm data is loaded
-        if (!safetyAlertsModel.isDataLoaded()){
+        if (!personService.isDataLoaded()){
             ResponseEntity<String> response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             logHandler.logResponse("DELETE", response);
             return response;
         }
         //Perform Request
-        ResponseEntity<String> response = personService.deleteEntityService(safetyAlertsModel, firstName, lastName);
+        ResponseEntity<String> response = personService.deleteEntityService(firstName, lastName);
 
         //Log response
         logHandler.logResponse("DELETE",response);

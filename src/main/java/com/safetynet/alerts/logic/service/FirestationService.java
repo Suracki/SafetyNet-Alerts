@@ -18,7 +18,7 @@ public class FirestationService extends BaseService {
     @Autowired
     private UpdateFirestation updateFirestation;
 
-    public ResponseEntity<String> addEntityService(SafetyAlertsModel safetyAlertsModel, String address, int station) {
+    public ResponseEntity<String> addEntityService(String address, int station) {
 
         Firestation newFireStation;
         if (finder.findFirestation(address, safetyAlertsModel) == null){
@@ -41,7 +41,7 @@ public class FirestationService extends BaseService {
         return response;
     }
 
-    public ResponseEntity<String> updateEntityService(SafetyAlertsModel safetyAlertsModel, String address, int station) {
+    public ResponseEntity<String> updateEntityService(String address, int station) {
         Firestation newFireStation;
         if (finder.findFirestation(address, safetyAlertsModel) == null){
             //Address does not already have a firestation mapped, we cannot update this mapping
@@ -69,7 +69,7 @@ public class FirestationService extends BaseService {
 
     }
 
-    public ResponseEntity<String> deleteEntityService(SafetyAlertsModel safetyAlertsModel, String address, int station) {
+    public ResponseEntity<String> deleteEntityService(String address, int station) {
 
         Firestation newFirestation;
         if (finder.findFirestation(address, safetyAlertsModel) == null){
