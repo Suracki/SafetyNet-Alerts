@@ -49,7 +49,7 @@ public class UpdateFirestationTest {
 
         //Verification
         Firestation[] updatedFirestations = result.getModel().getFirestations();
-        assertTrue(result.getBool());
+        assertTrue(result.successful());
         assertEquals(3, updatedFirestations.length);
     }
 
@@ -66,7 +66,7 @@ public class UpdateFirestationTest {
         //Verification
         Firestation[] updatedFirestations = result.getModel().getFirestations();
 
-        assertTrue(result.getBool());
+        assertTrue(result.successful());
         assertEquals(2, updatedFirestations.length);
         assertEquals("AddressTwo", updatedFirestations[1].getAddress());
         assertEquals(3, updatedFirestations[1].getStation());
@@ -84,7 +84,7 @@ public class UpdateFirestationTest {
 
         //Verification
         Firestation[] updatedFirestations = result.getModel().getFirestations();
-        assertTrue(result.getBool());
+        assertTrue(result.successful());
         assertEquals(1, updatedFirestations.length);
         assertEquals("AddressTwo", updatedFirestations[0].getAddress());
     }

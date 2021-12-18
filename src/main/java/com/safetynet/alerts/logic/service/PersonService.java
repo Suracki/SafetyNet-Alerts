@@ -60,7 +60,7 @@ public class PersonService extends BaseService{
             //Person already exists with this firstName/lastName combination, we can update
             newPerson = new Person(firstName,lastName,address,city,zip,phone,email);
             ResultModel result = updatePerson.updatePerson(finder, model, newPerson);
-            if (result.getBool()) {
+            if (result.successful()) {
                 //Person was updated successfully
                 model.updateModel(result.getModel());
             }
@@ -86,7 +86,7 @@ public class PersonService extends BaseService{
             //Person does exist, we can delete them
             newPerson = new Person(firstName,lastName,"","","","","");
             ResultModel result = updatePerson.deletePerson(finder, model, newPerson);
-            if (result.getBool()) {
+            if (result.successful()) {
                 //Person was deleted successfully
                 model.updateModel(result.getModel());
             }

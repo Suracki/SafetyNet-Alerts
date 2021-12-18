@@ -8,18 +8,18 @@ import com.safetynet.alerts.presentation.model.SafetyAlertsModel;
 public class ResultModel {
 
     private SafetyAlertsModel model;
-    private Boolean bool;
+    private Boolean operationSuccessful;
 
-    public ResultModel(SafetyAlertsModel model, Boolean bool){
+    public ResultModel(SafetyAlertsModel model, Boolean operationSuccessful){
         this.model = model;
-        this.bool = bool;
+        this.operationSuccessful = operationSuccessful;
     }
 
     public SafetyAlertsModel getModel() {
         return model;
     }
 
-    public Boolean getBool() {
-        return bool;
+    public Boolean successful() {
+        return operationSuccessful;
     }
 }

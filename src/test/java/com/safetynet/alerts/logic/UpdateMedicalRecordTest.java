@@ -50,7 +50,7 @@ public class UpdateMedicalRecordTest {
 
         //Verification
         MedicalRecord[] updatedMedicalRecords = result.getModel().getMedicalRecords();
-        assertTrue(result.getBool());
+        assertTrue(result.successful());
         assertEquals(3, updatedMedicalRecords.length);
     }
 
@@ -68,7 +68,7 @@ public class UpdateMedicalRecordTest {
         //Verification
         MedicalRecord[] updatedMedicalRecords = result.getModel().getMedicalRecords();
 
-        assertTrue(result.getBool());
+        assertTrue(result.successful());
         assertEquals(2, updatedMedicalRecords.length);
         assertEquals(2, updatedMedicalRecords[0].getMedications().length);
         assertEquals(3, updatedMedicalRecords[0].getAllergies().length);
@@ -88,7 +88,7 @@ public class UpdateMedicalRecordTest {
         //Verification
         MedicalRecord[] updatedMedicalRecords = result.getModel().getMedicalRecords();
 
-        assertTrue(result.getBool());
+        assertTrue(result.successful());
         assertEquals(1, updatedMedicalRecords.length);
         assertEquals("FirstTwo", updatedMedicalRecords[0].getFirstName());
     }

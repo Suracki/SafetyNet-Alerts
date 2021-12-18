@@ -50,7 +50,7 @@ public class UpdatePersonTest {
 
         //Verification
         Person[] updatedPersons = result.getModel().getPersons();
-        assertTrue(result.getBool());
+        assertTrue(result.successful());
         assertEquals(3, updatedPersons.length);
     }
 
@@ -68,7 +68,7 @@ public class UpdatePersonTest {
         //Verification
         Person[] updatedPersons = result.getModel().getPersons();
 
-        assertTrue(result.getBool());
+        assertTrue(result.successful());
         assertEquals(2, updatedPersons.length);
         assertEquals("NewAddress", updatedPersons[0].getAddress());
         assertEquals("City", updatedPersons[0].getCity());
@@ -87,7 +87,7 @@ public class UpdatePersonTest {
 
         //Verification
         Person[] updatedPersons = result.getModel().getPersons();
-        assertTrue(result.getBool());
+        assertTrue(result.successful());
         assertEquals(1, updatedPersons.length);
     }
 

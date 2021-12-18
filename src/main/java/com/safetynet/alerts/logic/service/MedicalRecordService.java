@@ -56,7 +56,7 @@ public class MedicalRecordService extends BaseService{
             //Record already exists with this firstName/lastName combination, we can update
             newMedicalRecord = new MedicalRecord(firstName,lastName,birthdate,medications,allergies);
             ResultModel result = updateMedicalRecord.updateMedicalRecord(finder, safetyAlertsModel, newMedicalRecord);
-            if (result.getBool()) {
+            if (result.successful()) {
                 //Record was updated successfully
                 safetyAlertsModel.updateModel(result.getModel());
             }
@@ -84,7 +84,7 @@ public class MedicalRecordService extends BaseService{
             //Medical Record does exist, we can delete it
             newMedicalRecord = new MedicalRecord(firstName,lastName,null,new String[0],new String[0]);
             ResultModel result = updateMedicalRecord.deleteMedicalRecord(finder, safetyAlertsModel, newMedicalRecord);
-            if (result.getBool()) {
+            if (result.successful()) {
                 //Medical Record was deleted successfully
                 safetyAlertsModel.updateModel(result.getModel());
             }

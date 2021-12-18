@@ -53,7 +53,7 @@ public class FirestationService extends BaseService {
             //Address already has a firestation mapped, we can update
             newFireStation = new Firestation(address,station);
             ResultModel result = updateFirestation.updateFirestation(finder, safetyAlertsModel, newFireStation);
-            if (result.getBool()) {
+            if (result.successful()) {
                 //Mapping was added successfully
                 safetyAlertsModel.updateModel(result.getModel());
             }
@@ -82,7 +82,7 @@ public class FirestationService extends BaseService {
             //Firestation mapping does exist for this address, we can delete them
             newFirestation = new Firestation(address,station);
             ResultModel result = updateFirestation.deleteFirestation(finder, safetyAlertsModel, newFirestation);
-            if (result.getBool()) {
+            if (result.successful()) {
                 //Mapping was deleted successfully
                 safetyAlertsModel.updateModel(result.getModel());
             }
