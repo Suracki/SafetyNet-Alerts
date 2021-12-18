@@ -29,23 +29,6 @@ public class MedicalRecordController extends BaseController {
     @Autowired
     private MedicalRecordService medicalRecordService;
 
-    private String stringArrayToString(String[] stringArray) {
-        StringBuilder builder = new StringBuilder();
-        if (stringArray.length == 0) {
-            return "[]";
-        }
-        builder.append("[");
-        for (String string : stringArray) {
-            builder.append("\"")
-                    .append(string)
-                    .append("\",");
-        }
-        //remove final ,
-        builder.setLength(builder.length() - 1);
-        builder.append("]");
-        return builder.toString();
-    }
-
     /**
      * Mapping for POST
      *

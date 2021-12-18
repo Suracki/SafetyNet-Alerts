@@ -17,10 +17,6 @@ public class GetMappingController extends BaseController{
     @Autowired
     private GetService getService;
 
-    private String[] intArrayToStringArray(int[] intArray) {
-        return Arrays.stream(intArray).mapToObj(String::valueOf).toArray(String[]::new);
-    }
-
     /**
      * Returns all people serviced by a specific fire station.
      * Includes first name, last name, address, and phone number for each person
